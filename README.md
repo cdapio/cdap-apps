@@ -1,7 +1,7 @@
 CDAP Applications
 =================
 
-Applications build using [CDAP](http://cdap.io).
+Applications built using [CDAP](http://cdap.io).
 
 Copyright © 2014 Cask Data, Inc.
 
