@@ -1,10 +1,14 @@
 *.class
 .*.swp
-.beamer
+
 # Package Files #
 *.jar
 *.war
 *.ear
+
+# Build files
+target/
+dependency-reduced-pom.xml
 
 # Intellij Files & Dir #
 *.iml
