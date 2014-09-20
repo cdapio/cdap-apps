@@ -1,0 +1,72 @@
+body {
+    font-family: 'Lucida Grande';
+    font-size: 80%;
+    color: #222;
+}
+
+a:visited {
+    color: #222;
+}
+
+.tbd {
+    color: #555;
+    background-color: #eee;
+}
+
+/* General */
+
+.server_error {
+    padding: 8px;
+    text-align: center;
+    color: #ee644b
+}
+
+.table_container {
+    padding-left: 4px;
+    padding-right: 4px;
+    height: 100%;
+}
+
+.table_title {
+    color: #233146;
+    font-size: 16px;
+    font-family: 'Lucida Grande';
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+/* Anomalies */
+
+.anomalies_table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.anomalies_table tr {
+    border: 1px solid #bbb;
+    padding: 2px 2px 2px 2px;
+}
+
+.anomalies_table td {
+    border: 1px solid #bbb;
+    padding: 2px 8px 2px 8px;
+    font-size: 95%;
+    min-width: 40px;
+    text-align: center;
+}
+
+.anomalies_table_header {
+    font-weight: bold;
+    font-size: 100%;
+    background: rgba(143, 199, 255, 0.34);
+}
+
+.anomalies_table_even {
+    background: rgba(143, 199, 255, 0.11);
+}
+
+table.anomalies_table tr:hover td {
+    background: rgba(143, 199, 255, 0.44);
+    cursor: pointer;
+}

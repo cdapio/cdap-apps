@@ -1,0 +1,88 @@
+<div class="table_container">
+    <div class="table_title">
+        Anomalies
+    </div>
+    <div id="anomaliesList" style="width: 100%; height: 100%; overflow: scroll"></div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        reloadAnomaliesList();
+    });
+
+    function reloadAnomaliesList() {
+        drawAnomaliesList();
+        setTimeout(function() {
+            reloadAnomaliesList();
+        }, 5000);
+    }
+
+    function drawAnomaliesList() {
+        var fact = JSON.parse(decodeURIComponent('<%= request.getParameter("fact") %>'));
+        var src = fact.dimensions.src;
+        var startTs = Date.now() - 5000 * 120;
+        var endTs = Date.now();
+        $.post( "proxy/v2/apps/Netlens/procedures/AnomaliesProcedure/methods/timeRange",
+                        "{startTs:" + startTs + ", endTs:" + endTs + ", src:'" + src + "'}")
+                .done(function( data ) {
+                    anomalies = JSON.parse(JSON.parse(data));
+
+                    tableHtml =
+                            "<table id='anomalies_table' class='anomalies_table' align='center'>" +
+                                    "<tr class='anomalies_table_header'>";
+                    tableHtml +=
+                            "<td class='cell'>Time</td>" +
+                                    "<td style='display: none'></td>" +
+                                    "<td class='cell'>Source IP</td>" +
+                                    "<td class='cell'>Destination IP</td>" +
+                                    "<td class='cell'>Traffic Type</td>";
+                    tableHtml +=
+                            "</tr>";
+                    if (anomalies.length > 0) {
+                        for (i = 0; i < anomalies.length; i++) {
+                            tableHtml += i % 2 == 0 ? "<tr>" : "<tr class='anomalies_table_even'>";
+                            // Link
+                            var params = $.param ({
+                                key: anomalies[i].dataSeriesKey,
+                                fact: JSON.stringify(anomalies[i].fact)
+                            });
+                            tableHtml += "<td style='display: none'>ip-details.jsp?" + params + "</td>";
+                            // Time
+                            tableHtml += td(new Date(anomalies[i].fact.ts).toLocaleTimeString());
+                            // Source IP
+                            tableHtml += td(anomalies[i].fact.dimensions.src);
+                            // Destination IP
+                            tableHtml += td(anomalies[i].fact.dimensions.dst);
+                            // Traffic Type
+                            tableHtml += td(anomalies[i].fact.dimensions.app);
+
+                            tableHtml += "</tr>";
+                        }
+                    } else {
+                        tableHtml += "<tr>" + td("&nbsp;") + td("") + td("") + td("");
+                        tableHtml += "</tr>";
+                    }
+
+                    tableHtml += "</table>";
+
+
+                    $("#anomaliesList").html(tableHtml);
+
+                    if (anomalies.length > 0) {
+                        $('#anomalies_table tbody').on('click', 'tr', function () {
+                            var url = $('td', this).eq(0).text();
+                            window.location.href=url;
+                        } );
+                    }
+                })
+                .fail( function(xhr, textStatus, errorThrown) {
+                    $('#anomaliesList').html("<div class='server_error''>Failed to get data from server<div>");
+                })
+
+    }
+
+    function td(html) {
+        return "<td class='cell'>" + (html == null ? "<div style='color: #888'><i>[agg]</i></div>" : html) + "</td>";
+    }
+
+</script>
