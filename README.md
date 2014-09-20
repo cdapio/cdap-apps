@@ -26,7 +26,7 @@ TwitterSentiment: Social Analytics
 
 TwitterSentiment performs sentiment analysis on Twitter data to understand consumer feelings and attitudes towards brands or topics in online conversations.
 
-MovieRecommender: Recommender System
+MovieSteer: Recommender System
 ------------------------------------
 
-MovieRecommender uses collaborative filtering to provide movie recommendations for users.
+MovieSteer application uses collaborative filtering to provide movie recommendations for users.
