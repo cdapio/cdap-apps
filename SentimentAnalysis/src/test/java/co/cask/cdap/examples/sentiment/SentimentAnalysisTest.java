@@ -100,40 +100,5 @@ public class SentimentAnalysisTest extends TestBase {
     }
   }
 
-  @Test
-  public void test2() throws InterruptedException, IOException {
-    ApplicationManager appManager = deployApplication(SentimentAnalysisApp.class);
-    Map<String, String> args = Maps.newHashMap();
-//    args.put("oauth.consumerKey", "guzpQsLtdKs0jlap64nY1nX4N");
-//    args.put("oauth.consumerSecret", "z7Ux5TPQyeOXd8xlXmm87V3qxi1vABSV9NFVelDaCus8m39tIe");
-//    args.put("oauth.accessToken", "366210197-mpzoVZgENXzrEnVXvgdOqoDkCv55m2M5IYSp4ouv");
-//    args.put("oauth.accessTokenSecret", "Q9ST3W4d68KgBnIKmQYWgFaBdCBrVsQXtE54ol8UhudoL");
-    FlowManager flowManager = appManager.startFlow("analysis", args);
-
-    ProcedureManager procedureManager = appManager.startProcedure("sentiment-query");
-    ProcedureClient client = procedureManager.getClient();
-
-    for(int i = 0 ; i < 30; i++) {
-      String response = client.query("aggregates", Collections.<String, String>emptyMap());
-      TimeUnit.SECONDS.sleep(1);
-    }
-
-    flowManager.stop();
-
-    // use procedure and verify
-    try {
-      String response = client.query("aggregates", Collections.<String, String>emptyMap());
-
-      // Verify the aggregates
-      Map<String, Long> result = new Gson().fromJson(response, new TypeToken<Map<String, Long>>() { }.getType());
-      Assert.assertTrue(1 < result.get("positive").intValue());
-      Assert.assertTrue(1 < result.get("negative").intValue());
-      Assert.assertTrue(1 < result.get("neutral").intValue());
-
-    } finally {
-      procedureManager.stop();
-    }
-  }
-
 
 }
