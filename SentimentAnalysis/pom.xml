@@ -28,7 +28,7 @@
 
     <properties>
         <app.main.class>co.cask.cdap.examples.sentiment.SentimentAnalysisApp</app.main.class>
-        <archive>sentiment-process.zip</archive>
+        <sentiment-archive>sentiment-process.zip</sentiment-archive>
         <power.pack.version>2.4.0-SNAPSHOT</power.pack.version>
         <guava.version>13.0.1</guava.version>
         <slf4j.version>1.7.5</slf4j.version>
@@ -119,6 +119,7 @@
                 <Embed-Dependency>*;inline=false;scope=compile</Embed-Dependency>
                 <Embed-Transitive>true</Embed-Transitive>
                 <Embed-Directory>lib</Embed-Directory>
+                <Include-Resource>{maven-resources}, target/classes/${sentiment-archive}</Include-Resource>
               </instructions>
             </configuration>
             <executions>
@@ -185,7 +186,7 @@
                         <goals>
                             <goal>copy</goal>
                         </goals>
-                        <phase>process-resources</phase>
+                        <phase>prepare-package</phase>
                         <configuration>
                             <filesets>
                                 <fileset>
@@ -193,10 +194,9 @@
                                     <includes>
                                         <include>**</include>
                                     </includes>
-                                  <!--Write to /classes:-->
-                                    <!--<outputDirectory>${project.build.outputDirectory}/${archive}</outputDirectory>-->
-                                  <!--Write to src/main/resources:-->
-                                    <outputDirectory>${basedir}/src/main/resources/${archive}</outputDirectory>
+                                    <outputDirectory>
+                                      ${project.build.outputDirectory}/${sentiment-archive}
+                                    </outputDirectory>
                                 </fileset>
                             </filesets>
                         </configuration>
