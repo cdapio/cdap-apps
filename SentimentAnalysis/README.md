@@ -11,6 +11,13 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
+Twitter Configuration
+=====================
+In order to utilize the TweetCollector flowlet, which pulls a small sample stream via the Twitter API, the API key and Access token must be configured.
+Follow the steps at the following page to obtain these credentials: https://dev.twitter.com/oauth/overview/application-owner-access-tokens
+Place the authentication configuration in a file named 'twitter4j.properties' in src/resources, according to: http://twitter4j.org/en/configuration.html
+Alternatively, these configurations can be provided as runtime arguments to the flow prior to starting it.
+
 Installation
 ============
 
@@ -37,11 +44,6 @@ bin/app-manager.sh --host [host] --action status
 Ingest sample statements:
 ```
 bin/ingest-statements.sh --host [host]
-```
-
-Run Web UI: (TODO)
-```
-mvn -Pweb jetty:run
 ```
 
 External Documentation
