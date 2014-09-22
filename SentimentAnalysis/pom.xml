@@ -235,7 +235,7 @@
                         <goals>
                             <goal>copy</goal>
                         </goals>
-                        <phase>prepare-package</phase>
+                        <phase>process-resources</phase>
                         <configuration>
                             <filesets>
                                 <fileset>
