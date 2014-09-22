@@ -56,6 +56,11 @@ Ingest sample statements:
 bin/ingest-statements.sh --host [host]
 ```
 
+Run Web UI:
+```
+mvn -Pweb jetty:run
+```
+
 External Documentation
 ======================
 
