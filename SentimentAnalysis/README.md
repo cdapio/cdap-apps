@@ -18,6 +18,16 @@ Follow the steps at the following page to obtain these credentials: [Twitter oau
 Place the authentication configuration in a file named 'twitter4j.properties' in src/resources, according to: [Twitter4j configuration](http://twitter4j.org/en/configuration.html).
 Alternatively, these configurations can be provided as runtime arguments to the flow prior to starting it.
 
+Flow Runtime Arguments
+======================
+When start the ```analysis``` flow from the UI, runtime arguments can be specified.
+"tweet.amplification" - Emits each tweet from the source flowlet ```TweetCollector``` by this amount.
+"disable.public" - Specify any value for this key in order to disable the source flowlet ```TweetCollector```.
+"oauth.consumerKey" - See ```Twitter Configuration``` above.
+"oauth.consumerSecret" - See ```Twitter Configuration``` above.
+"oauth.Token" - See ```Twitter Configuration``` above.
+"oauth.TokenSecret" - See ```Twitter Configuration``` above.
+
 Installation
 ============
 

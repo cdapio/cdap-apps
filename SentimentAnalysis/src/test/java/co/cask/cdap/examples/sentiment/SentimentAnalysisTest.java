@@ -17,7 +17,6 @@ package co.cask.cdap.examples.sentiment;
 
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.FlowManager;
-import co.cask.cdap.test.ProcedureClient;
 import co.cask.cdap.test.ProcedureManager;
 import co.cask.cdap.test.RuntimeMetrics;
 import co.cask.cdap.test.RuntimeStats;
@@ -31,7 +30,6 @@ import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
