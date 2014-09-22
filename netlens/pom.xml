@@ -21,7 +21,7 @@
       <url>https://repository.continuuity.com/content/groups/public</url>
     </repository>
     <repository>
-      <id>nexus</id>
+      <id>continuuity-snapshots</id>
       <url>https://repository.continuuity.com/content/repositories/snapshots/</url>
     </repository>
     <repository>
