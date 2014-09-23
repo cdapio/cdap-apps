@@ -52,8 +52,7 @@ public class ProxyServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    final HttpServletResponse resp2 = resp;
+  protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
     AsyncHttpClient client =
       new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
     try {
@@ -71,7 +70,8 @@ public class ProxyServlet extends HttpServlet {
         client.prepareGet(url).execute(new AsyncCompletionHandler<Response>(){
           @Override
           public Response onCompleted(Response response) throws Exception {
-            PrintWriter out = resp2.getWriter();
+            PrintWriter out = resp.getWriter();
+            resp.setStatus(response.getStatusCode());
             try {
               out.write(response.getResponseBody());
             } finally {

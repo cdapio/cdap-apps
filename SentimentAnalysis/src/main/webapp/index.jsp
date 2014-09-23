@@ -38,7 +38,7 @@
       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="/senti">Sentiment Analysis</a>
+          <a class="navbar-brand" href="/SentimentAnalysis">Sentiment Analysis</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -46,7 +46,7 @@
 
           <ul class="nav navbar-nav">
             <li class="dropdown messages-dropdown active">
-              <a href="/senti">Dashboard</a>
+              <a href="/SentimentAnalysis">Dashboard</a>
             </li>
             <li class="dropdown messages-dropdown">
                 <a href="http://localhost:9999/#/flows/sentiment:analysis/">CDAP</a>
@@ -151,7 +151,7 @@
           <div class="col-lg-4">
             <div class="panel panel-primary">
               <div class="panel-heading" id="panel-positive">
-                <h3 class="panel-title">Unique Positive Sentences</h3>
+                <h3 class="panel-title">Most Recent Positive Sentences</h3>
               </div>
               <div class="panel-body">
                 <div class="table-responsive">
@@ -172,7 +172,7 @@
           <div class="col-lg-4">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="panel-negative">
-                      <h3 class="panel-title">Unique Negative Sentences</h3>
+                      <h3 class="panel-title">Most Recent Negative Sentences</h3>
                   </div>
                   <div class="panel-body">
                       <div class="table-responsive">
@@ -193,7 +193,7 @@
           <div class="col-lg-4">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="panel-neutral">
-                      <h3 class="panel-title">Unique Neutral Sentences</h3>
+                      <h3 class="panel-title">Most Recent Neutral Sentences</h3>
                   </div>
                   <div class="panel-body">
                       <div class="table-responsive">

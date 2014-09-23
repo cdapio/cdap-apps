@@ -71,15 +71,27 @@ public class SentimentAnalysisProcedure extends AbstractProcedure {
       response.error(ProcedureResponse.Code.CLIENT_ERROR, "No sentiment sent");
       return;
     }
+    String numMinutes = request.getArgument("minutes");
+    if (numMinutes == null) {
+      numMinutes = "5";
+    }
+    String limit = request.getArgument("limit");
+    if (limit == null) {
+      limit = "10";
+    }
+    int remaining = Integer.parseInt(limit);
 
     long time = System.currentTimeMillis();
     List<TimeseriesTable.Entry> entries =
       textSentiments.read(sentiment.getBytes(Charsets.UTF_8),
-                          time - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS),
+                          time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(numMinutes), TimeUnit.MINUTES),
                           time);
 
     Map<String, Long> textTimeMap = Maps.newHashMapWithExpectedSize(entries.size());
     for (TimeseriesTable.Entry entry : entries) {
+      if (remaining-- <= 0) {
+        break;
+      }
       textTimeMap.put(Bytes.toString(entry.getValue()), entry.getTimestamp());
     }
     response.sendJson(ProcedureResponse.Code.SUCCESS, textTimeMap);
