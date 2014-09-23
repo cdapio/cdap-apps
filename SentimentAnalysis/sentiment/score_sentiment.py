@@ -147,8 +147,8 @@ def main():
     
     try:
       tweet = json.loads(tweets)["tweet"]
-      s = sentiment(tweet)
-      print json.dumps({"tweet" : tweet, "sentiment": s})
+      tweet["sentiment"] = sentiment(tweet)
+      print json.dumps(tweet)
       sys.stdout.flush()
 
     except:

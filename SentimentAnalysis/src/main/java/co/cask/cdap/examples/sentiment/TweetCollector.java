@@ -41,10 +41,10 @@ import java.util.concurrent.TimeUnit;
 public class TweetCollector extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(TweetCollector.class);
 
-  private OutputEmitter<String> output;
+  private OutputEmitter<Tweet> output;
 
   private CollectingThread collector;
-  private BlockingQueue<String> queue;
+  private BlockingQueue<Tweet> queue;
 
   private Metrics metrics;
 
@@ -67,7 +67,7 @@ public class TweetCollector extends AbstractFlowlet {
       tweetAmplification = Integer.parseInt(args.get("tweet.amplification"));
       LOG.info("Tweets are being amplified (tweet.amplification={})", tweetAmplification);
     }
-    queue = new LinkedBlockingQueue<String>(10000);
+    queue = new LinkedBlockingQueue<Tweet>(10000);
     collector = new CollectingThread();
     collector.start();
   }
@@ -89,7 +89,7 @@ public class TweetCollector extends AbstractFlowlet {
     int batchSize = 100;
 
     for (int i = 0; i < batchSize; i++) {
-      String tweet = queue.poll();
+      Tweet tweet = queue.poll();
       if (tweet == null) {
         break;
       }
@@ -131,7 +131,7 @@ public class TweetCollector extends AbstractFlowlet {
 //            Tweet tweet = new Tweet(String.valueOf(status.getId()), status.getId(),
 //                    status.getCreatedAt().getTime(),
 //                    status.getUser().getName(), status.getText(), "en", status.getSource());
-            String tweet = status.getText();
+            String text = status.getText();
             String lang = status.getLang();
             metrics.count("lang." + lang, 1);
             if (!lang.equals("en")) {
@@ -139,7 +139,7 @@ public class TweetCollector extends AbstractFlowlet {
               return;
             }
             try {
-              queue.put(tweet);
+              queue.put(new Tweet(text, status.getCreatedAt().getTime()));
             } catch (InterruptedException e) {
               LOG.warn("Interrupted writing to queue", e);
               return;

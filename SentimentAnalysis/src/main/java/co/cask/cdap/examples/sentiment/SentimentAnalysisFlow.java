@@ -64,7 +64,7 @@ public class SentimentAnalysisFlow implements Flow {
         .add(new Update())
       .connect()
         .fromStream("sentence").to(new Normalization())
-        .from(new TweetCollector()).to(new Normalization())
+        .from(new TweetCollector()).to(new Analyze())
         .from(new Normalization()).to(new Analyze())
         .from(new Analyze()).to(new Update())
       .build();
@@ -79,23 +79,23 @@ public class SentimentAnalysisFlow implements Flow {
     /**
      * Emitter for emitting sentences from this Flowlet.
      */
-    private OutputEmitter<String> out;
+    private OutputEmitter<Tweet> out;
 
     /**
      * Handler to emit metrics.
      */
     Metrics metrics;
 
-    @ProcessInput
-    @Batch(100)
-    public void process(String text) {
-      if (text != null) {
-        metrics.count("data.processed.size", text.length());
-        out.emit(text);
-      } else {
-        metrics.count("data.ignored.text", 1);
-      }
-    }
+//    @ProcessInput
+//    @Batch(100)
+//    public void process(String text) {
+//      if (text != null) {
+//        metrics.count("data.processed.size", text.length());
+//        out.emit(text);
+//      } else {
+//        metrics.count("data.ignored.text", 1);
+//      }
+//    }
 
     @Batch(100)
     @ProcessInput
@@ -103,7 +103,8 @@ public class SentimentAnalysisFlow implements Flow {
       String text = Bytes.toString(Bytes.toBytes(event.getBody()));
       if (text != null) {
         metrics.count("data.processed.size", text.length());
-        out.emit(text);
+        Tweet tweet = new Tweet(text, System.currentTimeMillis());
+        out.emit(tweet);
       } else {
         metrics.count("data.ignored.text", 1);
       }
@@ -114,12 +115,12 @@ public class SentimentAnalysisFlow implements Flow {
    * Analyzes the sentences by passing the sentence to NLTK based sentiment analyzer
    * written in Python.
    */
-  public static class Analyze extends ExternalProgramFlowlet<String, String> {
+  public static class Analyze extends ExternalProgramFlowlet<Tweet, Tweet> {
     private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
     private static final Gson GSON = new Gson();
 
     @Output("sentiments")
-    private OutputEmitter<String> sentiment;
+    private OutputEmitter<Tweet> sentiment;
 
     private File workDir;
 
@@ -161,10 +162,8 @@ public class SentimentAnalysisFlow implements Flow {
      * @return A UTF-8 encoded string of the input, or {@code null} if to skip this input.
      */
     @Override
-    protected String encode(String input) {
-      Map<String, String> map = Maps.newHashMap();
-      map.put("tweet", input);
-      return GSON.toJson(map);
+    protected String encode(Tweet input) {
+      return GSON.toJson(input);
     }
 
     /**
@@ -176,8 +175,8 @@ public class SentimentAnalysisFlow implements Flow {
      * @return The output to emit or {@code null} if nothing to emit.
      */
     @Override
-    protected String processResult(String result) {
-      return result;
+    protected Tweet processResult(String result) {
+      return GSON.fromJson(result, Tweet.class);
     }
 
     /**
@@ -187,7 +186,7 @@ public class SentimentAnalysisFlow implements Flow {
      * this flowlet doesn't have output.
      */
     @Override
-    protected OutputEmitter<String> getOutputEmitter() {
+    protected OutputEmitter<Tweet> getOutputEmitter() {
       return sentiment;
     }
 
