@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.examples.sentiment.classification;
 
 import com.aliasi.classify.Classification;
 import com.aliasi.classify.LMClassifier;

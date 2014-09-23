@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.examples.sentiment.classification;
 
 import com.google.common.base.Objects;
 

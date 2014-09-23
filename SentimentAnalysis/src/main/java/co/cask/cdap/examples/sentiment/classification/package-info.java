@@ -13,19 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
-package co.cask.cdap.examples.sentiment;
-
 /**
- * Exception when the Classifier couldn't classify correctly.
+ * Package for PageViewAnalytics Application.
+ *
+ * An Application that analyzes Apache access log events to find
+ * the distribution of page views of a particular page.
  */
-public class ClassifierResultException extends Exception {
+package co.cask.cdap.examples.sentiment.classification;
 
-  /**
-   * Create a new ClassificationResultException with the given message.
-   * @param message of the exception.
-   */
-  public ClassifierResultException(String message) {
-    super(message);
-  }
-}
+
