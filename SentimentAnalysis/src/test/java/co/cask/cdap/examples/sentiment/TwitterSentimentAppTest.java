@@ -37,12 +37,12 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  */
-public class SentimentAnalysisTest extends TestBase {
+public class TwitterSentimentAppTest extends TestBase {
 
   @Test
   public void test() throws Exception {
     try {
-      ApplicationManager appManager = deployApplication(SentimentAnalysisApp.class);
+      ApplicationManager appManager = deployApplication(TwitterSentimentApp.class);
 
       Map<String, String> args = Maps.newHashMap();
       args.put("disable.public", "true");
@@ -52,7 +52,7 @@ public class SentimentAnalysisTest extends TestBase {
 
       try {
         // Write a message to Stream
-        StreamWriter streamWriter = appManager.getStreamWriter("sentence");
+        StreamWriter streamWriter = appManager.getStreamWriter(TwitterSentimentApp.STREAM_NAME);
         streamWriter.send("i love movie");
         streamWriter.send("i hate movie");
         streamWriter.send("i am neutral to movie");
@@ -100,7 +100,7 @@ public class SentimentAnalysisTest extends TestBase {
 
   @Test
   public void testCountsProcedure() throws Exception {
-    ApplicationManager appManager = deployApplication(SentimentAnalysisApp.class);
+    ApplicationManager appManager = deployApplication(TwitterSentimentApp.class);
 
     Map<String, String> args = Maps.newHashMap();
     args.put("disable.public", "true");
@@ -108,7 +108,7 @@ public class SentimentAnalysisTest extends TestBase {
 
     try {
       // Write a message to Stream
-      StreamWriter streamWriter = appManager.getStreamWriter("sentence");
+      StreamWriter streamWriter = appManager.getStreamWriter(TwitterSentimentApp.STREAM_NAME);
       streamWriter.send("i love movie");
       streamWriter.send("i hate movie");
       streamWriter.send("i am neutral to movie");

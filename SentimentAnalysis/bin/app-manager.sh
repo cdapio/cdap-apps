@@ -141,7 +141,7 @@ fi
 get_auth_token
 
 if [ "x$action" == "xdeploy" ]; then
-  jar_path=`ls $dir/../target/SentimentAnalysis-*.jar`
+  jar_path=`ls $dir/../target/TwitterSentiment-*.jar`
   deploy_action $app $jar_path $host
 else
   program_action $app "analysis" "flow" $action $host

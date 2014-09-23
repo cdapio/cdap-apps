@@ -41,8 +41,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Procedure that returns the aggregates timeseries sentiment data.
  */
-public class SentimentAnalysisProcedure extends AbstractProcedure {
-  private static final Logger LOG = LoggerFactory.getLogger(SentimentAnalysisProcedure.class);
+public class SentimentQueryProcedure extends AbstractProcedure {
+  private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryProcedure.class);
   private static final Gson GSON = new Gson();
 
   @UseDataSet("sentiments")
@@ -127,7 +127,7 @@ public class SentimentAnalysisProcedure extends AbstractProcedure {
   public ProcedureSpecification configure() {
     return ProcedureSpecification.Builder.with()
       .setName("sentiment-query")
-      .setDescription("Sentiments Procedure")
+      .setDescription("Queries data relating to tweets' sentiments.")
       .withResources(ResourceSpecification.BASIC)
       .build();
   }

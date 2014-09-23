@@ -20,16 +20,15 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>SentimentAnalysis</artifactId>
+    <artifactId>TwitterSentiment</artifactId>
     <groupId>co.cask.cdap</groupId>
-    <name>Sentiment Analysis</name>
+    <name>Twitter Sentiment</name>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
-        <app.main.class>co.cask.cdap.examples.sentiment.SentimentAnalysisApp</app.main.class>
+        <app.main.class>co.cask.cdap.examples.sentiment.TwitterSentimentApp</app.main.class>
         <sentiment-archive>sentiment-process.zip</sentiment-archive>
-        <power.pack.version>2.4.0-SNAPSHOT</power.pack.version>
         <guava.version>13.0.1</guava.version>
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
@@ -50,11 +49,6 @@
   </repositories>
 
     <dependencies>
-      <dependency>
-        <groupId>co.cask.cdap</groupId>
-        <artifactId>power-pack</artifactId>
-        <version>${power.pack.version}</version>
-      </dependency>
       <dependency>
         <groupId>co.cask.cdap</groupId>
         <artifactId>cdap-api</artifactId>

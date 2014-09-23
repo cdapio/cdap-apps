@@ -14,7 +14,7 @@
  * the License.
  */
 /**
- * Package for SentimentAnalysis Application.
+ * Package for TwitterSentiment Application.
  * 
  * An application that categorizes tweets into positive, negative, or neutral in real time.
  */

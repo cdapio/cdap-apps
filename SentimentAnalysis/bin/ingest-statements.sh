@@ -30,7 +30,7 @@ function get_auth_token() {
 }
 
 function usage() {
-  echo "Tool for sending data to the SentimentAnalysis application"
+  echo "Tool for sending data to the TwitterSentiment application"
   echo "Usage: $script [--host <hostname>]"
   echo ""
   echo "  Options"

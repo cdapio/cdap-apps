@@ -26,7 +26,7 @@ public class SentimentAnalysisFlow implements Flow {
   @Override
   public FlowSpecification configure() {
     return FlowSpecification.Builder.with()
-      .setName("SentimentAnalysis")
+      .setName("TwitterSentimentAnalysis")
       .setDescription("Analysis of text to generate sentiments")
       .withFlowlets()
         .add(new TweetCollector())
@@ -35,7 +35,7 @@ public class SentimentAnalysisFlow implements Flow {
         .add(new Analysis())
         .add(new Update())
       .connect()
-        .fromStream("sentence").to(new Normalization())
+        .fromStream(TwitterSentimentApp.STREAM_NAME).to(new Normalization())
         .from(new Normalization()).to(new Analyze())
         .from(new TweetCollector()).to(new Analyze())
         .from(new Analyze()).to(new Update())
