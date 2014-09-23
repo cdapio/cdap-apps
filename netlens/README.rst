@@ -46,15 +46,24 @@ There are number of components that compose Netlens CDAP application:
 * Procedures to serve data to a front-end
 * Thin web UI
 
-The main part of the application is `analyticsFlow` that performs network packet analysis.
+The main part of the application is ``analyticsFlow`` that performs network packet analysis.
 
 |(AnalyticsFlow)|
 
-The flow gets data from the stream where each event represents a network packet with attributes like source IP, port, protocol type and others. JSON-encoded packet details are parsed in `fact-parser` flowlet and converted into a Fact Java object (timestamp + map of field name to value) that is passed along the rest of the flow. `traffic-count` flowlet takes stream of facts to compute traffic stats.
+The flow gets data from the stream where each event represents a 
+network packet with attributes like source IP, port, protocol type and others. 
+JSON-encoded packet details are parsed in ``fact-parser`` flowlet and converted into 
+a Fact Java object (timestamp + map of field name to value) that is passed along the rest of the flow. 
+``traffic-count`` flowlet takes stream of facts to compute traffic stats.
 
-Before applying anomaly detection algorithm in `anomaly-detect` flowlet, the numeric values of attributes are categorized in `categorize-numbers` flowlet and additional facts are generated based on different combinations of attributes in `anomaly-fanout` flowlet. This keeps anomaly detection algorithm simple and allows controlling which combinations of attributes are interesting to the analysis.
+Before applying anomaly detection algorithm in ``anomaly-detect`` flowlet, 
+the numeric values of attributes are categorized in ``categorize-numbers`` flowlet and
+additional facts are generated based on different combinations of attributes in ``anomaly-fanout`` flowlet.
+This keeps anomaly detection algorithm simple and allows controlling which combinations of 
+attributes are interesting to the analysis.
 
-`anomaly-count` flowlet consumes detected anomalies and uses their details to compute stats and fill in the anomalies history log.
+``anomaly-count`` flowlet consumes detected anomalies and uses their details to compute 
+stats and fill in the anomalies history log.
 
 Installation & Usage
 ====================
