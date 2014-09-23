@@ -56,15 +56,6 @@ public class ProxyServlet extends HttpServlet {
       new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
     try {
       String url = "http://localhost:10000" + req.getPathInfo() + "?" + req.getQueryString();
-//http://localhost:8080/SentimentAnalysis/proxy/v2/apps/sentiment/procedures/sentiment-query/methods/sentiments?sentiment=positive&_=1411427545765
-//      System.out.println(req.getPathInfo());
-//      /v2/apps/sentiment/procedures/sentiment-query/methods/sentiments
-//      System.out.println(req.getRequestURL());
-//      http://localhost:8080/SentimentAnalysis/proxy/v2/apps/sentiment/procedures/sentiment-query/methods/sentiments
-//      System.out.println(req.getRequestURI());
-//      /SentimentAnalysis/proxy/v2/apps/sentiment/procedures/sentiment-query/methods/sentiments
-//      System.out.println(req.getQueryString());
-//      sentiment=positive&_=1411427545765
       try {
         client.prepareGet(url).execute(new AsyncCompletionHandler<Response>(){
           @Override

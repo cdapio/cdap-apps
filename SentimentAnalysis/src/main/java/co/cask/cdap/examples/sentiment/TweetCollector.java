@@ -48,8 +48,6 @@ public class TweetCollector extends AbstractFlowlet {
 
   private Metrics metrics;
 
-  private int tweetAmplification;
-
   private TwitterStream twitterStream;
 
   @Override
@@ -61,11 +59,6 @@ public class TweetCollector extends AbstractFlowlet {
       String publicArg = args.get("disable.public");
       LOG.info("Public Twitter source turned off (disable.public={})", publicArg);
       return;
-    }
-    tweetAmplification = 1;
-    if (args.containsKey("tweet.amplification")) {
-      tweetAmplification = Integer.parseInt(args.get("tweet.amplification"));
-      LOG.info("Tweets are being amplified (tweet.amplification={})", tweetAmplification);
     }
     queue = new LinkedBlockingQueue<Tweet>(10000);
     collector = new CollectingThread();
@@ -95,10 +88,7 @@ public class TweetCollector extends AbstractFlowlet {
       }
 
       metrics.count("public.total", 1);
-      // emitting more data to get higher throughput
-      for (int k = 0; k < tweetAmplification; k++) {
-        output.emit(tweet);
-      }
+      output.emit(tweet);
     }
   }
 

@@ -53,18 +53,21 @@ public class SentimentAnalysisFlow implements Flow {
   @Override
   public FlowSpecification configure() {
     return FlowSpecification.Builder.with()
-      .setName("analysis")
+      .setName("SentimentAnalysis")
       .setDescription("Analysis of text to generate sentiments")
       .withFlowlets()
         .add(new TweetCollector())
         .add(new Normalization())
         .add(new Analyze())
+        .add(new Analysis())
         .add(new Update())
       .connect()
         .fromStream("sentence").to(new Normalization())
         .from(new Normalization()).to(new Analyze())
         .from(new TweetCollector()).to(new Analyze())
         .from(new Analyze()).to(new Update())
+        .from(new TweetCollector()).to(new Analysis())
+        .from(new Analysis()).to(new Update())
       .build();
   }
 
@@ -83,17 +86,6 @@ public class SentimentAnalysisFlow implements Flow {
      * Handler to emit metrics.
      */
     Metrics metrics;
-
-//    @ProcessInput
-//    @Batch(100)
-//    public void process(String text) {
-//      if (text != null) {
-//        metrics.count("data.processed.size", text.length());
-//        out.emit(text);
-//      } else {
-//        metrics.count("data.ignored.text", 1);
-//      }
-//    }
 
     @Batch(100)
     @ProcessInput
@@ -237,7 +229,7 @@ public class SentimentAnalysisFlow implements Flow {
     @Override
     public FlowletSpecification configure() {
       return FlowletSpecification.Builder.with()
-        .setName("update")
+        .setName("Update")
         .setDescription("Updates the sentiment counts")
         .withResources(ResourceSpecification.BASIC)
         .build();
