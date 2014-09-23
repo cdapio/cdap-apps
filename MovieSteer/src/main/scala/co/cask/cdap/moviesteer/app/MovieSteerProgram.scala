@@ -24,18 +24,12 @@
 
 package co.cask.cdap.moviesteer.app
 
-import co.cask.cdap.api.spark.ScalaSparkProgram
-import co.cask.cdap.api.spark.SparkContext
-
+import co.cask.cdap.api.common.Bytes
+import co.cask.cdap.api.spark.{ScalaSparkProgram, SparkContext}
 import org.apache.spark.SparkContext._
-import org.apache.spark.mllib.recommendation.ALS
-import org.apache.spark.mllib.recommendation.MatrixFactorizationModel
-import org.apache.spark.mllib.recommendation.Rating
-import org.apache.spark.rdd.RDD
+import org.apache.spark.mllib.recommendation.{ALS, Rating}
 import org.apache.spark.rdd.NewHadoopRDD
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.control.Exception._
 
@@ -58,10 +52,10 @@ class MovieSteerProgram extends ScalaSparkProgram {
     val params = parseArguments(sc, Params())
     LOG.info("Processing ratings data with parameters {}", params)
 
-    val linesDataset: NewHadoopRDD[Array[Byte], String] =
+    val ratingsDataset: NewHadoopRDD[Array[Byte], String] =
       sc.readFromDataset("ratings", classOf[Array[Byte]], classOf[String])
-    val lines = linesDataset.values
-    val data = lines.map { line =>
+    val lines = ratingsDataset.values
+    val ratingData = lines.map { line =>
       val fields = line.split("::")
       if (params.implicitPrefs) {
         /*
@@ -84,13 +78,17 @@ class MovieSteerProgram extends ScalaSparkProgram {
       }
     }.cache()
 
-    val numRatings = data.count()
-    val numUsers = data.map(_.user).distinct().count()
-    val numMovies = data.map(_.product).distinct().count()
+    val moviesDataset: NewHadoopRDD[Array[Byte], String] = sc.readFromDataset("movies", classOf[Byte], classOf[String])
 
-    LOG.info(s"Got $numRatings ratings from $numUsers users on $numMovies movies.")
+    val numRatings = ratingData.count()
+    val numUsers = ratingData.map(_.user).distinct().count()
+    val numRatedMovies = ratingData.map(_.product).distinct().count()
 
-    val splits = data.randomSplit(Array(0.8, 0.2))
+    val numMovies = moviesDataset.count();
+
+    println(s"Got $numRatings ratings from $numUsers users on $numRatedMovies movies out of $numMovies")
+
+    val splits = ratingData.randomSplit(Array(0.8, 0.2))
     val training = splits(0).cache()
     val test = if (params.implicitPrefs) {
       /*
@@ -111,7 +109,7 @@ class MovieSteerProgram extends ScalaSparkProgram {
     val numTest = test.count()
     LOG.info(s"Training: $numTraining, test: $numTest.")
 
-    data.unpersist(blocking = false)
+    ratingData.unpersist(blocking = false)
 
     val model = new ALS()
       .setRank(params.rank)
@@ -122,38 +120,41 @@ class MovieSteerProgram extends ScalaSparkProgram {
       .setProductBlocks(params.numProductBlocks)
       .run(training)
 
-    val rmse = computeRmse(model, test, params.implicitPrefs)
-    LOG.info(s"Test RMSE = $rmse.")
+    //    val rmse = computeRmse(model, test, params.implicitPrefs)
+    //    LOG.info(s"Test RMSE = $rmse.")
 
     LOG.debug("Creating prediction matrix")
 
-    val predictions = model.predict(data.map(x => (x.user, x.product)))
-    val matrix = predictions.map { e =>
-      val key = ("" + e.user + e.product).getBytes
-      key -> e.rating.toString
+    val userRatedMovies = ratingData.map(x => (x.user, x.product)).groupByKey().map(x => (x._1, x._2.toSet))
+
+    val movies = moviesDataset.map(x => (Bytes.toString(x._1).toInt, x._2)).collect().toMap
+
+    val originalContext: org.apache.spark.SparkContext = sc.getOriginalSparkContext
+    val notRatedMovies = userRatedMovies.map(x => (x._1, originalContext.parallelize(movies.keys.filter(!x._2.contains(_)).toSeq)))
+
+    val recommendations = notRatedMovies.map(x => (x._1, model.predict(x._2.map((x._1, _))).collect.sortBy(-_.rating).take(10)))
+
+    for (recom <- recommendations) {
+      println(">>> Recommendations for UserID: " + recom._1)
+      for (curUserRecom <- recom._2) {
+        println("MovieID: " + curUserRecom.product + "Rating: " + curUserRecom.rating)
+      }
     }
-    var result = new Array[(Array[Byte], String)](matrix.collect().size)
-    matrix.collect().zipWithIndex.foreach { case (e, i) => result(i) = new Tuple2(e._1, e._2)}
-
-    LOG.info("Writing data")
-
-    val originalContext: org.apache.spark.SparkContext = sc.getOriginalSparkContext()
-    sc.writeToDataset(originalContext.parallelize(result), "predictions", classOf[Array[Byte]], classOf[String])
 
     LOG.info("Done!")
   }
 
-  /** Compute RMSE (Root Mean Squared Error). */
-  def computeRmse(model: MatrixFactorizationModel, data: RDD[Rating], implicitPrefs: Boolean) = {
-
-    def mapPredictedRating(r: Double) = if (implicitPrefs) math.max(math.min(r, 1.0), 0.0) else r
-
-    val predictions: RDD[Rating] = model.predict(data.map(x => (x.user, x.product)))
-    val predictionsAndRatings = predictions.map { x =>
-      ((x.user, x.product), mapPredictedRating(x.rating))
-    }.join(data.map(x => ((x.user, x.product), x.rating))).values
-    math.sqrt(predictionsAndRatings.map(x => (x._1 - x._2) * (x._1 - x._2)).mean())
-  }
+  //  /** Compute RMSE (Root Mean Squared Error). */
+  //  def computeRmse(model: MatrixFactorizationModel, data: RDD[Rating], implicitPrefs: Boolean) = {
+  //
+  //    def mapPredictedRating(r: Double) = if (implicitPrefs) math.max(math.min(r, 1.0), 0.0) else r
+  //
+  //    val predictions: RDD[Rating] = model.predict(data.map(x => (x.user, x.product)))
+  //    val predictionsAndRatings = predictions.map { x =>
+  //      ((x.user, x.product), mapPredictedRating(x.rating))
+  //    }.join(data.map(x => ((x.user, x.product), x.rating))).values
+  //    math.sqrt(predictionsAndRatings.map(x => (x._1 - x._2) * (x._1 - x._2)).mean())
+  //  }
 
   /** Parse runtime arguments */
   def parseArguments(sc: SparkContext, defaultParams: Params): Params = {
@@ -170,6 +171,8 @@ class MovieSteerProgram extends ScalaSparkProgram {
   }
 
   def getInt(args: Array[String], idx: Int): Option[Int] = catching(classOf[Exception]).opt(args(idx).toInt)
+
   def getDouble(args: Array[String], idx: Int): Option[Double] = catching(classOf[Exception]).opt(args(idx).toDouble)
+
   def getBoolean(args: Array[String], idx: Int): Option[Boolean] = catching(classOf[Exception]).opt(args(idx).toBoolean)
 }
