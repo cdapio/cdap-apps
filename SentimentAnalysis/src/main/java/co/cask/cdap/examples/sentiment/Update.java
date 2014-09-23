@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * Updates the timeseries table with sentiments received.
  */
-public static class Update extends AbstractFlowlet {
+public class Update extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(Update.class);
   private static final Gson GSON = new Gson();
 

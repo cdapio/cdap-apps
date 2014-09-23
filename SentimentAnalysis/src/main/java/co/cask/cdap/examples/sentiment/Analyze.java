@@ -18,7 +18,7 @@ import java.io.InputStream;
  * Analyzes the sentences by passing the sentence to NLTK based sentiment analyzer
  * written in Python.
  */
-public static class Analyze extends ExternalProgramFlowlet<Tweet, Tweet> {
+public class Analyze extends ExternalProgramFlowlet<Tweet, Tweet> {
   private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
   private static final Gson GSON = new Gson();
 

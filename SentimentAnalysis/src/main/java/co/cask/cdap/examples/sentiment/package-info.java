@@ -14,10 +14,9 @@
  * the License.
  */
 /**
- * Package for PageViewAnalytics Application.
+ * Package for SentimentAnalysis Application.
  * 
- * An Application that analyzes Apache access log events to find
- * the distribution of page views of a particular page.
+ * An application that categorizes tweets into positive, negative, or neutral in real time.
  */
 package co.cask.cdap.examples.sentiment;
 
