@@ -32,7 +32,7 @@ import co.cask.cdap.api.flow.flowlet.FlowletSpecification;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import co.cask.cdap.api.metrics.Metrics;
-import co.cask.cdap.flow.flowlet.ExternalProgramFlowlet;
+import co.cask.cdap.apps.flowlet.ExternalProgramFlowlet;
 import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;

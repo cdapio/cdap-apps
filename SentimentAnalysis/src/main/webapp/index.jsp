@@ -17,8 +17,6 @@
       <!-- Bootstrap core JavaScript -->
       <script src="third_party/jquery-1.9.1.js"></script>
       <script src="third_party/bootstrap.js"></script>
-      <script src="third_party/tablesorter/jquery.tablesorter.js"></script>
-      <script src="third_party/tablesorter/tables.js"></script>
       <script src="js/main.js"></script>
 <html lang="en">
   <head>
@@ -34,17 +32,85 @@
 
     <!-- Add custom CSS here -->
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-      <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
+
+
+
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="./excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="./include/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="./include/jquery.flot.js"></script>
+
+    <script type="text/javascript">
+    	$(function() {
+    		var data = { positive: [], negative: [], neutral: [] };
+    		var sentiments = ['positive', 'negative', 'neutral'];
+        totalPoints = 60*5;
+        sentiments.forEach(function(sentiment){
+          var arr = data[sentiment];
+          while (arr.length < totalPoints) {
+		  		  arr.push(0);
+          }
+        });
+    		function zipData(sentiment) {
+          data[sentiment] = data[sentiment];
+    		  var dataArr = data[sentiment];
+
+          // Zip the generated y values with the x values
+          var res = [];
+          for (var i = 0; i < dataArr.length; ++i) {
+            res.push([i, dataArr[i]])
+          }
+    			return res;
+    		}
+    		// Set up the control widget
+    		var updateInterval = 1000;
+    		// the chart will interpolate the results over the last few updates, as defined by:
+    		var interpolateOver = 5;
+
+    		var plot = $.plot("#placeholder", [], {
+    			series: { shadowSize: 0 },
+    			yaxis: { min: 0 },
+    			xaxis: { show: 0 },
+    		});
+    		function update() {
+    			$.ajax({
+            url: 'proxy/v2/apps/sentiment/procedures/sentiment-query/methods/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            success: function(response) {
+              sentiments.forEach(function(sentiment){
+                data[sentiment].push(response[sentiment] / interpolateOver);
+              });
+            }
+          });
+
+          var posData = {data:zipData('positive'), label:"Positive", color: "#468847" };
+          var negData = {data:zipData('negative'), label:"Negative", color: "#b94a48" };
+          var neutData = {data:zipData('neutral'), label:"Neutral", color: "#428bca" };
+    			plot.setData([posData, negData, neutData]);
+    			plot.setupGrid()
+    			plot.draw();
+    			setTimeout(update, updateInterval);
+    		}
+    		update();
+    	});
+    	</script>
   </head>
 
 
   <body>
+            <h1 style="padding-left:20px;">  Dashboard <small>Sentiment Analysis Overview</small></h1>
+  	<div id="header">
+  	</div>
+
+
     <div id="wrapper">
       <div id="page-wrapper">
 
         <div class="row">
           <div class="col-lg-12">
-            <h1>Dashboard <small>Sentiment Analysis Overview</small></h1>
             <!--
             <p>Say something!</p>
               <form class="bs-example" id="text-inject-form">
@@ -57,8 +123,8 @@
           </div>
         </div><!-- /.row -->
 
-        <div class="row">
-          <div class="col-lg-3">
+        <div class="col" style="width:20%; float:left;">
+          <div class="row-lg-3">
             <div class="panel panel-info">
               <div class="panel-heading positive">
                 <div class="row">
@@ -75,7 +141,7 @@
               </a>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="row-lg-3">
             <div class="panel panel-success">
               <div class="panel-heading neutral">
                 <div class="row">
@@ -92,7 +158,7 @@
               </a>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="row-lg-3">
             <div class="panel panel-danger">
               <div class="panel-heading">
                 <div class="row">
@@ -109,7 +175,7 @@
               </a>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="row-lg-3">
               <div class="panel panel-gray">
                   <div class="panel-heading panel negative" id="neutral-sentences-panel">
                       <div class="row">
@@ -126,7 +192,15 @@
                   </a>
               </div>
           </div>
-        </div><!-- /.row -->
+        </div><!-- /.col -->
+
+
+  	<div id="content" style="width:70%;float:left;">
+  		<div class="graph-container">
+  			<div id="placeholder" class="graph-placeholder"></div>
+  		</div>
+  	</div>
+
 
         <div class="row">
           <div class="col-lg-4">

@@ -98,5 +98,44 @@ public class SentimentAnalysisTest extends TestBase {
     }
   }
 
+  @Test
+  public void testCountsProcedure() throws Exception {
+    ApplicationManager appManager = deployApplication(SentimentAnalysisApp.class);
+
+    Map<String, String> args = Maps.newHashMap();
+    args.put("disable.public", "true");
+    FlowManager flowManager = appManager.startFlow("analysis", args);
+
+    try {
+      // Write a message to Stream
+      StreamWriter streamWriter = appManager.getStreamWriter("sentence");
+      streamWriter.send("i love movie");
+      streamWriter.send("i hate movie");
+      streamWriter.send("i am neutral to movie");
+      streamWriter.send("i am happy today that I got this working.");
+
+      // Wait for the last Flowlet processed all tokens
+      RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics("sentiment", "analysis", "update");
+      countMetrics.waitForProcessed(4, 15, TimeUnit.SECONDS);
+    } finally {
+      flowManager.stop();
+    }
+
+    ProcedureManager procedureManager = appManager.startProcedure("sentiment-query");
+    try {
+      Map<String, String> sentiments = Maps.newHashMap();
+      sentiments.put("sentiments","['positive','negative','neutral']");
+      String response = procedureManager.getClient().query("counts", sentiments);
+
+      // Verify the aggregates
+      Map<String, Long> result = new Gson().fromJson(response, new TypeToken<Map<String, Long>>() { }.getType());
+      Assert.assertEquals(2, result.get("positive").intValue());
+      Assert.assertEquals(1, result.get("negative").intValue());
+      Assert.assertEquals(1, result.get("neutral").intValue());
+    } finally {
+      procedureManager.stop();
+    }
+  }
+
 
 }

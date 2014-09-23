@@ -30,6 +30,7 @@ import co.cask.cdap.api.procedure.ProcedureResponse;
 import co.cask.cdap.api.procedure.ProcedureSpecification;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SentimentAnalysisProcedure extends AbstractProcedure {
   private static final Logger LOG = LoggerFactory.getLogger(SentimentAnalysisProcedure.class);
+  private static final Gson GSON = new Gson();
 
   @UseDataSet("sentiments")
   private Table sentiments;
@@ -71,9 +73,9 @@ public class SentimentAnalysisProcedure extends AbstractProcedure {
       response.error(ProcedureResponse.Code.CLIENT_ERROR, "No sentiment sent");
       return;
     }
-    String numMinutes = request.getArgument("minutes");
-    if (numMinutes == null) {
-      numMinutes = "5";
+    String seconds = request.getArgument("seconds");
+    if (seconds == null) {
+      seconds = "300";
     }
     String limit = request.getArgument("limit");
     if (limit == null) {
@@ -84,7 +86,7 @@ public class SentimentAnalysisProcedure extends AbstractProcedure {
     long time = System.currentTimeMillis();
     List<TimeseriesTable.Entry> entries =
       textSentiments.read(sentiment.getBytes(Charsets.UTF_8),
-                          time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(numMinutes), TimeUnit.MINUTES),
+                          time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS),
                           time);
 
     Map<String, Long> textTimeMap = Maps.newHashMapWithExpectedSize(entries.size());
@@ -95,6 +97,30 @@ public class SentimentAnalysisProcedure extends AbstractProcedure {
       textTimeMap.put(Bytes.toString(entry.getValue()), entry.getTimestamp());
     }
     response.sendJson(ProcedureResponse.Code.SUCCESS, textTimeMap);
+  }
+
+  @Handle("counts")
+  public void getCount(ProcedureRequest request, ProcedureResponder response) throws Exception {
+    String sentiments = request.getArgument("sentiments");
+    if (sentiments == null) {
+      response.error(ProcedureResponse.Code.CLIENT_ERROR, "No sentiment sent");
+      return;
+    }
+    String seconds = request.getArgument("seconds");
+    if (seconds == null) {
+      seconds = "300";
+    }
+
+    String[] sentimentArr = GSON.fromJson(sentiments, String[].class);
+
+    Map<String, Integer> sentimentCountMap = Maps.newHashMapWithExpectedSize(sentimentArr.length);
+    long time = System.currentTimeMillis();
+    long beginTime = time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS);
+    for (String sentiment: sentimentArr) {
+      List<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8), beginTime, time);
+      sentimentCountMap.put(sentiment, entries.size());
+    }
+    response.sendJson(ProcedureResponse.Code.SUCCESS, sentimentCountMap);
   }
 
   @Override
