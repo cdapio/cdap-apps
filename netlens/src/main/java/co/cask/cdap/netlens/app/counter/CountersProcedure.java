@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -75,11 +76,12 @@ public class CountersProcedure extends AbstractProcedure {
 
   private void getIPsCounts(String key, long startTs, long endTs, ProcedureResponder responder) throws IOException {
     // re-using counters needed for anomaly detection
-    List<TimeseriesTable.Entry> entries = counters.read(Bytes.toBytesBinary(key), startTs, endTs);
+    Iterator<TimeseriesTable.Entry> entries = counters.read(Bytes.toBytesBinary(key), startTs, endTs);
 
     int pointsCount = (int) ((endTs - startTs) / Constants.AGG_INTERVAL_SIZE);
     DataPoint[] dataPoints = new DataPoint[pointsCount + 1];
-    for (TimeseriesTable.Entry entry : entries) {
+    while (entries.hasNext()) {
+      TimeseriesTable.Entry entry = entries.next();
       int index = (int) ((entry.getTimestamp() - startTs) / Constants.AGG_INTERVAL_SIZE);
       dataPoints[index] = new DataPoint(entry.getTimestamp(), Bytes.toInt(entry.getValue()));
     }

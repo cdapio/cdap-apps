@@ -14,7 +14,6 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,7 +33,6 @@ public class AnomalyDetectionFlowlet extends AbstractFlowlet {
   @UseDataSet("anomalies")
   private TimeseriesTable anomalies;
 
-  // todo: use MemoryTable to make cache transactional
   private long cachedTs;
   private Set<String> cachedAnomalies;
 
@@ -67,10 +65,8 @@ public class AnomalyDetectionFlowlet extends AbstractFlowlet {
     byte[] key = fact.buildKey();
 
     long previousStartTs = ts - Constants.AGG_INTERVAL_SIZE * (lastToCompareWith);
-    // todo: internally simpleTimeSeriesTable uses column range scan which is not efficient
-    List<TimeseriesTable.Entry> lastEntries = counters.read(key,
-                                                            previousStartTs,
-                                                            ts);
+
+    Iterator<TimeseriesTable.Entry> lastEntries = counters.read(key, previousStartTs, ts);
 
     int[] counts = getCounts(lastEntries, previousStartTs, Constants.AGG_INTERVAL_SIZE, lastToCompareWith + 1);
 
@@ -90,9 +86,10 @@ public class AnomalyDetectionFlowlet extends AbstractFlowlet {
     }
   }
 
-  private int[] getCounts(List<TimeseriesTable.Entry> entries, long startTs, long intervalSize, int count) {
+  private int[] getCounts(Iterator<TimeseriesTable.Entry> entries, long startTs, long intervalSize, int count) {
     int[] counters = new int[count];
-    for (TimeseriesTable.Entry entry : entries) {
+    while (entries.hasNext()) {
+      TimeseriesTable.Entry entry = entries.next();
       int index = (int) ((entry.getTimestamp() - startTs) / intervalSize);
       counters[index] = Bytes.toInt(entry.getValue());
     }

@@ -13,11 +13,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  *
@@ -49,7 +50,7 @@ public class AnomaliesProcedure extends AbstractProcedure {
   }
 
   private List<Anomaly> getAnomalies(long endTs, long startTs, String groupFor) {
-    List<TimeseriesTable.Entry> entries = this.anomalies.read(AnomalyDetectionFlowlet.ANOMALY_KEY, startTs, endTs);
+    Iterator<TimeseriesTable.Entry> entries = this.anomalies.read(AnomalyDetectionFlowlet.ANOMALY_KEY, startTs, endTs);
     if (groupFor == null) {
       return getAnomalies(entries);
     } else {
@@ -77,9 +78,10 @@ public class AnomaliesProcedure extends AbstractProcedure {
     return filtered;
   }
 
-  private List<Anomaly> getAnomalies(List<TimeseriesTable.Entry> entries) {
+  private List<Anomaly> getAnomalies(Iterator<TimeseriesTable.Entry> entries) {
     List<Anomaly> facts = Lists.newArrayList();
-    for (TimeseriesTable.Entry entry : entries) {
+    while (entries.hasNext()) {
+      TimeseriesTable.Entry entry = entries.next();
       Fact fact = GSON.fromJson(Bytes.toString(entry.getTags()[0]), Fact.class);
       String key = Bytes.toStringBinary(entry.getValue());
       facts.add(new Anomaly(key, fact));
@@ -87,11 +89,12 @@ public class AnomaliesProcedure extends AbstractProcedure {
     return facts;
   }
 
-  private List<Anomaly> getAnomalies(List<TimeseriesTable.Entry> entries, String groupFor) {
+  private List<Anomaly> getAnomalies(Iterator<TimeseriesTable.Entry> entries, String groupFor) {
     // map of ts -> anomaly group -> anomaly details
     // NOTE: has to bee sorted map to keep order by time
     Map<Long, Map<String, Anomaly>> facts = Maps.newTreeMap();
-    for (TimeseriesTable.Entry entry : entries) {
+    while (entries.hasNext()) {
+      TimeseriesTable.Entry entry = entries.next();
       Fact fact = GSON.fromJson(Bytes.toString(entry.getTags()[0]), Fact.class);
       String key = Bytes.toStringBinary(entry.getValue());
 

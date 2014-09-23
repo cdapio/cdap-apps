@@ -86,8 +86,6 @@ public class AnomalyCountsProcedure extends AbstractProcedure {
   }
 
   private static DataPoint[] getCounts(TimeseriesTable tsTable, long startTs, long endTs, byte[] seriesKey) {
-    List<TimeseriesTable.Entry> entries = tsTable.read(seriesKey, startTs, endTs);
-
     // NOTE: inserting zeroes where value is absent
     int pointsCount = (int) ((endTs - startTs) / Constants.AGG_INTERVAL_SIZE);
     // normalizing startTs
@@ -101,9 +99,13 @@ public class AnomalyCountsProcedure extends AbstractProcedure {
     }
 
     // counting
-    for (TimeseriesTable.Entry entry : entries) {
+    Iterator<TimeseriesTable.Entry> entries = tsTable.read(seriesKey, startTs, endTs);
+    while (entries.hasNext()) {
+      TimeseriesTable.Entry entry = entries.next();
       long ts = entry.getTimestamp();
-      data.put(ts, data.get(ts) + 1);
+      Integer count = data.get(ts);
+      count = count == null ? 0 : count;
+      data.put(ts, count + 1);
     }
 
     // preparing output
