@@ -17,7 +17,17 @@ The Netlens application analyzes network packets to provide insights on traffic 
 
 Example output of the application can be seen on the following screenshots.
 
-<img><img><img>
+*Dashboard View*
+
+|(Dashboard)|
+
+*Anomalies View*
+
+|(Anomalies)|
+
+*IP Details View*
+
+|(IPDetails)|
 
 The Dashboard page provides high-level real-time overview of traffic stats, detected anomalies with breakdown by IPs. The Anomalies page exposes more details on anomalies detected. Selecting an anomaly or IP in the tables brings user to the IP Details page, where he or she can inspect detected anomalies further.
 
@@ -33,7 +43,7 @@ There are number of components that compose Netlens CDAP application:
 
 The main part of the application is `analyticsFlow` that performs network packet analysis.
 
-<img>
+|(AnalyticsFlow)|
 
 The flow gets data from the stream where each event represents a network packet with attributes like source IP, port, protocol type and others. JSON-encoded packet details are parsed in `fact-parser` flowlet and converted into a Fact Java object (timestamp + map of field name to value) that is passed along the rest of the flow. `traffic-count` flowlet takes stream of facts to compute traffic stats.
 
@@ -89,3 +99,9 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
   http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+
+.. |(Dashboard)| image:: docs/img/dashboard.png
+.. |(Anomalies)| image:: docs/img/anomalies.png
+.. |(IPDetails)| image:: docs/img/ipDetails.png
+.. |(AnalyticsFlow)| image:: docs/img/analyticsFlow.png
