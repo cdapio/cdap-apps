@@ -220,11 +220,9 @@ public class SentimentAnalysisFlow implements Flow {
 
     @Batch(10)
     @ProcessInput("sentiments")
-    public void process(Iterator<String> sentimentItr) {
+    public void process(Iterator<Tweet> sentimentItr) {
       while (sentimentItr.hasNext()) {
-        String text = sentimentItr.next();
-        Tweet tweet = GSON.fromJson(text, Tweet.class);
-
+        Tweet tweet = sentimentItr.next();
         String sentence = tweet.getText();
         String sentiment = tweet.getSentiment();
         metrics.count("sentiment." + sentiment, 1);

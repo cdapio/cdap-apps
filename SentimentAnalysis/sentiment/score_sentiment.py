@@ -35,7 +35,7 @@ featuresDict = {}
 logFile = open('/tmp/score_sentiment.log', 'w')
 def log(toLog):
   # logFile.write(str(time.time()) + ":  " + toLog)
-  logFile.write(toLog + "\n")
+  logFile.write(str(toLog) + "\n")
   logFile.flush()
 
 #---------------------------------------------------------------------------------
@@ -146,8 +146,8 @@ def main():
       break
     
     try:
-      tweet = json.loads(tweets)["tweet"]
-      tweet["sentiment"] = sentiment(tweet)
+      tweet = json.loads(tweets)
+      tweet["sentiment"] = sentiment(tweet["text"])
       print json.dumps(tweet)
       sys.stdout.flush()
 

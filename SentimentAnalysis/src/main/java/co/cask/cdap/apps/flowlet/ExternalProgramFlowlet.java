@@ -15,6 +15,8 @@
  */
 package co.cask.cdap.apps.flowlet;
 
+import co.cask.cdap.api.annotation.Batch;
+import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
@@ -92,6 +94,8 @@ public abstract class ExternalProgramFlowlet<IN, OUT> extends AbstractFlowlet {
    *
    * @param iterator Iterator to gives events to process.
    */
+  @Batch(100)
+  @ProcessInput
   protected void process(Iterator<IN> iterator) throws Exception {
     List<ListenableFuture<String>> completions = Lists.newLinkedList();
 

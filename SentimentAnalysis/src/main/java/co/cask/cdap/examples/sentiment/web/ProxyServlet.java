@@ -1,6 +1,5 @@
 package co.cask.cdap.examples.sentiment.web;
 
-import co.cask.cdap.api.common.Bytes;
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import com.ning.http.client.AsyncCompletionHandler;
