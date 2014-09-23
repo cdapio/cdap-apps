@@ -14,6 +14,12 @@
   ~ License for the specific language governing permissions and limitations under
   ~ the License.
   -->
+      <!-- Bootstrap core JavaScript -->
+      <script src="third_party/jquery-1.9.1.js"></script>
+      <script src="third_party/bootstrap.js"></script>
+      <script src="third_party/tablesorter/jquery.tablesorter.js"></script>
+      <script src="third_party/tablesorter/tables.js"></script>
+      <script src="js/main.js"></script>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -31,47 +37,22 @@
       <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
   </head>
 
+
   <body>
-
     <div id="wrapper">
-      <!-- Sidebar -->
-      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/SentimentAnalysis">Sentiment Analysis</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-
-          <ul class="nav navbar-nav">
-            <li class="dropdown messages-dropdown active">
-              <a href="/SentimentAnalysis">Dashboard</a>
-            </li>
-            <li class="dropdown messages-dropdown">
-                <a href="http://localhost:9999/#/flows/sentiment:analysis/">CDAP</a>
-            </li>
-            <li class="dropdown messages-dropdown">
-                <a href="http://www.cask.co">Cask</a>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </nav>
-
       <div id="page-wrapper">
 
         <div class="row">
           <div class="col-lg-12">
             <h1>Dashboard <small>Sentiment Analysis Overview</small></h1>
-              <br/>
+            <!--
             <p>Say something!</p>
               <form class="bs-example" id="text-inject-form">
                   <input type="text" class="form-control" placeholder="Type a phrase and click enter..." id="stream-inject-textarea">
                   <br />
                   <button style="float: right" class="btn btn-primary" type="submit" id="analyze-button">Analyze</button>
               </form>
-              <br/>
-              <br/><br/>
+            -->
 
           </div>
         </div><!-- /.row -->
@@ -216,12 +197,5 @@
       </div><!-- /#page-wrapper -->
 
     </div><!-- /#wrapper -->
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="third_party/jquery-1.9.1.js"></script>
-    <script src="third_party/bootstrap.js"></script>
-    <script src="third_party/tablesorter/jquery.tablesorter.js"></script>
-    <script src="third_party/tablesorter/tables.js"></script>
-    <script src="js/main.js"></script>
   </body>
 </html>
