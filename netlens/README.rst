@@ -102,6 +102,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 
 .. |(Dashboard)| image:: docs/img/dashboard.png
+
 .. |(Anomalies)| image:: docs/img/anomalies.png
+
 .. |(IPDetails)| image:: docs/img/ipDetails.png
+
 .. |(AnalyticsFlow)| image:: docs/img/analyticsFlow.png
