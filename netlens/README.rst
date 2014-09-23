@@ -59,33 +59,35 @@ Before applying anomaly detection algorithm in `anomaly-detect` flowlet, the num
 Installation & Usage
 ====================
 
-Build the Application jar:
+Build the Application jar::
 
   mvn clean package
 
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost):
+Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
 
   bin/app-manager.sh --host [host] --action deploy
 
-Start Application Flows and Procedures:
+Start Application Flows and Procedures::
 
   bin/app-manager.sh --host [host] --action start
 
-Make sure they are running:
+Make sure they are running::
 
   bin/app-manager.sh --host [host] --action status
 
-Ingest sample traffic data:
+Ingest sample traffic data::
 
   bin/ingest-packets.sh --host [host]
 
-Ingest sample traffic data with anomalies:
+Ingest sample traffic data with anomalies::
 
   bin/ingest-anomalies.sh --host [host]
 
-Run Web UI:
+Run Web UI::
 
   mvn -Pweb jetty:run
+  
+The Web interface will be available at http://localhost:8080/Netlens
 
 License
 =======
