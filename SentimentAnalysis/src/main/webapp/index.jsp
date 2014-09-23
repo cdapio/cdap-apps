@@ -65,7 +65,7 @@
     		// Set up the control widget
     		var updateInterval = 1000;
     		// the chart will interpolate the results over the last few updates, as defined by:
-    		var interpolateOver = 5;
+    		var interpolateOver = 20;
 
     		var plot = $.plot("#placeholder", [], {
     			series: { shadowSize: 0 },
