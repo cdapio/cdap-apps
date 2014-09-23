@@ -35,7 +35,6 @@ import co.cask.cdap.api.metrics.Metrics;
 import co.cask.cdap.apps.flowlet.ExternalProgramFlowlet;
 import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -45,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Flow for sentiment analysis.
@@ -64,8 +62,8 @@ public class SentimentAnalysisFlow implements Flow {
         .add(new Update())
       .connect()
         .fromStream("sentence").to(new Normalization())
-        .from(new TweetCollector()).to(new Analyze())
         .from(new Normalization()).to(new Analyze())
+        .from(new TweetCollector()).to(new Analyze())
         .from(new Analyze()).to(new Update())
       .build();
   }
@@ -225,15 +223,15 @@ public class SentimentAnalysisFlow implements Flow {
     public void process(Iterator<String> sentimentItr) {
       while (sentimentItr.hasNext()) {
         String text = sentimentItr.next();
-        Map<String, String> map = GSON.fromJson(text, Maps.<String, String>newHashMap().getClass());
+        Tweet tweet = GSON.fromJson(text, Tweet.class);
 
-        String sentence = map.get("tweet");
-        String sentiment = map.get("sentiment");
+        String sentence = tweet.getText();
+        String sentiment = tweet.getSentiment();
         metrics.count("sentiment." + sentiment, 1);
         sentiments.increment(new Increment("aggregate", sentiment, 1));
         textSentiments.write(new TimeseriesTable.Entry(sentiment.getBytes(Charsets.UTF_8),
                                                        sentence.getBytes(Charsets.UTF_8),
-                                                       System.currentTimeMillis()));
+                                                       tweet.getCreatedAt()));
 
       }
     }

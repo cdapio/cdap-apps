@@ -111,7 +111,6 @@ public class TweetCollector extends AbstractFlowlet {
         cb.setDebugEnabled(false);
         cb.setAsyncNumThreads(1);
 
-
         Map<String, String> args = getContext().getRuntimeArguments();
         // Override twitter4j.properties file, if provided in runtime args.
         if (args.containsKey("oauth.consumerKey") && args.containsKey("oauth.consumerSecret") &&
@@ -128,9 +127,6 @@ public class TweetCollector extends AbstractFlowlet {
         StatusListener listener = new StatusAdapter() {
           @Override
           public void onStatus(Status status) {
-//            Tweet tweet = new Tweet(String.valueOf(status.getId()), status.getId(),
-//                    status.getCreatedAt().getTime(),
-//                    status.getUser().getName(), status.getText(), "en", status.getSource());
             String text = status.getText();
             String lang = status.getLang();
             metrics.count("lang." + lang, 1);
