@@ -3,16 +3,46 @@ Netlens
 
 Network traffic analytics application.
 
-Copyright © 2014 Cask Data, Inc.
+Overview
+--------
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+The Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns. Primary features:
+  * Use real-time raw network packets data as a data source
+  * Provide real-time statistics on overall traffic with breakdown by source IPs
+    * Identify source IPs that originate most traffic
+  * Detect at real-time anomalies in traffic patterns
+    * Use different combinations of network packet attributes, e.g. detect unusual increase in UDP traffic originated from particular source IP
+  * Allow drilling down into detected anomalies details for inspection
+  * Provide overview of traffic stats and anomalies stats for selected source IP
 
-  http://www.apache.org/licenses/LICENSE-2.0
+Example output of the application can be seen on the following screenshots.
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+<img><img><img>
 
-Installation
-============
+The Dashboard page provides high-level real-time overview of traffic stats, detected anomalies with breakdown by IPs. The Anomalies page exposes more details on anomalies detected. Selecting an anomaly or IP in the tables brings user to the IP Details page, where he or she can inspect detected anomalies further.
+
+Implementation Details
+----------------------
+
+There are number of components that compose Netlens CDAP application:
+  * Stream for ingesting data into the system
+  * Flow to perform real-time analytics on the incoming data
+  * Datasets to provide persistence for analytics algorithms and store results
+  * Procedures to serve data to a front-end
+  * Thin web UI
+
+The main part of the application is `analyticsFlow` that performs network packet analysis.
+
+<img>
+
+The flow gets data from the stream where each event represents a network packet with attributes like source IP, port, protocol type and others. JSON-encoded packet details are parsed in `fact-parser` flowlet and converted into a Fact Java object (timestamp + map of field name to value) that is passed along the rest of the flow. `traffic-count` flowlet takes stream of facts to compute traffic stats.
+
+Before applying anomaly detection algorithm in `anomaly-detect` flowlet, the numeric values of attributes are categorized in `categorize-numbers` flowlet and additional facts are generated based on different combinations of attributes in `anomaly-fanout` flowlet. This keeps anomaly detection algorithm simple and allows controlling which combinations of attributes are interesting to the analysis.
+
+`anomaly-count` flowlet consumes detected anomalies and uses their details to compute stats and fill in the anomalies history log.
+
+Installation & Usage
+====================
 
 Build the Application jar:
 ```
@@ -49,7 +79,13 @@ Run Web UI:
 mvn -Pweb jetty:run
 ```
 
-External Documentation
-======================
+License
+=======
 
-TBD: link to web-site page with app overview
+Copyright © 2014 Cask Data, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
