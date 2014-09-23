@@ -8,13 +8,16 @@ Overview
 
 The Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns. Primary features:
 
-  * Use real-time raw network packets data as a data source
-  * Provide real-time statistics on overall traffic with breakdown by source IPs
-    * Identify source IPs that originate most traffic
-  * Detect at real-time anomalies in traffic patterns
-    * Use different combinations of network packet attributes, e.g. detect unusual increase in UDP traffic originated from particular source IP
-  * Allow drilling down into detected anomalies details for inspection
-  * Provide overview of traffic stats and anomalies stats for selected source IP
+* Use real-time raw network packets data as a data source
+* Provide real-time statistics on overall traffic with breakdown by source IPs
+
+  - Identify source IPs that originate most traffic
+* Detect at real-time anomalies in traffic patterns
+
+  - Use different combinations of network packet attributes, 
+    e.g. detect unusual increase in UDP traffic originated from particular source IP
+* Allow drilling down into detected anomalies details for inspection
+* Provide overview of traffic stats and anomalies stats for selected source IP
 
 Example output of the application can be seen on the following screenshots.
 
@@ -37,11 +40,11 @@ Implementation Details
 
 There are number of components that compose Netlens CDAP application:
 
-  * Stream for ingesting data into the system
-  * Flow to perform real-time analytics on the incoming data
-  * Datasets to provide persistence for analytics algorithms and store results
-  * Procedures to serve data to a front-end
-  * Thin web UI
+* Stream for ingesting data into the system
+* Flow to perform real-time analytics on the incoming data
+* Datasets to provide persistence for analytics algorithms and store results
+* Procedures to serve data to a front-end
+* Thin web UI
 
 The main part of the application is `analyticsFlow` that performs network packet analysis.
 
