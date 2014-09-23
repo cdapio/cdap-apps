@@ -7,6 +7,7 @@ Overview
 --------
 
 The Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns. Primary features:
+
   * Use real-time raw network packets data as a data source
   * Provide real-time statistics on overall traffic with breakdown by source IPs
     * Identify source IPs that originate most traffic
@@ -35,6 +36,7 @@ Implementation Details
 ----------------------
 
 There are number of components that compose Netlens CDAP application:
+
   * Stream for ingesting data into the system
   * Flow to perform real-time analytics on the incoming data
   * Datasets to provide persistence for analytics algorithms and store results
@@ -55,39 +57,32 @@ Installation & Usage
 ====================
 
 Build the Application jar:
-```
-mvn clean package
-```
+
+  mvn clean package
 
 Deploy the Application to a CDAP instance defined by its host (defaults to localhost):
-```
-bin/app-manager.sh --host [host] --action deploy
-```
+
+  bin/app-manager.sh --host [host] --action deploy
 
 Start Application Flows and Procedures:
-```
-bin/app-manager.sh --host [host] --action start
-```
+
+  bin/app-manager.sh --host [host] --action start
 
 Make sure they are running:
-```
-bin/app-manager.sh --host [host] --action status
-```
+
+  bin/app-manager.sh --host [host] --action status
 
 Ingest sample traffic data:
-```
-bin/ingest-packets.sh --host [host]
-```
+
+  bin/ingest-packets.sh --host [host]
 
 Ingest sample traffic data with anomalies:
-```
-bin/ingest-anomalies.sh --host [host]
-```
+
+  bin/ingest-anomalies.sh --host [host]
 
 Run Web UI:
-```
-mvn -Pweb jetty:run
-```
+
+  mvn -Pweb jetty:run
 
 License
 =======
