@@ -43,9 +43,9 @@ the License.
 
             $.post( "proxy/v2/apps/Netlens/procedures/AnomaliesProcedure/methods/timeRange", params)
                 .done(function( data ) {
-                    anomalies = JSON.parse(JSON.parse(data));
+                    var anomalies = JSON.parse(JSON.parse(data));
 
-                    tableHtml =
+                    var tableHtml =
                             "<table id='anomalies_table' class='anomalies_table' align='center'>" +
                                 "<tr class='anomalies_table_header'>";
                     tableHtml +=

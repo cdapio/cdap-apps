@@ -14,7 +14,12 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 
-<div id="anomaliesCount" style="width: 100%; height: 100%"></div>
+<div class="table_container">
+    <div class="table_title">
+        Anomalies #
+    </div>
+    <div id="anomaliesCount" style="width: 100%; height: 75%">&nbsp;</div>
+</div>
 
 <script type="text/javascript">
     $(function() {
@@ -34,7 +39,7 @@ the License.
         $.post( "proxy/v2/apps/Netlens/procedures/AnomalyCountsProcedure/methods/count",
                         "{startTs:" + startTs + ", endTs:" + endTs + "}")
                 .done(function( data ) {
-                    anomalies = JSON.parse(JSON.parse(data));
+                    var anomalies = JSON.parse(JSON.parse(data));
                     renderAnomaliesCountChart(anomalies);
 
                 })
@@ -45,51 +50,18 @@ the License.
 
     function renderAnomaliesCountChart(anomalies) {
         var data = [];
-        anomalies.forEach(function(anomaly){
-            data.push(anomaly.value);
+        anomalies.forEach(function(point){
+            data.push([point.ts, point.value]);
         });
 
-        $('#anomaliesCount').highcharts({
-
-            chart: {
-                animation: false,
-                type: 'column'
-            },
-
-            legend: {
-                enabled: false
-            },
-
-            plotOptions: {
-                series: {
-                    animation: false
-                }
-            },
-
-            title: {
-                text: 'Anomalies #'
-            },
-
-            xAxis: {
-                type: 'datetime'
-            },
-
-            yAxis: {
-                title: '',
-                min: 0
-            },
-
-            tooltip: {
-                headerFormat: '<b>{series.name}</b><br />',
-                pointFormat: '{point.y}'
-            },
-
-            series: [{
-                data: data,
-                pointInterval: 5000,
-                pointStart: anomalies[0].ts
-            }]
+        var plot = $.plot("#anomaliesCount", [data], {
+            series: { shadowSize: 0, bars: { show: true }},
+            yaxis: { min: 0 },
+            xaxis: { mode: 'time'},
+            grid: {borderWidth: 0}
         });
-    };
+
+        plot.draw();
+    }
 
 </script>

@@ -40,7 +40,7 @@ the License.
                 .done(function( data ) {
                     var topN = JSON.parse(JSON.parse(data));
 
-                    tableHtml =
+                    var tableHtml =
                             "<table id='topIp_table' class='anomalies_table' align='center'>" +
                                 "<tr class='anomalies_table_header'>";
                     tableHtml +=

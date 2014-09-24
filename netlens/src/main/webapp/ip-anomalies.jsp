@@ -20,9 +20,9 @@ the License.
 <head>
     <title>IP Anomalies</title>
     <link rel="stylesheet" type="text/css" href="css/base.css">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script type='text/javascript' src="http://code.highcharts.com/highcharts.js"></script>
-    <script type='text/javascript' src="http://code.highcharts.com/modules/exporting.js"></script>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
 </head>
 <div style="width: 1208px; margin-left: auto; margin-right: auto; margin-top: 20px">
     <div style="width: 1204px; height: 40px; text-align: center; font-size: 110%">
@@ -31,12 +31,12 @@ the License.
     </div>
     <div style="overflow:hidden">
         <div style="width: 399px; float: left; border: solid 1px #8FC7FF">
-            <div style="width: 399px; height: 200px">
+            <div style="width: 399px; height: 200px; overflow: hidden">
                 <%@include file="chart/anomalies-count.jsp"%>
             </div>
         </div>
         <div style="width: 400px; float: left; border: solid 1px #8FC7FF; border-left: 0px">
-            <div style="width: 399px; height: 200px">
+            <div style="width: 399px; height: 200px; overflow: hidden">
                 <%@include file="chart/anomalies-unique-ip-count.jsp"%>
             </div>
         </div>

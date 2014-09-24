@@ -20,10 +20,9 @@ the License.
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="css/base.css">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script type='text/javascript' src="http://code.highcharts.com/highcharts.js"></script>
-    <script type='text/javascript' src="http://code.highcharts.com/modules/exporting.js"></script>
-</head>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
 <body>
 <div style="width: 1208px; margin-left: auto; margin-right: auto; margin-top: 20px">
     <div style="width: 1204px; height: 40px; text-align: center; font-size: 110%">
@@ -32,12 +31,12 @@ the License.
     </div>
     <div style="overflow:hidden;">
         <div style="width: 600px; float: left; border: solid 1px #8FC7FF">
-            <div style="width: 600px; height: 200px;">
+            <div style="width: 600px; height: 200px; overflow: hidden">
                 <%@include file="chart/traffic.jsp"%>
             </div>
         </div>
         <div style="width: 600px; border: solid 1px #8FC7FF; border-left: 0px; float: left">
-            <div style="width: 600px; height: 200px;">
+            <div style="width: 600px; height: 200px; overflow: hidden"">
                 <%@include file="chart/anomalies-count.jsp"%>
             </div>
         </div>

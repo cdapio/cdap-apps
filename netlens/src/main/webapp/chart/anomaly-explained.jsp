@@ -14,7 +14,12 @@ License for the specific language governing permissions and limitations under
 the License.
 -->
 
-<div id="explanation" style="width: 100%; height: 100%"></div>
+<div class="table_container">
+    <div id="explanationTitle" class="table_title">
+        No anomaly selected
+    </div>
+    <div id="explanation" style="width: 100%; height: 80%; margin-top: 20px;">&nbsp;</div>
+</div>
 
 <script type="text/javascript">
     $(function() {
@@ -31,17 +36,21 @@ the License.
     function drawExplanationChart() {
         var key = '<%= request.getParameter("key") %>';
         if ('' == key || 'null' == key) {
-            $('#explanation').html("<div style='color: #444; text-align: center; padding-top: 200px'><i>No anomaly selected</i><div>");
+            $('#explanationTitle').html("<i>No anomaly selected</i>");
             return;
         }
         var fact = JSON.parse(decodeURIComponent('<%= request.getParameter("fact") %>'));
+        var title= '<div>Anomaly<div/>' +
+                   '<div style="font-size: 80%; margin-top: 12px">' + JSON.stringify(fact.dimensions) + '</div>';
+        $('#explanationTitle').html(title);
+
         var startTs = fact.ts - 5000 * 10;
         var endTs = fact.ts + 5000 * 10;
         $.post( "proxy/v2/apps/Netlens/procedures/CountersProcedure/methods/counts",
                         "{startTs:" + startTs + ", endTs:" + endTs + ", key:" + key + "}")
                 .done(function( data ) {
-                    anomalies = JSON.parse(JSON.parse(data));
-                    renderExplanationChart(anomalies, fact);
+                    var anomalies = JSON.parse(JSON.parse(data));
+                    renderExplanationChart(anomalies);
 
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
@@ -49,59 +58,20 @@ the License.
                 })
     }
 
-    function renderExplanationChart(dataPoints, fact) {
+    function renderExplanationChart(dataPoints) {
         var data = [];
-        dataPoints.forEach(function(dataPoint){
-            data.push(dataPoint.value);
+        dataPoints.forEach(function(point){
+            data.push([point.ts, point.value]);
         });
 
-        $('#explanation').highcharts({
-
-            chart: {
-                animation: false,
-                type: 'line'
-            },
-
-            legend: {
-                enabled: false
-            },
-
-            plotOptions: {
-                series: {
-                    animation: false,
-                    marker: {
-                        enabled: false
-                    }
-                }
-            },
-
-            title: {
-                // hack to make nice title in highcharts
-                text: 'Anomaly<br/>' +
-                        '<span style="font-size: 10%; color: white">.</span><br/>' +
-                        '<span style="font-size: 60%; margin-top: 4px">' + JSON.stringify(fact.dimensions) + '</span>'
-            },
-
-            xAxis: {
-                type: 'datetime'
-            },
-
-            yAxis: {
-                title: '',
-                min: 0
-            },
-
-            tooltip: {
-                headerFormat: '<b>{series.name}</b><br />',
-                pointFormat: '{point.y}'
-            },
-
-            series: [{
-                data: data,
-                pointInterval: 5000,
-                pointStart: dataPoints[0].ts
-            }]
+        var plot = $.plot("#explanation", [data], {
+            series: { shadowSize: 0 },
+            yaxis: { min: 0 },
+            xaxis: { mode: 'time'},
+            grid: {borderWidth: 0}
         });
-    };
+
+        plot.draw();
+    }
 
 </script>

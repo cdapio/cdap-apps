@@ -20,9 +20,9 @@ the License.
 <head>
     <title>IP Details</title>
     <link rel="stylesheet" type="text/css" href="css/base.css">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script type='text/javascript' src="http://code.highcharts.com/highcharts.js"></script>
-    <script type='text/javascript' src="http://code.highcharts.com/modules/exporting.js"></script>
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
 </head>
 <body>
 <div style="width: 1208px; margin-left: auto; margin-right: auto; margin-top: 20px">
@@ -32,12 +32,12 @@ the License.
     </div>
     <div style="overflow:hidden">
         <div style="width: 399px; float: left; border: solid 1px #8FC7FF">
-            <div style="width: 399px; height: 200px;">
+            <div style="width: 399px; height: 200px; overflow: hidden">
                 <%@include file="chart/ip-traffic.jsp"%>
             </div>
         </div>
         <div style="width: 400px; float: left; border: solid 1px #8FC7FF; border-left: 0px">
-            <div style="width: 400px; height: 200px;">
+            <div style="width: 400px; height: 200px; overflow: hidden">
                 <%@include file="chart/ip-anomalies-count.jsp"%>
             </div>
         </div>
@@ -49,7 +49,7 @@ the License.
         </div>
     </div>
     <div style="overflow:hidden">
-        <div style="width: 1201px; height: 640px; border: solid 1px #8FC7FF; border-top: 0px">
+        <div style="width: 1201px; height: 640px; border: solid 1px #8FC7FF; border-top: 0px; overflow: hidden">
             <%@include file="chart/anomaly-explained.jsp"%>
         </div>
     </div>
