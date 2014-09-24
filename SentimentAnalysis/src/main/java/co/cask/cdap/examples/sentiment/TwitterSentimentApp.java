@@ -24,15 +24,18 @@ import co.cask.cdap.api.dataset.table.Table;
  * Application that analyzes sentiment of sentences as positive, negative or neutral.
  */
 public class TwitterSentimentApp extends AbstractApplication {
+  static final String APP_NAME = "TwitterSentiment";
   static final String STREAM_NAME = "TweetStream";
+  static final String TABLE_NAME = "TotalCounts";
+  static final String TIMESERIES_TABLE_NAME = "TimeSeriesTable";
 
   @Override
   public void configure() {
-    setName("TwitterSentiment");
+    setName(APP_NAME);
     setDescription("Twitter Sentiment Analysis");
     addStream(new Stream(STREAM_NAME));
-    createDataset("sentiments", Table.class);
-    createDataset("text-sentiments", TimeseriesTable.class);
+    createDataset(TABLE_NAME, Table.class);
+    createDataset(TIMESERIES_TABLE_NAME, TimeseriesTable.class);
     addFlow(new SentimentAnalysisFlow());
     addProcedure(new SentimentQueryProcedure());
   }

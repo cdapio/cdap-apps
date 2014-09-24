@@ -48,7 +48,7 @@ public class TwitterSentimentAppTest extends TestBase {
       args.put("disable.public", "true");
 
       // Starts a Flow
-      FlowManager flowManager = appManager.startFlow("analysis", args);
+      FlowManager flowManager = appManager.startFlow(SentimentAnalysisFlow.FLOW_NAME, args);
 
       try {
         // Write a message to Stream
@@ -59,14 +59,14 @@ public class TwitterSentimentAppTest extends TestBase {
         streamWriter.send("i am happy today that I got this working.");
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics("sentiment", "analysis", "update");
+        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.APP_NAME, SentimentAnalysisFlow.FLOW_NAME, Update.UPDATE_FLOWLET_NAME);
         countMetrics.waitForProcessed(4, 15, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();
       }
 
       // Start procedure and verify
-      ProcedureManager procedureManager = appManager.startProcedure("sentiment-query");
+      ProcedureManager procedureManager = appManager.startProcedure(SentimentQueryProcedure.PROCEDURE_NAME);
       try {
         String response = procedureManager.getClient().query("aggregates", Collections.<String, String>emptyMap());
 
@@ -104,7 +104,7 @@ public class TwitterSentimentAppTest extends TestBase {
 
     Map<String, String> args = Maps.newHashMap();
     args.put("disable.public", "true");
-    FlowManager flowManager = appManager.startFlow("analysis", args);
+    FlowManager flowManager = appManager.startFlow(SentimentAnalysisFlow.FLOW_NAME, args);
 
     try {
       // Write a message to Stream
@@ -115,13 +115,13 @@ public class TwitterSentimentAppTest extends TestBase {
       streamWriter.send("i am happy today that I got this working.");
 
       // Wait for the last Flowlet processed all tokens
-      RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics("sentiment", "analysis", "update");
+      RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.APP_NAME, SentimentAnalysisFlow.FLOW_NAME, Update.UPDATE_FLOWLET_NAME);
       countMetrics.waitForProcessed(4, 15, TimeUnit.SECONDS);
     } finally {
       flowManager.stop();
     }
 
-    ProcedureManager procedureManager = appManager.startProcedure("sentiment-query");
+    ProcedureManager procedureManager = appManager.startProcedure(SentimentQueryProcedure.PROCEDURE_NAME);
     try {
       Map<String, String> sentiments = Maps.newHashMap();
       sentiments.put("sentiments","['positive','negative','neutral']");
@@ -136,6 +136,5 @@ public class TwitterSentimentAppTest extends TestBase {
       procedureManager.stop();
     }
   }
-
 
 }

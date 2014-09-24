@@ -42,9 +42,9 @@ import java.util.Iterator;
 /**
  * Sentiment analysis flowlet.
  */
-public class Analysis extends AbstractFlowlet {
+public class JavaAnalyzer extends AbstractFlowlet {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Analysis.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JavaAnalyzer.class);
   private static final String LOCALIZED_FILENAME = "localized.txt";
 
   private TextClassifier classifierModel = null;

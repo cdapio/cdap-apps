@@ -22,25 +22,25 @@ import co.cask.cdap.api.flow.FlowSpecification;
  * Flow for sentiment analysis.
  */
 public class SentimentAnalysisFlow implements Flow {
-
+  static final String FLOW_NAME = "TwitterSentimentAnalysis";
   @Override
   public FlowSpecification configure() {
     return FlowSpecification.Builder.with()
-      .setName("TwitterSentimentAnalysis")
+      .setName(FLOW_NAME)
       .setDescription("Analysis of text to generate sentiments")
       .withFlowlets()
         .add(new TweetCollector())
         .add(new Normalization())
-        .add(new Analyze())
-        .add(new Analysis())
+        .add(new PythonAnalyzer())
+        .add(new JavaAnalyzer())
         .add(new Update())
       .connect()
         .fromStream(TwitterSentimentApp.STREAM_NAME).to(new Normalization())
-        .from(new Normalization()).to(new Analyze())
-        .from(new TweetCollector()).to(new Analyze())
-        .from(new Analyze()).to(new Update())
-        .from(new TweetCollector()).to(new Analysis())
-        .from(new Analysis()).to(new Update())
+        .from(new Normalization()).to(new PythonAnalyzer())
+        .from(new TweetCollector()).to(new PythonAnalyzer())
+        .from(new PythonAnalyzer()).to(new Update())
+        .from(new TweetCollector()).to(new JavaAnalyzer())
+        .from(new JavaAnalyzer()).to(new Update())
       .build();
   }
 

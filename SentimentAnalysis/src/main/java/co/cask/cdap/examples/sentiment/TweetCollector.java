@@ -60,6 +60,14 @@ public class TweetCollector extends AbstractFlowlet {
       LOG.info("Public Twitter source turned off (disable.public={})", publicArg);
       return;
     }
+    // Override twitter4j.properties file, if provided in runtime args.
+    if (!args.containsKey("oauth.consumerKey") || !args.containsKey("oauth.consumerSecret")
+     || !args.containsKey("oauth.accessToken") || !args.containsKey("oauth.accessTokenSecret")) {
+      final String CREDENTIALS_MISSING = "Twitter API credentials not provided in runtime arguments.";
+      LOG.error(CREDENTIALS_MISSING);
+      throw new IllegalArgumentException(CREDENTIALS_MISSING);
+    }
+
     queue = new LinkedBlockingQueue<Tweet>(10000);
     collector = new CollectingThread();
     collector.start();
@@ -102,15 +110,11 @@ public class TweetCollector extends AbstractFlowlet {
         cb.setAsyncNumThreads(1);
 
         Map<String, String> args = getContext().getRuntimeArguments();
-        // Override twitter4j.properties file, if provided in runtime args.
-        if (args.containsKey("oauth.consumerKey") && args.containsKey("oauth.consumerSecret") &&
-            args.containsKey("oauth.accessToken") && args.containsKey("oauth.accessTokenSecret")) {
 
-          cb.setOAuthConsumerKey(args.get("oauth.consumerKey"));
-          cb.setOAuthConsumerSecret(args.get("oauth.consumerSecret"));
-          cb.setOAuthAccessToken(args.get("oauth.accessToken"));
-          cb.setOAuthAccessTokenSecret(args.get("oauth.accessTokenSecret"));
-        }
+        cb.setOAuthConsumerKey(args.get("oauth.consumerKey"));
+        cb.setOAuthConsumerSecret(args.get("oauth.consumerSecret"));
+        cb.setOAuthAccessToken(args.get("oauth.accessToken"));
+        cb.setOAuthAccessTokenSecret(args.get("oauth.accessTokenSecret"));
 
         twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 

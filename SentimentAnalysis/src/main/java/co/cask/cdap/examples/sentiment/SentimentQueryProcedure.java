@@ -44,11 +44,12 @@ import java.util.concurrent.TimeUnit;
 public class SentimentQueryProcedure extends AbstractProcedure {
   private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryProcedure.class);
   private static final Gson GSON = new Gson();
+  static final String PROCEDURE_NAME = "sentiment-query";
 
-  @UseDataSet("sentiments")
+  @UseDataSet(TwitterSentimentApp.TABLE_NAME)
   private Table sentiments;
 
-  @UseDataSet("text-sentiments")
+  @UseDataSet(TwitterSentimentApp.TIMESERIES_TABLE_NAME)
   private TimeseriesTable textSentiments;
 
   @Handle("aggregates")
@@ -126,7 +127,7 @@ public class SentimentQueryProcedure extends AbstractProcedure {
   @Override
   public ProcedureSpecification configure() {
     return ProcedureSpecification.Builder.with()
-      .setName("sentiment-query")
+      .setName(PROCEDURE_NAME)
       .setDescription("Queries data relating to tweets' sentiments.")
       .withResources(ResourceSpecification.BASIC)
       .build();

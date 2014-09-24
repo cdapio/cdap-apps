@@ -24,11 +24,12 @@ import java.util.Iterator;
 public class Update extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(Update.class);
   private static final Gson GSON = new Gson();
+  static final String UPDATE_FLOWLET_NAME = "Update";
 
-  @UseDataSet("sentiments")
+  @UseDataSet(TwitterSentimentApp.TABLE_NAME)
   private Table sentiments;
 
-  @UseDataSet("text-sentiments")
+  @UseDataSet(TwitterSentimentApp.TIMESERIES_TABLE_NAME)
   private TimeseriesTable textSentiments;
 
   Metrics metrics;
@@ -52,7 +53,7 @@ public class Update extends AbstractFlowlet {
   @Override
   public FlowletSpecification configure() {
     return FlowletSpecification.Builder.with()
-      .setName("Update")
+      .setName(UPDATE_FLOWLET_NAME)
       .setDescription("Updates the sentiment counts")
       .withResources(ResourceSpecification.BASIC)
       .build();

@@ -15,8 +15,7 @@ Twitter Configuration
 =====================
 In order to utilize the TweetCollector flowlet, which pulls a small sample stream via the Twitter API, the API key and Access token must be configured.
 Follow the steps at the following page to obtain these credentials: [Twitter oauth access tokens](https://dev.twitter.com/oauth/overview/application-owner-access-tokens).
-Place the authentication configuration in a file named 'twitter4j.properties' in src/resources, according to: [Twitter4j configuration](http://twitter4j.org/en/configuration.html).
-Alternatively, these configurations can be provided as runtime arguments to the flow prior to starting it.
+These configurations must be provided as runtime arguments to the flow prior to starting it, in order to use the TweetCollector flowlet. To avoid this, see the "disable.public" argument option below.
 
 Flow Runtime Arguments
 ======================
