@@ -53,7 +53,7 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
     String moviesData = MovieSteerApp.CHARSET_UTF8.decode(requestContents).toString();
 
     if (parseAndStoreMovies(moviesData)) {
-      responder.sendJson(HttpResponseStatus.OK.code(), "Movies information stored in dataset successfully.");
+      responder.sendStatus(HttpResponseStatus.OK.code());
     } else {
       responder.sendError(HttpResponseStatus.BAD_REQUEST.code(), "Malformed movies information.");
     }
