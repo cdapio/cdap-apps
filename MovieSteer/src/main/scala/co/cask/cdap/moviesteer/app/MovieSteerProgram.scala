@@ -28,8 +28,8 @@ package co.cask.cdap.moviesteer.app
 import co.cask.cdap.api.common.Bytes
 import co.cask.cdap.api.spark.{ScalaSparkProgram, SparkContext}
 import org.apache.spark.SparkContext._
-import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
-import org.apache.spark.rdd.{NewHadoopRDD, RDD}
+import org.apache.spark.mllib.recommendation.{ALS, Rating}
+import org.apache.spark.rdd.NewHadoopRDD
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.control.Exception._
@@ -71,7 +71,7 @@ class MovieSteerProgram extends ScalaSparkProgram {
     }.cache()
 
     val moviesDataset: NewHadoopRDD[Array[Byte], String] = sc.readFromDataset("movies", classOf[Array[Byte]],
-                                                                              classOf[String])
+      classOf[String])
 
     val numRatings = ratingData.count()
     val numUsers = ratingData.map(_.user).distinct().count()
@@ -97,21 +97,23 @@ class MovieSteerProgram extends ScalaSparkProgram {
 
     val userRatedMovies = ratingData.map(x => (x.user, x.product)).groupByKey().map(x => (x._1, x._2.toSet))
 
-    val movies = moviesDataset.map(x => (Bytes.toString(x._1).toInt, x._2)).collect().toMap
+    val movies = moviesDataset.map(x => (Bytes.toInt(x._1), x._2)).collect().toMap
 
     val originalContext: org.apache.spark.SparkContext = sc.getOriginalSparkContext.
-                                                                            asInstanceOf[org.apache.spark.SparkContext]
+      asInstanceOf[org.apache.spark.SparkContext]
     val notRatedMovies = userRatedMovies.map(x => (x._1, movies.keys.filter(!x._2.contains(_)).toSeq)).collect()
 
     for (curUser <- notRatedMovies) {
       var nr = originalContext.parallelize(curUser._2)
       var recom = originalContext.parallelize(model.predict(nr.map((curUser._1, _)))
-                                                                              .collect().sortBy(-_.rating).take(20))
+        .collect().sortBy(-_.rating).take(20))
 
-      var recomRDD = recom.keyBy(x => Bytes.toBytes(x.user.toString + x.product.toString))
+      var recomRDD = recom.keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product)))
 
       sc.writeToDataset(recomRDD, "predictions", classOf[Array[Byte]], classOf[Rating])
     }
+
+    LOG.debug("Stored predictions in dataset. Done!")
   }
 
   /** Parse runtime arguments */

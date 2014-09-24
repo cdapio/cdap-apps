@@ -18,15 +18,17 @@ package co.cask.cdap.moviesteer.app;
 
 import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
+import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.dataset.lib.KeyValue;
 import co.cask.cdap.api.dataset.lib.ObjectStore;
 import co.cask.cdap.api.procedure.AbstractProcedure;
 import co.cask.cdap.api.procedure.ProcedureRequest;
 import co.cask.cdap.api.procedure.ProcedureResponder;
 import co.cask.cdap.api.procedure.ProcedureResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.spark.mllib.recommendation.Rating;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,13 +38,16 @@ import java.util.Iterator;
  */
 public class PredictionProcedure extends AbstractProcedure {
 
-  private static final Logger LOG = LoggerFactory.getLogger(PredictionProcedure.class);
+  private static final Gson GSON = new Gson();
 
   @UseDataSet("predictions")
   private ObjectStore<Rating> predictions;
 
   @UseDataSet("ratings")
   private ObjectStore<UserScore> ratings;
+
+  @UseDataSet("movies")
+  private ObjectStore<String> movies;
 
   @Handle("getPrediction")
   public void getPrediction(ProcedureRequest request, ProcedureResponder responder)
@@ -53,30 +58,51 @@ public class PredictionProcedure extends AbstractProcedure {
       responder.error(ProcedureResponse.Code.CLIENT_ERROR, "userId must be given as argument");
       return;
     }
-    byte[] userID = ("" + userId).getBytes();
 
-    //TODO: This scan with partial key scans the whole table. Figure out how to do it properly if it can be done
-    Iterator<KeyValue<byte[], Rating>> userPredictions = predictions.scan(userID, null);
-    Iterator<KeyValue<byte[], UserScore>> userRatings = ratings.scan(userID, null);
+    byte[] userID = Bytes.toBytes(Integer.parseInt(userId));
 
-    if (userPredictions == null || userRatings == null) {
-      responder.error(ProcedureResponse.Code.NOT_FOUND,
-                      String.format("No ratings/prediction found for user %s", userId));
+    Iterator<KeyValue<byte[], UserScore>> userRatings = ratings.scan(userID, Bytes.stopKeyForPrefix(userID));
+    Iterator<KeyValue<byte[], Rating>> userPredictions = predictions.scan(userID, Bytes.stopKeyForPrefix(userID));
+
+    if (!userRatings.hasNext()) {
+      responder.error(ProcedureResponse.Code.NOT_FOUND, String.format("No ratings found for user %s", userId));
       return;
     }
 
-    while (userRatings.hasNext()) {
-      UserScore curRating = userRatings.next().getValue();
-      System.out.println("User: " + curRating.getUserID() + " Movie: " + curRating.getMovieID() + " Rating: "
-                           + curRating.getRating());
-    }
-    while (userPredictions.hasNext()) {
-      Rating curPrediction = userPredictions.next().getValue();
-      System.out.println("User: " + curPrediction.user() + " Movie: " + curPrediction.product() + " Rating: "
-                           + curPrediction.rating());
+    if (!userPredictions.hasNext()) {
+      responder.error(ProcedureResponse.Code.NOT_FOUND, String.format("No recommendations found for user %s", userId));
+      return;
     }
 
-    //TODO: Send the rating and prediction objects as json
-    responder.sendJson(ProcedureResponse.Code.SUCCESS, "Yo! Things worked");
+    responder.sendJson(ProcedureResponse.Code.SUCCESS, prepareResponse(userRatings, userPredictions));
+  }
+
+  /**
+   * Pepares a json sting of watched and recommended movies in the following format:
+   * {"Watched":["ratedMovie1","ratedMovie1"],"Recommended":["recommendedMovie1","recommendedMovie2"]}
+   * @param userRatings user given rating to movies
+   * @param userPredictions movie recommendation to user with predicted rating
+   * @return {@link JsonObject} of watched and recommended movies
+   */
+  private JsonObject prepareResponse(Iterator<KeyValue<byte[], UserScore>> userRatings,
+                                     Iterator<KeyValue<byte[], Rating>> userPredictions) {
+
+    JsonArray watched = new JsonArray();
+    while (userRatings.hasNext()) {
+      UserScore curRating = userRatings.next().getValue();
+      watched.add(GSON.toJsonTree(movies.read(Bytes.toBytes(curRating.getMovieID()))));
+    }
+
+    JsonArray recommended = new JsonArray();
+    while (userPredictions.hasNext()) {
+      Rating curPrediction = userPredictions.next().getValue();
+      recommended.add(GSON.toJsonTree(movies.read(Bytes.toBytes(curPrediction.product()))));
+    }
+
+    JsonObject response = new JsonObject();
+    response.add("Watched", watched);
+    response.add("Recommended", recommended);
+
+    return response;
   }
 }

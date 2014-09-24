@@ -23,13 +23,15 @@ import co.cask.cdap.internal.io.UnsupportedTypeException;
 import org.apache.spark.mllib.recommendation.Rating;
 
 import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 
 /**
  * MoveSteer: Movie Recommendation App based on Spark's MLibs using MovieLens dataset
  */
 public class MovieSteerApp extends AbstractApplication {
 
-  public static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
+  static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
+  static final Pattern RAW_DATA_DELIMITER = Pattern.compile("::");
 
   @Override
   public void configure() {
@@ -50,7 +52,6 @@ public class MovieSteerApp extends AbstractApplication {
       // (de)serialized (for example, if it is an interface and not a class, then there is
       // no auto-magic way deserialize an object.) In this case that will not happen
       // because String is an actual class.
-      System.out.println("Catched exception");
       throw new RuntimeException(e);
     }
   }

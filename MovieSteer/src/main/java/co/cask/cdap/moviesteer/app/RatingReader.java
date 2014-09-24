@@ -28,14 +28,11 @@ import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.regex.Pattern;
-
 /**
  * {@link Flowlet} that reads ratings from a {@link Stream} and saves them to a {@link Dataset}
  */
 public class RatingReader extends AbstractFlowlet {
 
-  private static final Pattern RATINGS_DATA_DELIMITER = Pattern.compile("::");
   private static final Logger LOG = LoggerFactory.getLogger(RatingReader.class);
 
   @UseDataSet("ratings")
@@ -46,11 +43,12 @@ public class RatingReader extends AbstractFlowlet {
     String body = new String(event.getBody().array());
     LOG.trace("Ratings info: {}", body);
 
-    String[] ratingData = RATINGS_DATA_DELIMITER.split(body.trim());
+    String[] ratingData = MovieSteerApp.RAW_DATA_DELIMITER.split(body.trim());
     UserScore userScore = new UserScore(Integer.parseInt(ratingData[0]), Integer.parseInt(ratingData[1]),
                                         Integer.parseInt(ratingData[2]));
 
     // key is userID+movieID
-    ratingsStore.write(Bytes.toBytes("" + ratingData[0] + ratingData[1]), userScore);
+    byte[] key = Bytes.add(Bytes.toBytes(userScore.getUserID()), Bytes.toBytes(userScore.getMovieID()));
+    ratingsStore.write(key, userScore);
   }
 }

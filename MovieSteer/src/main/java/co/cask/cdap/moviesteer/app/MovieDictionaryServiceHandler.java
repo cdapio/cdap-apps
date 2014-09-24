@@ -26,13 +26,16 @@ import co.cask.cdap.api.service.http.HttpServiceResponder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.ByteBuffer;
+import java.util.regex.Pattern;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 /**
- * Class which handles the movie file submission by parsing and storing it in a {@link Dataset}
+ * Class which handles the movies file submission by parsing and storing it in a {@link Dataset}
  */
 public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
+
+  private static final Pattern NEWLINE_DELIMITER = Pattern.compile("[\\r\\n]+");
 
   @UseDataSet("movies")
   private ObjectStore<String> moviesStore;
@@ -58,13 +61,13 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
 
   private boolean parseAndStoreMovies(String moviesData) {
     boolean validRequest = false;
-    String[] movies = moviesData.split("[\\r\\n]+");
+    String[] movies = NEWLINE_DELIMITER.split(moviesData.trim());
 
     for (String movie : movies) {
-      String[] movieInfo = movie.split("::");
+      String[] movieInfo = MovieSteerApp.RAW_DATA_DELIMITER.split(movie.trim());
       if (!movieInfo[0].isEmpty() && !movieInfo[1].isEmpty()) {
         validRequest = true;
-        moviesStore.write(Bytes.toBytes(movieInfo[0]), movieInfo[1]);
+        moviesStore.write(Bytes.toBytes(Integer.parseInt(movieInfo[0])), movieInfo[1]);
       }
     }
     return validRequest;
