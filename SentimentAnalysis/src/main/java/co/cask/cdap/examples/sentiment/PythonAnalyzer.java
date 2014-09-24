@@ -76,7 +76,7 @@ public class PythonAnalyzer extends ExternalProgramFlowlet<Tweet, Tweet> {
 
   @Batch(100)
   @ProcessInput("python")
-  protected void process(Iterator<Tweet> iterator) throws Exception {
+  public void process(Iterator<Tweet> iterator) throws Exception {
     super.process(iterator);
   }
 

@@ -97,7 +97,7 @@ public abstract class ExternalProgramFlowlet<IN, OUT> extends AbstractFlowlet {
    */
   @Batch(100)
   @ProcessInput
-  protected void process(Iterator<IN> iterator) throws Exception {
+  public void process(Iterator<IN> iterator) throws Exception {
     List<ListenableFuture<String>> completions = Lists.newLinkedList();
 
     try {

@@ -36,9 +36,10 @@
 
 
 
-	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="./excanvas.min.js"></script><![endif]-->
-	<script language="javascript" type="text/javascript" src="./include/jquery.js"></script>
-	<script language="javascript" type="text/javascript" src="./include/jquery.flot.js"></script>
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+	    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+      <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
+      <script language="javascript" type="text/javascript" src="js/jquery.flot.time.js"></script></head>
 
     <script type="text/javascript">
     	$(function() {
@@ -58,7 +59,7 @@
           // Zip the generated y values with the x values
           var res = [];
           for (var i = 0; i < dataArr.length; ++i) {
-            res.push([i, dataArr[i]])
+            res.push([Date.now()-(dataArr.length - i)*1000, dataArr[i]])
           }
     			return res;
     		}
@@ -67,11 +68,7 @@
     		// the chart will interpolate the results over the last few updates, as defined by:
     		var interpolateOver = 20;
 
-    		var plot = $.plot("#placeholder", [], {
-    			series: { shadowSize: 0 },
-    			yaxis: { min: 0 },
-    			xaxis: { show: 0 },
-    		});
+
     		function update() {
     			$.ajax({
             url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
@@ -89,8 +86,11 @@
           var posData = {data:zipData('positive'), label:"Positive", color: "#468847" };
           var negData = {data:zipData('negative'), label:"Negative", color: "#b94a48" };
           var neutData = {data:zipData('neutral'), label:"Neutral", color: "#428bca" };
-    			plot.setData([posData, negData, neutData]);
-    			plot.setupGrid()
+          var plot = $.plot("#placeholder", [posData, negData, neutData], {
+            series: { shadowSize: 0 },
+            yaxis: { min: 0 },
+            xaxis: { mode:"time" },
+          });
     			plot.draw();
     			setTimeout(update, updateInterval);
     		}

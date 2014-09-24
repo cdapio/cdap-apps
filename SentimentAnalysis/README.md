@@ -1,15 +1,10 @@
-SentimentAnalysis
+TwitterSentiment
 =================
+TwitterSentiment Analysis application.
 
-Sentiment analytis application.
-
-Copyright © 2014 Cask Data, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Overview
+========
+An application that analyzes the sentiments of Twitter Tweets and categorizes them as either positive, negative or neutral.
 
 Twitter Configuration
 =====================
@@ -21,6 +16,8 @@ Flow Runtime Arguments
 ======================
 When start the ```analysis``` flow from the UI, runtime arguments can be specified.
 "disable.public" - Specify any value for this key in order to disable the source flowlet ```TweetCollector```.
+"disable.java" - Specify any value for this key in order to disable the java tweet analze flowlet ```JavaAnalyzer```.
+"disable.python" - Specify any value for this key in order to disable the python tweet analze flowlet ```PythonAnalyzer```.
 "oauth.consumerKey" - See ```Twitter Configuration``` above.
 "oauth.consumerSecret" - See ```Twitter Configuration``` above.
 "oauth.Token" - See ```Twitter Configuration``` above.
@@ -59,7 +56,15 @@ Run Web UI:
 mvn -Pweb jetty:run
 ```
 
-External Documentation
-======================
 
-TBD: link to web-site page with app overview
+
+License
+=======
+
+Copyright © 2014 Cask Data, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
