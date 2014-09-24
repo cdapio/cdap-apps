@@ -22,7 +22,7 @@ script=`basename $0`
 user=$USER
 epoch=`date +%s`
 
-app="sentiment"
+app="TwitterSentiment"
 
 auth_token=
 auth_file="$HOME/.cdap.accesstoken"

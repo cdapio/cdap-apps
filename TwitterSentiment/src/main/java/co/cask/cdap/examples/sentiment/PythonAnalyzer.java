@@ -48,7 +48,7 @@ public class PythonAnalyzer extends ExternalProgramFlowlet<Tweet, Tweet> {
    * This method will be called at Flowlet initialization time.
    *
    * @param context The {@link co.cask.cdap.api.flow.flowlet.FlowletContext} for this Flowlet.
-   * @return An {@link co.cask.cdap.flow.flowlet.ExternalProgramFlowlet.ExternalProgram} to specify
+   * @return An {@link co.cask.cdap.apps.flowlet.ExternalProgramFlowlet.ExternalProgram} to specify
    * properties of the external program to process input.
    */
   @Override

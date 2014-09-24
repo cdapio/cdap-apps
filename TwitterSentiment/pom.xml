@@ -46,6 +46,10 @@
       <id>apache.snapshots</id>
       <url>https://repository.apache.org/content/repositories/snapshots</url>
     </repository>
+    <repository>
+      <id>bioinformatics</id>
+      <url>http://bioinformatics.ua.pt/maven/content/repositories/public/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -95,9 +99,9 @@
           <version>[4.0,)</version>
       </dependency>
       <dependency>
-        <groupId>com.lingpipe</groupId>
+        <groupId>com.aliasi</groupId>
         <artifactId>lingpipe</artifactId>
-        <version>4.1.0</version>
+        <version>4.0.1</version>
       </dependency>
 
     <dependency>
