@@ -17,19 +17,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Proxies POST requests to http://localhost:10000.
- *
+ * Proxies POST requests to a given url (specified thru cdap.host and cdap.port system properties).
+ * By default proxies to http://localhost:10000.
  * Needed for resolving cross-domain javascript complexities.
  */
 public class ProxyServlet extends HttpServlet {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
+
+  private String cdapURL;
+
+  @Override
+  public void init() throws ServletException {
+    String host = System.getProperty("cdap.host");
+    host = host == null ? "localhost" : host;
+    String port = System.getProperty("cdap.port");
+    port = port == null ? "10000" : port;
+    cdapURL = String.format("http://%s:%s", host, port);
+  }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     AsyncHttpClient client =
       new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
     try {
-      String url = "http://localhost:10000" + req.getPathInfo();
+      String url = cdapURL + req.getPathInfo();
       byte[] bytes = ByteStreams.toByteArray(req.getInputStream());
       String responseBody;
       try {
@@ -53,7 +64,7 @@ public class ProxyServlet extends HttpServlet {
     AsyncHttpClient client =
       new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
     try {
-      String url = "http://localhost:10000" + req.getPathInfo() + "?" + req.getQueryString();
+      String url = cdapURL + req.getPathInfo() + "?" + req.getQueryString();
       try {
         client.prepareGet(url).execute(new AsyncCompletionHandler<Response>(){
           @Override

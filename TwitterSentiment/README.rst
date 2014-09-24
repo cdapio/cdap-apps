@@ -53,8 +53,9 @@ bin/ingest-statements.sh --host [host]
 
 Run Web UI:
 ```
-mvn -Pweb jetty:run
+mvn -Pweb jetty:run (optionally use -Dcdap.host=hostname and -Dcdap.port=port to point to CDAP, localhost:10000 is used by default)
 ```
+Once the Web UI is running, it can be viewed <host>:8080/TwitterSentiment/
 
 
 
