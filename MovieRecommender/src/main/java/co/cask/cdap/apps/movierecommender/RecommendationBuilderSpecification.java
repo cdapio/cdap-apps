@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.moviesteer.app;
+package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.spark.AbstractSpark;
 import co.cask.cdap.api.spark.Spark;
@@ -27,13 +27,13 @@ import org.apache.spark.rdd.RDD;
  * A {@link Spark} program that creates a {@link MatrixFactorizationModel} from {@link UserScore} and recommend movies
  * to user by calculating {@link Rating} through {@link MatrixFactorizationModel#predict(RDD)}
  */
-public class MovieSteerSparkSpecification extends AbstractSpark {
+public class RecommendationBuilderSpecification extends AbstractSpark {
   @Override
   public SparkSpecification configure() {
     return SparkSpecification.Builder.with()
-      .setName("MovieSteerSparkProgram")
+      .setName("MovieRecommenderSparkProgram")
       .setDescription("A movie recommendation app")
-      .setMainClassName(MovieSteerProgram.class.getName())
+      .setMainClassName(RecommendationBuilder.class.getName())
       .build();
   }
 }

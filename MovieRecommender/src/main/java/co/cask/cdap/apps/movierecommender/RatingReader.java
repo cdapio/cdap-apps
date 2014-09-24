@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.moviesteer.app;
+package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.annotation.UseDataSet;
@@ -43,7 +43,7 @@ public class RatingReader extends AbstractFlowlet {
     String body = new String(event.getBody().array());
     LOG.trace("Ratings info: {}", body);
 
-    String[] ratingData = MovieSteerApp.RAW_DATA_DELIMITER.split(body.trim());
+    String[] ratingData = MovieRecommenderApp.RAW_DATA_DELIMITER.split(body.trim());
     UserScore userScore = new UserScore(Integer.parseInt(ratingData[0]), Integer.parseInt(ratingData[1]),
                                         Integer.parseInt(ratingData[2]));
 

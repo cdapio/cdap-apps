@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.moviesteer.app;
+package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.common.Bytes;
@@ -50,7 +50,7 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
       return;
     }
 
-    String moviesData = MovieSteerApp.CHARSET_UTF8.decode(requestContents).toString();
+    String moviesData = MovieRecommenderApp.CHARSET_UTF8.decode(requestContents).toString();
 
     if (parseAndStoreMovies(moviesData)) {
       responder.sendStatus(HttpResponseStatus.OK.code());
@@ -64,7 +64,7 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
     String[] movies = NEWLINE_DELIMITER.split(moviesData.trim());
 
     for (String movie : movies) {
-      String[] movieInfo = MovieSteerApp.RAW_DATA_DELIMITER.split(movie.trim());
+      String[] movieInfo = MovieRecommenderApp.RAW_DATA_DELIMITER.split(movie.trim());
       if (!movieInfo[0].isEmpty() && !movieInfo[1].isEmpty()) {
         validRequest = true;
         moviesStore.write(Bytes.toBytes(Integer.parseInt(movieInfo[0])), movieInfo[1]);

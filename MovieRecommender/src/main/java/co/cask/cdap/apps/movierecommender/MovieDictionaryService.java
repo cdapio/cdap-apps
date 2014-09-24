@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.moviesteer.app;
+package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.service.AbstractService;
 import co.cask.cdap.api.service.Service;
@@ -25,7 +25,7 @@ import co.cask.cdap.api.service.Service;
 public class MovieDictionaryService extends AbstractService {
   @Override
   protected void configure() {
-    setName("MovieUploadService");
+    setName("MovieDictionaryService");
     setDescription("Service to store moviesStore information to dataset");
     useDataset("movies");
     addHandler(new MovieDictionaryServiceHandler());

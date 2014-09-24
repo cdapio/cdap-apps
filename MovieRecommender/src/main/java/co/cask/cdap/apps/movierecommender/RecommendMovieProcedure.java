@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.moviesteer.app;
+package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
@@ -36,12 +36,12 @@ import java.util.Iterator;
 /**
  * Procedure that returns movie recommendations for users
  */
-public class PredictionProcedure extends AbstractProcedure {
+public class RecommendMovieProcedure extends AbstractProcedure {
 
   private static final Gson GSON = new Gson();
 
-  @UseDataSet("predictions")
-  private ObjectStore<Rating> predictions;
+  @UseDataSet("recommendations")
+  private ObjectStore<Rating> recommendations;
 
   @UseDataSet("ratings")
   private ObjectStore<UserScore> ratings;
@@ -49,8 +49,8 @@ public class PredictionProcedure extends AbstractProcedure {
   @UseDataSet("movies")
   private ObjectStore<String> movies;
 
-  @Handle("getPrediction")
-  public void getPrediction(ProcedureRequest request, ProcedureResponder responder)
+  @Handle("getRecommendation")
+  public void getRecommendation(ProcedureRequest request, ProcedureResponder responder)
     throws IOException, InterruptedException {
 
     String userId = request.getArgument("userId");
@@ -62,7 +62,7 @@ public class PredictionProcedure extends AbstractProcedure {
     byte[] userID = Bytes.toBytes(Integer.parseInt(userId));
 
     Iterator<KeyValue<byte[], UserScore>> userRatings = ratings.scan(userID, Bytes.stopKeyForPrefix(userID));
-    Iterator<KeyValue<byte[], Rating>> userPredictions = predictions.scan(userID, Bytes.stopKeyForPrefix(userID));
+    Iterator<KeyValue<byte[], Rating>> userPredictions = recommendations.scan(userID, Bytes.stopKeyForPrefix(userID));
 
     if (!userRatings.hasNext()) {
       responder.error(ProcedureResponse.Code.NOT_FOUND, String.format("No ratings found for user %s", userId));

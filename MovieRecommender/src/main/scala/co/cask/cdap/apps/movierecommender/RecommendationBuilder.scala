@@ -23,7 +23,7 @@
  * GroupLens Research Project at the University of Minnesota.
  */
 
-package co.cask.cdap.moviesteer.app
+package co.cask.cdap.apps.movierecommender
 
 import co.cask.cdap.api.common.Bytes
 import co.cask.cdap.api.spark.{ScalaSparkProgram, SparkContext}
@@ -35,10 +35,10 @@ import org.slf4j.{Logger, LoggerFactory}
 import scala.util.control.Exception._
 
 /**
- * MovieSteer Spark Program which makes recommendation for movies to users
+ * Spark Program which makes recommendation for movies to users
  */
-class MovieSteerProgram extends ScalaSparkProgram {
-  private final val LOG: Logger = LoggerFactory.getLogger(classOf[MovieSteerProgram])
+class RecommendationBuilder extends ScalaSparkProgram {
+  private final val LOG: Logger = LoggerFactory.getLogger(classOf[RecommendationBuilder])
 
   case class Params(
                      numIterations: Int = 20,
@@ -110,7 +110,7 @@ class MovieSteerProgram extends ScalaSparkProgram {
 
       var recomRDD = recom.keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product)))
 
-      sc.writeToDataset(recomRDD, "predictions", classOf[Array[Byte]], classOf[Rating])
+      sc.writeToDataset(recomRDD, "recommendations", classOf[Array[Byte]], classOf[Rating])
     }
 
     LOG.debug("Stored predictions in dataset. Done!")

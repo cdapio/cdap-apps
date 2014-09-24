@@ -14,38 +14,39 @@
  * the License.
  */
 
-package co.cask.cdap.moviesteer.app;
+package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.ObjectStores;
 import co.cask.cdap.internal.io.UnsupportedTypeException;
+import org.apache.spark.mllib.recommendation.ALS;
 import org.apache.spark.mllib.recommendation.Rating;
 
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 /**
- * MoveSteer: Movie Recommendation App based on Spark's MLibs using MovieLens dataset
+ * Movie Recommendation App which makes movie recommendation from known user ratings using Spark's {@link ALS} model
  */
-public class MovieSteerApp extends AbstractApplication {
+public class MovieRecommenderApp extends AbstractApplication {
 
   static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
   static final Pattern RAW_DATA_DELIMITER = Pattern.compile("::");
 
   @Override
   public void configure() {
-    setName("MovieSteer");
+    setName("MovieRecommender");
     setDescription("Movie Recommendation App");
     addStream(new Stream("ratingsStream"));
     addFlow(new RatingsFlow());
-    addSpark(new MovieSteerSparkSpecification());
-    addProcedure(new PredictionProcedure());
+    addSpark(new RecommendationBuilderSpecification());
+    addProcedure(new RecommendMovieProcedure());
     addService(new MovieDictionaryService());
 
     try {
       ObjectStores.createObjectStore(getConfigurer(), "ratings", UserScore.class);
-      ObjectStores.createObjectStore(getConfigurer(), "predictions", Rating.class);
+      ObjectStores.createObjectStore(getConfigurer(), "recommendations", Rating.class);
       ObjectStores.createObjectStore(getConfigurer(), "movies", String.class);
     } catch (UnsupportedTypeException e) {
       // This exception is thrown by ObjectStore if its parameter type cannot be
