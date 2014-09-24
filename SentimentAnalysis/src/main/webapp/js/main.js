@@ -35,7 +35,7 @@ Homepage.prototype.enableIntervals = function () {
   var self = this;
   this.interval = setInterval(function() {
     $.ajax({
-      url: 'proxy/v2/apps/sentiment/procedures/sentiment-query/methods/aggregates',
+      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/aggregates',
       type: 'GET',
       contentType: "application/json",
       cache: false,
@@ -58,7 +58,7 @@ Homepage.prototype.enableIntervals = function () {
     });
 
     $.ajax({
-      url: 'proxy/v2/apps/sentiment/procedures/sentiment-query/methods/sentiments?sentiment=positive',
+      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=positive',
       type: 'GET',
       contentType: "application/json",
       dataType: 'json',
@@ -75,7 +75,7 @@ Homepage.prototype.enableIntervals = function () {
     });
 
     $.ajax({
-      url: 'proxy/v2/apps/sentiment/procedures/sentiment-query/methods/sentiments?sentiment=neutral',
+      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=neutral',
       type: 'GET',
       contentType: "application/json",
       dataType: 'json',
@@ -92,7 +92,7 @@ Homepage.prototype.enableIntervals = function () {
     });
 
     $.ajax({
-      url: 'proxy/v2/apps/sentiment/procedures/sentiment-query/methods/sentiments?sentiment=negative',
+      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=negative',
       type: 'GET',
       contentType: "application/json",
       dataType: 'json',

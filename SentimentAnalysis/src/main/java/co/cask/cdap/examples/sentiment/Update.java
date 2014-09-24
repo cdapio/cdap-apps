@@ -50,7 +50,7 @@ public class Update extends AbstractFlowlet {
   Metrics metrics;
 
   @Batch(10)
-  @ProcessInput("sentiments")
+  @ProcessInput
   public void process(Iterator<Tweet> sentimentItr) {
     while (sentimentItr.hasNext()) {
       Tweet tweet = sentimentItr.next();

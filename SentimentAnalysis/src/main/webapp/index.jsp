@@ -74,7 +74,7 @@
     		});
     		function update() {
     			$.ajax({
-            url: 'proxy/v2/apps/sentiment/procedures/sentiment-query/methods/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
+            url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
             type: 'GET',
             contentType: "application/json",
             dataType: 'json',
@@ -101,7 +101,7 @@
 
 
   <body>
-            <h1 style="padding-left:20px;">  Dashboard <small>Sentiment Analysis Overview</small></h1>
+            <h1 style="padding-left:20px;">  Dashboard <small>Twitter Sentiment Analysis Overview</small></h1>
   	<div id="header">
   	</div>
 

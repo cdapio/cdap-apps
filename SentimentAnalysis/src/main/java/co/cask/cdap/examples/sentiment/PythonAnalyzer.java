@@ -16,7 +16,8 @@
 
 package co.cask.cdap.examples.sentiment;
 
-import co.cask.cdap.api.annotation.Output;
+import co.cask.cdap.api.annotation.Batch;
+import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.apps.flowlet.ExternalProgramFlowlet;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 /**
  * Analyzes the sentences by passing the sentence to NLTK based sentiment analyzer
@@ -38,7 +40,6 @@ public class PythonAnalyzer extends ExternalProgramFlowlet<Tweet, Tweet> {
   private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
   private static final Gson GSON = new Gson();
 
-  @Output("sentiments")
   private OutputEmitter<Tweet> sentiment;
 
   private File workDir;
@@ -71,6 +72,12 @@ public class PythonAnalyzer extends ExternalProgramFlowlet<Tweet, Tweet> {
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }
+  }
+
+  @Batch(100)
+  @ProcessInput("python")
+  protected void process(Iterator<Tweet> iterator) throws Exception {
+    super.process(iterator);
   }
 
   /**

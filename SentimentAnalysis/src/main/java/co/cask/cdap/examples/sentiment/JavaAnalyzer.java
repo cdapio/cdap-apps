@@ -17,7 +17,6 @@
 package co.cask.cdap.examples.sentiment;
 
 import co.cask.cdap.api.annotation.Batch;
-import co.cask.cdap.api.annotation.Output;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.FlowletContext;
@@ -49,7 +48,6 @@ public class JavaAnalyzer extends AbstractFlowlet {
 
   private TextClassifier classifierModel = null;
 
-  @Output("sentiments")
   private OutputEmitter<Tweet> sentiment;
 
   @Override
@@ -83,7 +81,7 @@ public class JavaAnalyzer extends AbstractFlowlet {
 
 
   @Batch(100)
-  @ProcessInput
+  @ProcessInput("java")
   public void classifyTweet(Iterator<Tweet> tweets) throws FileNotFoundException, ClassifierResultException {
     while (tweets.hasNext()) {
       Tweet tweet = tweets.next();

@@ -46,6 +46,7 @@ public class TwitterSentimentAppTest extends TestBase {
 
       Map<String, String> args = Maps.newHashMap();
       args.put("disable.public", "true");
+      args.put("disable.java", "true");
 
       // Starts a Flow
       FlowManager flowManager = appManager.startFlow(SentimentAnalysisFlow.FLOW_NAME, args);
@@ -104,6 +105,7 @@ public class TwitterSentimentAppTest extends TestBase {
 
     Map<String, String> args = Maps.newHashMap();
     args.put("disable.public", "true");
+    args.put("disable.java", "true");
     FlowManager flowManager = appManager.startFlow(SentimentAnalysisFlow.FLOW_NAME, args);
 
     try {

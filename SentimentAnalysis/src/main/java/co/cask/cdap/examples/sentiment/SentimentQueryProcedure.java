@@ -35,7 +35,7 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -86,13 +86,12 @@ public class SentimentQueryProcedure extends AbstractProcedure {
     int remaining = Integer.parseInt(limit);
 
     long time = System.currentTimeMillis();
-    List<TimeseriesTable.Entry> entries =
-      textSentiments.read(sentiment.getBytes(Charsets.UTF_8),
-                          time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS),
-                          time);
+    long beginTime = time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS);
+    Iterator<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8), beginTime, time);
 
-    Map<String, Long> textTimeMap = Maps.newHashMapWithExpectedSize(entries.size());
-    for (TimeseriesTable.Entry entry : entries) {
+    Map<String, Long> textTimeMap = Maps.newHashMap();
+    while(entries.hasNext()) {
+      TimeseriesTable.Entry entry = entries.next();
       if (remaining-- <= 0) {
         break;
       }
@@ -119,8 +118,13 @@ public class SentimentQueryProcedure extends AbstractProcedure {
     long time = System.currentTimeMillis();
     long beginTime = time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS);
     for (String sentiment: sentimentArr) {
-      List<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8), beginTime, time);
-      sentimentCountMap.put(sentiment, entries.size());
+      Iterator<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8), beginTime, time);
+      int count = 0;
+      while(entries.hasNext()) {
+        entries.next();
+        count++;
+      }
+      sentimentCountMap.put(sentiment, count);
     }
     response.sendJson(ProcedureResponse.Code.SUCCESS, sentimentCountMap);
   }

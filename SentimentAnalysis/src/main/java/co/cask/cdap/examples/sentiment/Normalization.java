@@ -17,41 +17,73 @@
 package co.cask.cdap.examples.sentiment;
 
 import co.cask.cdap.api.annotation.Batch;
+import co.cask.cdap.api.annotation.Output;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
+import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import co.cask.cdap.api.metrics.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * Normalizes the sentences.
  */
 public class Normalization extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
+  private boolean disableJava;
+  private boolean disablePython;
 
   /**
-   * Emitter for emitting sentences from this Flowlet.
+   * Emitters for emitting sentences from this Flowlet.
    */
-  private OutputEmitter<Tweet> out;
+  @Output("python")
+  private OutputEmitter<Tweet> pythonOut;
+
+  @Output("java")
+  private OutputEmitter<Tweet> javaOut;
 
   /**
    * Handler to emit metrics.
    */
   Metrics metrics;
 
+  public void initialize(FlowletContext context) throws Exception {
+    Map<String, String> args = context.getRuntimeArguments();
+    disablePython = args.containsKey("disable.python");
+    disableJava = args.containsKey("disable.java");
+  }
+
+
   @Batch(100)
   @ProcessInput
-  public void process(StreamEvent event) {
+  public void processEvents(StreamEvent event) {
     String text = Bytes.toString(Bytes.toBytes(event.getBody()));
     if (text != null) {
       metrics.count("data.processed.size", text.length());
       Tweet tweet = new Tweet(text, System.currentTimeMillis());
-      out.emit(tweet);
+      emit(tweet);
     } else {
       metrics.count("data.ignored.text", 1);
+    }
+  }
+
+  @Batch(100)
+  @ProcessInput
+  public void processTweets(Tweet tweet) {
+    emit(tweet);
+  }
+
+  private void emit(Tweet tweet) {
+    if (!disablePython) {
+      pythonOut.emit(tweet);
+    }
+    if (!disableJava) {
+      javaOut.emit(tweet);
     }
   }
 }
