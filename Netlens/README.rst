@@ -92,7 +92,7 @@ Ingest sample traffic data with anomalies::
 
   bin/ingest-anomalies.sh --host [host]
 
-Run Web UI::
+Run Web UI (optionally use -Dcdap.host=hostname and -Dcdap.port=port to point to CDAP, localhost:10000 is used by default)::
 
   mvn -Pweb jetty:run
   
