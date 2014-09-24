@@ -16,8 +16,6 @@ Flow Runtime Arguments
 ======================
 When start the ```analysis``` flow from the UI, runtime arguments can be specified.
 "disable.public" - Specify any value for this key in order to disable the source flowlet ```TweetCollector```.
-"disable.java" - Specify any value for this key in order to disable the java tweet analze flowlet ```JavaAnalyzer```.
-"disable.python" - Specify any value for this key in order to disable the python tweet analze flowlet ```PythonAnalyzer```.
 "oauth.consumerKey" - See ```Twitter Configuration``` above.
 "oauth.consumerSecret" - See ```Twitter Configuration``` above.
 "oauth.Token" - See ```Twitter Configuration``` above.
