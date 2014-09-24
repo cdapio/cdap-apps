@@ -36,6 +36,11 @@ SET ACCESS_TOKEN_FILE=%HOMEPATH%\.cdap.accesstoken
 if exist %ACCESS_TOKEN_FILE% set /p ACCESS_TOKEN=<%ACCESS_TOKEN_FILE%
 
 echo Sending events to %STREAM%...
+FOR /F "delims=" %%i IN (%APP_HOME%\resources\ratings.dat) DO (
+ SET data=%%i
+ SET data=!data:"=\"!
+ curl -H "Authorization: Bearer %ACCESS_TOKEN%" -sL -X POST --data "!data!" http://localhost:10000/v2/streams/%STREAM%
+)
 
 curl -H "Authorization: Bearer %ACCESS_TOKEN%" -sL -X POST --data-binary %APP_HOME%\resources\movies.dat http://localhost:10000/v2/apps/MovieSteer/services/MovieUploadService/methods/storemovies
 
