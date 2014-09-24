@@ -30,7 +30,7 @@ function get_auth_token() {
 }
 
 function usage() {
-  echo "Tool for sending data to the Netlens application"
+  echo "Tool for sending data to the SentimentAnalysis application"
   echo "Usage: $script [--host <hostname>]"
   echo ""
   echo "  Options"
@@ -40,7 +40,7 @@ function usage() {
 }
 
 gateway="localhost"
-stream="packets"
+stream="TweetStream"
 while [ $# -gt 0 ]
 do
   case "$1" in
@@ -54,7 +54,7 @@ get_auth_token
 
 OLD_IFS=IFS
 IFS=$'\n'
-lines=`cat "$bin"/../resources/anomalies.data`
+lines=`cat "$bin"/../resources/statements.data`
 for line in $lines
 do
   status=`curl -qSfsw "%{http_code}\\n" -H "Authorization: Bearer $auth_token" -X POST -d "$line" http://$gateway:10000/v2/streams/$stream`

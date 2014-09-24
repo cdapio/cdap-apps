@@ -19,3 +19,5 @@ out/
 .DS_Store
 ./lib/
 .idea
+
+twitter4j.properties
