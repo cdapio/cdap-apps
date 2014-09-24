@@ -19,10 +19,10 @@ REM ##
 REM #################################################################################
 
 REM Application Manager for managing application lifecycle for sentiment application 
-SET APP_JAR_PREFIX=sentiment
+SET APP_JAR_PREFIX=TwitterSentiment
 
-SET APP_NAME=sentiment
-SET FLOW_NAME=analysis
+SET APP_NAME=TwitterSentiment
+SET FLOW_NAME=TwitterSentimentAnalysis
 SET PROCEDURE_NAME=sentiment-query
 
 REM Set the base directory
