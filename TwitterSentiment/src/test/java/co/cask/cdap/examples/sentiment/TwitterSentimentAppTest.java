@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class TwitterSentimentAppTest extends TestBase {
 
   @Test
-  public void test() throws Exception {
+  public void testSentimentProcedure() throws Exception {
     try {
       ApplicationManager appManager = deployApplication(TwitterSentimentApp.class);
 
@@ -90,52 +90,24 @@ public class TwitterSentimentAppTest extends TestBase {
         response = procedureManager.getClient().query("sentiments", ImmutableMap.of("sentiment", "neutral"));
         result = new Gson().fromJson(response, new TypeToken<Map<String, Long>>() { }.getType());
         Assert.assertEquals(ImmutableSet.of("i am neutral to movie"), result.keySet());
+
+
+        // Verify the counts of the following sentiments
+        Map<String, String> sentiments = Maps.newHashMap();
+        sentiments.put("sentiments", "['positive','negative','neutral']");
+        response = procedureManager.getClient().query("counts", sentiments);
+
+        result = new Gson().fromJson(response, new TypeToken<Map<String, Long>>() { }.getType());
+        Assert.assertEquals(2, result.get("positive").intValue());
+        Assert.assertEquals(1, result.get("negative").intValue());
+        Assert.assertEquals(1, result.get("neutral").intValue());
       } finally {
         procedureManager.stop();
       }
     } finally {
       TimeUnit.SECONDS.sleep(1);
+      RuntimeStats.clearStats("");
       clear();
-    }
-  }
-
-  @Test
-  public void testCountsProcedure() throws Exception {
-    ApplicationManager appManager = deployApplication(TwitterSentimentApp.class);
-
-    Map<String, String> args = Maps.newHashMap();
-    args.put("disable.public", "true");
-    args.put("disable.java", "true");
-    FlowManager flowManager = appManager.startFlow(SentimentAnalysisFlow.FLOW_NAME, args);
-
-    try {
-      // Write a message to Stream
-      StreamWriter streamWriter = appManager.getStreamWriter(TwitterSentimentApp.STREAM_NAME);
-      streamWriter.send("i love movie");
-      streamWriter.send("i hate movie");
-      streamWriter.send("i am neutral to movie");
-      streamWriter.send("i am happy today that I got this working.");
-
-      // Wait for the last Flowlet processed all tokens
-      RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.APP_NAME, SentimentAnalysisFlow.FLOW_NAME, Update.UPDATE_FLOWLET_NAME);
-      countMetrics.waitForProcessed(4, 15, TimeUnit.SECONDS);
-    } finally {
-      flowManager.stop();
-    }
-
-    ProcedureManager procedureManager = appManager.startProcedure(SentimentQueryProcedure.PROCEDURE_NAME);
-    try {
-      Map<String, String> sentiments = Maps.newHashMap();
-      sentiments.put("sentiments","['positive','negative','neutral']");
-      String response = procedureManager.getClient().query("counts", sentiments);
-
-      // Verify the aggregates
-      Map<String, Long> result = new Gson().fromJson(response, new TypeToken<Map<String, Long>>() { }.getType());
-      Assert.assertEquals(2, result.get("positive").intValue());
-      Assert.assertEquals(1, result.get("negative").intValue());
-      Assert.assertEquals(1, result.get("neutral").intValue());
-    } finally {
-      procedureManager.stop();
     }
   }
 

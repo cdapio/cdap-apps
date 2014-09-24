@@ -22,7 +22,7 @@ script=`basename $0`
 user=$USER
 epoch=`date +%s`
 
-app="sentiment"
+app="TwitterSentiment"
 
 auth_token=
 auth_file="$HOME/.cdap.accesstoken"
@@ -144,6 +144,6 @@ if [ "x$action" == "xdeploy" ]; then
   jar_path=`ls $dir/../target/TwitterSentiment-*.jar`
   deploy_action $app $jar_path $host
 else
-  program_action $app "analysis" "flow" $action $host
+  program_action $app "TwitterSentimentAnalysis" "flow" $action $host
   program_action $app "sentiment-query" "procedure" $action $host
 fi
