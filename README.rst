@@ -2,7 +2,7 @@ CDAP Applications
 =================
 
 Collection of data applications built using `CDAP 
-<http://cdap.io/>`_ 
+<http://cdap.io/>`_.
 
 WISE: Web Analytics
   WISE Web Insights Engine analyzes behaviour of users of a web-site.
