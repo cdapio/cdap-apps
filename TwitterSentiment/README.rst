@@ -1,6 +1,6 @@
 TwitterSentiment
 =================
-TwitterSentiment Analysis application for CDAP.
+TwitterSentiment Analysis application for CDAP_.
 
 Overview
 --------
@@ -54,6 +54,7 @@ procedure exposes 3 endpoints:
 
 Installation & Usage
 ====================
+*Pre-Requisite*: Download and install CDAP_.
 
 Build the Application jar::
 
@@ -145,3 +146,5 @@ the License.
 
 
 .. |(SentimentFlow)| image:: docs/img/sentiment-flow.png
+
+.. _CDAP: http://cdap.io
