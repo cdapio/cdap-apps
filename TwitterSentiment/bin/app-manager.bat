@@ -23,7 +23,7 @@ SET APP_JAR_PREFIX=TwitterSentiment
 
 SET APP_NAME=TwitterSentiment
 SET FLOW_NAME=TwitterSentimentAnalysis
-SET PROCEDURE_NAME=sentiment-query
+SET PROCEDURE_NAME=SentimentQuery
 
 REM Set the base directory
 for %%i in ("%~dp0..\") do (SET APP_HOME=%%~dpi)
