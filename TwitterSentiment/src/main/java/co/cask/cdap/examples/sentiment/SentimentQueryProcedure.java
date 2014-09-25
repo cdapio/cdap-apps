@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 public class SentimentQueryProcedure extends AbstractProcedure {
   private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryProcedure.class);
   private static final Gson GSON = new Gson();
-  static final String PROCEDURE_NAME = "sentiment-query";
+  static final String PROCEDURE_NAME = "SentimentQuery";
 
   @UseDataSet(TwitterSentimentApp.TABLE_NAME)
   private Table sentiments;
