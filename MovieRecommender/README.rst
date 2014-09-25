@@ -5,41 +5,43 @@ Movie recommendation application for CDAP_.
 
 Overview
 --------
-The MovieRecommender recommends movies to users using collaborative filtering technique.
+The MovieRecommender application recommends movies to users using collaborative filtering.
 
-* The ``ratings`` and ``movies`` data is taken from `MovieLens Dataset <http://grouplens.org/datasets/movielens/>`_
+* The ``ratings`` and ``movies`` data is taken from the `MovieLens Dataset <http://grouplens.org/datasets/movielens/>`_
 * The recommendation engine is based on the ALS (Alternating Least Square) implementation in Apache Spark MLlib library.
 
 Implementation Details
 ----------------------
 
-There are number of components that compose MovieRecommender CDAP application.
+The MovieRecommender application is composed of the components:
 
 * ``Streams`` for ingesting ``ratings`` data into the system
-* ``Flowlet`` in a ``Flow`` which processes this ``ratings`` data and store them in a ``Dataset``
-* ``Service`` to store ``movies`` in ``Dataset``
-* ``Spark`` Program which builds a recommendation model using ALS algorithm and recommends movies for all the users
-* ``Procedure`` to query the application with userId to get recommendations for a particular user
+* A ``Flowlet`` in a ``Flow`` which processes the ``ratings`` data and stores them in a ``Dataset``
+* A ``Service`` to store ``movies`` in a ``Dataset``
+* A ``Spark`` Program which builds a recommendation model using the ALS algorithm and recommends
+  movies for all the users
+* A ``Procedure`` to query the application by ``userId`` to get recommendations for a particular user
 
 |(App)|
 
 
-Most interesting part that holds the logic behind building recommendations is RecommendationBuilder Spark program.
-It uses ALS (Alternating Least Squares) from Apache Spark's MLlib to train prediction model.
+The ``RecommendationBuilder`` Spark program contains the core logic for building the movie
+recommendations. It uses the ALS (Alternating Least Squares) algorithm from Apache Spark's MLlib
+to train the prediction model.
 
 |(RecommendationBuilder)| 
 
-First, RecommendationBuilder reads the ``ratings`` dataset and uses it to train the prediction model.
-Then, it computes RDD of not-rated movies using ``movies`` dataset and ``ratings`` dataset. It uses the prediction
-model to predict a score of not-rated movies and stores top 20 of highest scored movies for each user in 
-``recommendations`` dataset.
+First, ``RecommendationBuilder`` reads the ``ratings`` dataset and uses it to train the prediction
+model.  Then, it computes an RDD of not-rated movies using the ``movies`` dataset and the
+``ratings`` dataset. It uses the prediction model to predict a score for each not-rated movie and
+stores the top 20 highest scored movies for each user in the ``recommendations`` dataset.
 
 
 Installation & Usage
 ====================
 *Pre-Requisite*: Download and install CDAP_.
 
-From the project root, build ``MovieRecommender`` with the `Apache Maven <http://maven.apache.org/>`_ command::
+From the project root, build ``MovieRecommender`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
   MAVEN_OPTS="-Xmx512m" mvn clean package
   
@@ -47,11 +49,12 @@ Deploy the Application to a CDAP instance defined by its host (defaults to local
 
   bin/app-manager.sh --host [host] --action deploy
   
-Start Application Flows, Services and Procedures::
+Start the Application Flows, Services and Procedures::
 
   bin/app-manager.sh --host [host] --action start
   
-Make sure that Flows, Services and Procedures are running (nate that RecommendationBuilder Spark program will be started later)::
+Make sure that the Flows, Services and Procedures are running (note that the
+``RecommendationBuilder`` Spark program will be started later)::
 
   bin/app-manager.sh --host [host] --action status
   
@@ -63,11 +66,12 @@ Run the ``RecommendationBuilder`` Spark Program::
 
   bin/app-manager.sh --host [host] --action run
 
-Spark program may take couple of minutes to complete. You can check the status by (once done, it becomes STOPPED)::
+The Spark program may take a couple of minutes to complete. You can check if it is complete by its
+status (once done, it becomes STOPPED)::
 
   bin/app-manager.sh --host [host] --action status
   
-Once the Spark program is completed, you can query for recommendations via an HTTP request using the ``curl`` command::
+Once the Spark program is complete, you can query for recommendations via an HTTP request using the ``curl`` command::
 
   curl -v -d '{"userId":"1"}' \
   -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
@@ -77,13 +81,13 @@ On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the ex
   libexec\curl -v -d '{"userId":"1"}' \
   -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
   
-This will return a JSON of rated and recommended movies::
+This will return a JSON response of rated and recommended movies::
 
   {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
 
-Alternatively, you can use CDAP Console Procedure page to execute queries above.
+Alternately, you can use the CDAP Console Procedure page to execute the queries above.
 
-To stop the application execute::
+To stop the application, execute::
 
   bin/app-manager.sh --host [host] --action stop
 
@@ -93,11 +97,15 @@ License
 
 Copyright © 2014 Cask Data, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+in compliance with the License. You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License
+is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied. See the License for the specific language governing permissions and limitations under
+the License.
 
 
 .. |(App)| image:: docs/img/App.png
