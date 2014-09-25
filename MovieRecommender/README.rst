@@ -15,7 +15,7 @@ Implementation Details
 
 There are number of components that compose MovieRecommender CDAP application.
 
-* Streams for ingesting ``ratings`` data into the system
+* ``Streams`` for ingesting ``ratings`` data into the system
 * ``Flowlet`` in a ``Flow`` which processes this ``ratings`` data and store them in a ``Dataset``
 * ``Service`` to store ``movies`` in ``Dataset``
 * ``Spark`` Program which builds a recommendation model using ALS algorithm and recommends movies for all the users
@@ -32,7 +32,7 @@ Most interesting part that holds the logic behind building recommendations is Re
 
 Installation & Usage
 ====================
-From the project root, build ``MovieSteer`` with the [Apache Maven](http://maven.apache.org) command::
+From the project root, build ``MovieRecommender`` with the [Apache Maven](http://maven.apache.org) command::
 
   MAVEN_OPTS="-Xmx512m" mvn clean package
   
