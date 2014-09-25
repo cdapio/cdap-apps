@@ -49,7 +49,7 @@ Start Application Flows, Services and Procedures::
 
   bin/app-manager.sh --host [host] --action start
   
-Make sure that Flows, Services and Procedures are running. We will start Spark program later::
+Make sure that Flows, Services and Procedures are running (nate that RecommendationBuilder Spark program will be started later)::
 
   bin/app-manager.sh --host [host] --action status
   
