@@ -28,8 +28,6 @@ Most interesting part that holds the logic behind building recommendations is Re
 
 |(RecommendationBuilder)|
 
-
-
 Installation & Usage
 ====================
 From the project root, build ``MovieRecommender`` with the `Apache Maven <http://maven.apache.org/>`_ command::
@@ -69,6 +67,10 @@ Send a query via an HTTP request using the ``curl`` command. For example::
 On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the example::
 
   libexec\curl -v -d '{"userId":"1"}' \ -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
+  
+This will return a JSON of rated and recommended movies::
+
+  {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
 
 Stop the application::
 
