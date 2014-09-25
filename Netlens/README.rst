@@ -1,7 +1,7 @@
 Netlens
 =======
 
-Network traffic analytics application.
+Network traffic analytics application for CDAP_.
 
 Overview
 --------
@@ -67,6 +67,7 @@ stats and fill in the anomalies history log.
 
 Installation & Usage
 ====================
+*Pre-Requisite*: Download and install CDAP_.
 
 Build the Application jar::
 
@@ -117,3 +118,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 .. |(IPDetails)| image:: docs/img/ipDetails.png
 
 .. |(AnalyticsFlow)| image:: docs/img/analyticsFlow.png
+
+.. _CDAP: http://cdap.io

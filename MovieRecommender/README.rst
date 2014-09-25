@@ -1,7 +1,7 @@
 MovieRecommender
 ================
 
-Movie recommendation application
+Movie recommendation application for CDAP_.
 
 Overview
 --------
@@ -37,6 +37,8 @@ model to predict a score of not-rated movies and stores top 20 of highest scored
 
 Installation & Usage
 ====================
+*Pre-Requisite*: Download and install CDAP_.
+
 From the project root, build ``MovieRecommender`` with the `Apache Maven <http://maven.apache.org/>`_ command::
 
   MAVEN_OPTS="-Xmx512m" mvn clean package
@@ -101,3 +103,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 .. |(App)| image:: docs/img/App.png
 
 .. |(RecommendationBuilder)| image:: docs/img/RecommendationBuilder.png
+
+.. _CDAP: http://cdap.io
