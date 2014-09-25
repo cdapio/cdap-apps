@@ -7,7 +7,7 @@ Overview
 The TwitterSentiment application analyzes the sentiments of Twitter tweets and categorizes them as
 either positive, negative or neutral.  Key features include:
 
-- Real-time collection of data from Twitter (requires `Twitter Configuration`_ to be setup)
+- Real-time collection of data from Twitter (with optional `Twitter Configuration`_)
 - Real-time statistics on analyzed tweets with breakdown by sentiment
 
 Implementation Details
@@ -84,13 +84,15 @@ Run Web UI::
 
 Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSentiment/
 
-Configuration
-=============
+Processing Real-time Twitter Data
+=================================
+In addition to processing the sample statements bundled with the application, the
+``SentimentAnalysisFlow`` can be configured to retrieve real-time data from Twitter.
 
 Twitter Configuration
 ---------------------
 In order to utilize the ``TweetCollector`` flowlet, which pulls a small sample stream via the Twitter
-API, the Twitter API key and Access token to use must be configured. Follow the steps provided by
+API, a Twitter API key and Access token must be obtained and configured. Follow the steps provided by
 Twitter to obtain `OAuth access tokens`_.
 
 .. _OAuth access tokens: https://dev.twitter.com/oauth/overview/application-owner-access-tokens
@@ -102,10 +104,10 @@ argument as described below.
 Flow Runtime Arguments
 ----------------------
 When starting the ``SentimentAnalysisFlow`` flow from the UI, runtime arguments can be
-specified to enable tweet collection.  To add runtime arguments, click on the gear icon above
-shown above and to the right of the flow display.
+specified to enable tweet collection.  To add runtime arguments, click on the gear icon shown in
+the upper-right of the flow display.
 
-The following arguments are supported:
+These arguments are supported:
 
 .. list-table::
    :widths: 20 80
