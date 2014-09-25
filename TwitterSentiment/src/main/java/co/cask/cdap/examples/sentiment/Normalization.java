@@ -35,8 +35,6 @@ import java.util.Map;
  */
 public class Normalization extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
-  private boolean disableJava;
-  private boolean disablePython;
 
   /**
    * Emitters for emitting sentences from this Flowlet.
@@ -44,18 +42,13 @@ public class Normalization extends AbstractFlowlet {
   @Output("python")
   private OutputEmitter<Tweet> pythonOut;
 
-  @Output("java")
-  private OutputEmitter<Tweet> javaOut;
-
   /**
    * Handler to emit metrics.
    */
   Metrics metrics;
 
   public void initialize(FlowletContext context) throws Exception {
-    Map<String, String> args = context.getRuntimeArguments();
-    disablePython = args.containsKey("disable.python");
-    disableJava = args.containsKey("disable.java");
+    // no-op
   }
 
 
@@ -79,11 +72,6 @@ public class Normalization extends AbstractFlowlet {
   }
 
   private void emit(Tweet tweet) {
-    if (!disablePython) {
-      pythonOut.emit(tweet);
-    }
-    if (!disableJava) {
-      javaOut.emit(tweet);
-    }
+    pythonOut.emit(tweet);
   }
 }

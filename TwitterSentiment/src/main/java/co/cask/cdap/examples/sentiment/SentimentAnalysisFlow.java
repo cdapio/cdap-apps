@@ -32,15 +32,12 @@ public class SentimentAnalysisFlow implements Flow {
         .add(new TweetCollector())
         .add(new Normalization())
         .add(new PythonAnalyzer())
-        .add(new JavaAnalyzer())
         .add(new Update())
       .connect()
         .fromStream(TwitterSentimentApp.STREAM_NAME).to(new Normalization())
-        .from(new Normalization()).to(new JavaAnalyzer())
         .from(new Normalization()).to(new PythonAnalyzer())
         .from(new TweetCollector()).to(new Normalization())
         .from(new PythonAnalyzer()).to(new Update())
-        .from(new JavaAnalyzer()).to(new Update())
       .build();
   }
 
