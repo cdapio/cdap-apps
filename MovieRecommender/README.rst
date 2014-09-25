@@ -25,8 +25,15 @@ There are number of components that compose MovieRecommender CDAP application.
 
 
 Most interesting part that holds the logic behind building recommendations is RecommendationBuilder Spark program.
+It uses ALS (Alternating Least Squares) from Apache Spark's MLlib to train prediction model.
 
-|(RecommendationBuilder)|
+|(RecommendationBuilder)| 
+
+First, RecommendationBuilder reads the ``ratings`` dataset and uses it to train the prediction model.
+Then, it computes RDD of not-rated movies using ``movies`` dataset and ``ratings`` dataset. It uses the prediction
+model to predict a score of not-rated movies and stores top 20 of highest scored movies for each user in 
+``recommendations`` dataset.
+
 
 Installation & Usage
 ====================
@@ -54,19 +61,19 @@ Run the ``RecommendationBuilder`` Spark Program::
 
   bin/app-manager.sh --host [host] --action run
 
-Spark program will take some time to complete. You can check the status by::
+Spark program may take couple of minutes to complete. You can check the status by (once done, it becomes STOPPED)::
 
   bin/app-manager.sh --host [host] --action status
   
-Query for recommendations
+Once the Spark program is completed, you can query for recommendations via an HTTP request using the ``curl`` command::
 
-Send a query via an HTTP request using the ``curl`` command. For example::
-
-  curl -v -d '{"userId":"1"}' \ -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
+  curl -v -d '{"userId":"1"}' \
+  -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
 
 On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the example::
 
-  libexec\curl -v -d '{"userId":"1"}' \ -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
+  libexec\curl -v -d '{"userId":"1"}' \
+  -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
   
 This will return a JSON of rated and recommended movies::
 
@@ -76,7 +83,6 @@ Stop the application::
 
   bin/app-manager.sh --host [host] --action stop
 
-:Note: ``[--host ]`` is not available for a *Standalone CDAP*.
 
 License
 =======
