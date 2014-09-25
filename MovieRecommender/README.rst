@@ -43,7 +43,7 @@ Start Application Flows, Services and Procedures::
 
   bin/app-manager.sh --host [host] --action start
   
-Make sure they are running::
+Make sure that Flows, Services and Procedures are running. We will start Spark program later::
 
   bin/app-manager.sh --host [host] --action status
   
@@ -53,7 +53,7 @@ Ingest ``ratings`` and ``movies`` data::
 
 Run the ``RecommendationBuilder`` Spark Program::
 
-  bin/app-manager.sh --action run
+  bin/app-manager.sh --host [host] --action run
 
 Query for recommendations
 
@@ -68,7 +68,7 @@ On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the ex
 
 Stop the application::
 
-  bin/app-manager.sh --action stop [--host <hostname>]
+  bin/app-manager.sh --host [host] --action stop
 
 :Note: ``[--host ]`` is not available for a *Standalone CDAP*.
 
