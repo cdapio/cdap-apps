@@ -20,7 +20,7 @@ import co.cask.cdap.api.service.AbstractService;
 import co.cask.cdap.api.service.Service;
 
 /**
- * A {@link Service} to submit movies dictionary
+ * A {@link Service} that provides access to movies dictionary.
  */
 public class MovieDictionaryService extends AbstractService {
   @Override

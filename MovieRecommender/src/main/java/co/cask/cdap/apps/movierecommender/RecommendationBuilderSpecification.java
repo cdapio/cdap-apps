@@ -31,8 +31,8 @@ public class RecommendationBuilderSpecification extends AbstractSpark {
   @Override
   public SparkSpecification configure() {
     return SparkSpecification.Builder.with()
-      .setName("MovieRecommenderSparkProgram")
-      .setDescription("A movie recommendation app")
+      .setName("RecommendationBuilder")
+      .setDescription("Spark program that computes movie recommendations.")
       .setMainClassName(RecommendationBuilder.class.getName())
       .build();
   }

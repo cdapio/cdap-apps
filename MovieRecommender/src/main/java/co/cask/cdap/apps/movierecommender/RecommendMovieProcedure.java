@@ -62,13 +62,12 @@ public class RecommendMovieProcedure extends AbstractProcedure {
     byte[] userID = Bytes.toBytes(Integer.parseInt(userId));
 
     Iterator<KeyValue<byte[], UserScore>> userRatings = ratings.scan(userID, Bytes.stopKeyForPrefix(userID));
-    Iterator<KeyValue<byte[], Rating>> userPredictions = recommendations.scan(userID, Bytes.stopKeyForPrefix(userID));
-
     if (!userRatings.hasNext()) {
       responder.error(ProcedureResponse.Code.NOT_FOUND, String.format("No ratings found for user %s", userId));
       return;
     }
 
+    Iterator<KeyValue<byte[], Rating>> userPredictions = recommendations.scan(userID, Bytes.stopKeyForPrefix(userID));
     if (!userPredictions.hasNext()) {
       responder.error(ProcedureResponse.Code.NOT_FOUND, String.format("No recommendations found for user %s", userId));
       return;
@@ -78,8 +77,8 @@ public class RecommendMovieProcedure extends AbstractProcedure {
   }
 
   /**
-   * Pepares a json sting of watched and recommended movies in the following format:
-   * {"Watched":["ratedMovie1","ratedMovie1"],"Recommended":["recommendedMovie1","recommendedMovie2"]}
+   * Prepares a json sting of watched and recommended movies in the following format:
+   * {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
    * @param userRatings user given rating to movies
    * @param userPredictions movie recommendation to user with predicted rating
    * @return {@link JsonObject} of watched and recommended movies
@@ -100,8 +99,8 @@ public class RecommendMovieProcedure extends AbstractProcedure {
     }
 
     JsonObject response = new JsonObject();
-    response.add("Watched", watched);
-    response.add("Recommended", recommended);
+    response.add("rated", watched);
+    response.add("recommended", recommended);
 
     return response;
   }

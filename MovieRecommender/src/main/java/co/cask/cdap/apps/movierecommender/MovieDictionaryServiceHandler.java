@@ -18,11 +18,11 @@ package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.common.Bytes;
-import co.cask.cdap.api.dataset.Dataset;
 import co.cask.cdap.api.dataset.lib.ObjectStore;
 import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
+import com.google.common.base.Charsets;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.ByteBuffer;
@@ -31,26 +31,25 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 /**
- * Class which handles the movies file submission by parsing and storing it in a {@link Dataset}
+ * Handler that exposes HTTP API to update movie dictionary
  */
 public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
-
   private static final Pattern NEWLINE_DELIMITER = Pattern.compile("[\\r\\n]+");
+  private static final Pattern FIELDS_DELIMITER = Pattern.compile("::");
 
   @UseDataSet("movies")
-  private ObjectStore<String> moviesStore;
+  private ObjectStore<String> movies;
 
   @Path("storemovies")
   @POST
   public void uploadHandler(HttpServiceRequest request, HttpServiceResponder responder) {
-
     ByteBuffer requestContents = request.getContent();
     if (requestContents == null) {
       responder.sendError(HttpResponseStatus.NO_CONTENT.code(), "Movies information is empty.");
       return;
     }
 
-    String moviesData = MovieRecommenderApp.CHARSET_UTF8.decode(requestContents).toString();
+    String moviesData = Charsets.UTF_8.decode(requestContents).toString();
 
     if (parseAndStoreMovies(moviesData)) {
       responder.sendStatus(HttpResponseStatus.OK.code());
@@ -61,13 +60,13 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
 
   private boolean parseAndStoreMovies(String moviesData) {
     boolean validRequest = false;
-    String[] movies = NEWLINE_DELIMITER.split(moviesData.trim());
+    String[] lines = NEWLINE_DELIMITER.split(moviesData.trim());
 
-    for (String movie : movies) {
-      String[] movieInfo = MovieRecommenderApp.RAW_DATA_DELIMITER.split(movie.trim());
+    for (String movie : lines) {
+      String[] movieInfo = FIELDS_DELIMITER.split(movie.trim());
       if (!movieInfo[0].isEmpty() && !movieInfo[1].isEmpty()) {
         validRequest = true;
-        moviesStore.write(Bytes.toBytes(Integer.parseInt(movieInfo[0])), movieInfo[1]);
+        movies.write(Bytes.toBytes(Integer.parseInt(movieInfo[0])), movieInfo[1]);
       }
     }
     return validRequest;

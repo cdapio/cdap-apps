@@ -27,13 +27,9 @@ import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 /**
- * Movie Recommendation App which makes movie recommendation from known user ratings using Spark's {@link ALS} model
+ * Application that provides movie recommendations to users.
  */
 public class MovieRecommenderApp extends AbstractApplication {
-
-  static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
-  static final Pattern RAW_DATA_DELIMITER = Pattern.compile("::");
-
   @Override
   public void configure() {
     setName("MovieRecommender");
