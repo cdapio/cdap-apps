@@ -4,16 +4,16 @@ CDAP Applications
 Collection of data applications built using `CDAP 
 <http://cdap.io/>`_.
 
-WISE: Web Analytics
+`WISE </Wise/>`_: Web Analytics
   WISE Web Insights Engine analyzes behaviour of users of a web-site.
 
-Netlens: Network Analytics
+`Netlens </Netlens/>`_: Network Analytics
   The Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns
 
-TwitterSentiment: Social Analytics
+`TwitterSentiment </TwitterSentiment/>`_: Social Analytics
   TwitterSentiment performs sentiment analysis on Twitter data to understand consumer feelings and attitudes towards brands or topics in online conversations.
 
-MovieRecommender: Recommender System
+`MovieRecommender </MovieRecommender/>`_: Recommender System
   MovieRecommender application uses collaborative filtering to provide movie recommendations for users.
 
 License
