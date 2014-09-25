@@ -18,14 +18,16 @@ There are number of components that compose MovieRecommender CDAP application.
 |(App)|
 
 * Streams for ingesting ``ratings`` data into the system
-* A ``Flowlet`` in a ``Flow`` which processes this ``ratings`` data and store them in a ``Dataset``
-
+* ``Flowlet`` in a ``Flow`` which processes this ``ratings`` data and store them in a ``Dataset``
+* ``Service`` to store ``movies`` in ``Dataset``
+* ``Spark`` Program which builds a recommendation model using ALS algorithm and recommends movies for all the users
+* ``Procedure`` to query the application with userId to get recommendations for a particular user
 
 Most interesting part that holds the logic behind building recommendations is RecommendationBuilder Spark program.
 
 |(RecommendationBuilder)|
 
-The program does bla-bla-bla.
+
 
 Installation & Usage
 ====================
