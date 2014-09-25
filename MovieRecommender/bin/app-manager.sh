@@ -141,13 +141,14 @@ fi
 get_auth_token
 
 if [ "x$action" == "xdeploy" ]; then
-  jar_path=`ls $dir/../target/MovieSteer-*.jar`
+  jar_path=`ls $dir/../target/MovieRecommender-*.jar`
   deploy_action $app $jar_path $host
 elif [ "x$action" == "xrun" ]; then
   program_action $app "RecommendationBuilder" "spark" "start" $host
 else
   program_action $app "RatingsFlow" "flow" $action $host
   program_action $app "RecommendMovieProcedure" "procedure" $action $host
+  program_action $app "MovieDictionaryService" "service" $action $host
   if [ "x$action" == "xstatus" ]; then
     program_action $app "RecommendationBuilder" "spark" $action $host
   fi
