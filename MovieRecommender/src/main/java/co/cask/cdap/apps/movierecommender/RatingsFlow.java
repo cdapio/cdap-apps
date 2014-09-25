@@ -21,7 +21,7 @@ import co.cask.cdap.api.flow.Flow;
 import co.cask.cdap.api.flow.FlowSpecification;
 
 /**
- * {@link Flow} that consumes ratings from a Stream and stores them in a {@link Dataset}
+ * A {@link Flow} that consumes user ratings from a Stream and stores them in a {@link Dataset}
  */
 public class RatingsFlow implements Flow {
 
@@ -31,9 +31,9 @@ public class RatingsFlow implements Flow {
       .setName("RatingsFlow")
       .setDescription("Reads ratings information and stores in dataset")
       .withFlowlets()
-      .add("reader", new RatingReader())
+      .add("writer", new RatingWriter())
       .connect()
-      .fromStream("ratingsStream").to("reader")
+      .fromStream("ratingsStream").to("writer")
       .build();
   }
 }

@@ -28,27 +28,29 @@ import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * {@link Flowlet} that reads ratings from a {@link Stream} and saves them to a {@link Dataset}
- */
-public class RatingReader extends AbstractFlowlet {
+import java.util.regex.Pattern;
 
-  private static final Logger LOG = LoggerFactory.getLogger(RatingReader.class);
+/**
+ * A {@link Flowlet} that reads ratings from a {@link Stream} and saves them to a {@link Dataset}
+ */
+public class RatingWriter extends AbstractFlowlet {
+  private static final Pattern FIELDS_DELIMITER = Pattern.compile("::");
+  private static final Logger LOG = LoggerFactory.getLogger(RatingWriter.class);
 
   @UseDataSet("ratings")
-  private ObjectStore<UserScore> ratingsStore;
+  private ObjectStore<UserScore> ratings;
 
   @ProcessInput
   public void process(StreamEvent event) {
     String body = new String(event.getBody().array());
     LOG.trace("Ratings info: {}", body);
 
-    String[] ratingData = MovieRecommenderApp.RAW_DATA_DELIMITER.split(body.trim());
+    String[] ratingData = FIELDS_DELIMITER.split(body.trim());
     UserScore userScore = new UserScore(Integer.parseInt(ratingData[0]), Integer.parseInt(ratingData[1]),
                                         Integer.parseInt(ratingData[2]));
 
     // key is userID+movieID
     byte[] key = Bytes.add(Bytes.toBytes(userScore.getUserID()), Bytes.toBytes(userScore.getMovieID()));
-    ratingsStore.write(key, userScore);
+    ratings.write(key, userScore);
   }
 }

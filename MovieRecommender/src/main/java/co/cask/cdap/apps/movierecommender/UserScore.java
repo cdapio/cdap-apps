@@ -19,7 +19,7 @@ package co.cask.cdap.apps.movierecommender;
 import java.io.Serializable;
 
 /**
- * Class to represent user's ratings for different movies
+ * Represents user's ratings for different movies
  */
 public class UserScore implements Serializable {
 
