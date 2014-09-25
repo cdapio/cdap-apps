@@ -7,12 +7,13 @@ Overview
 The TwitterSentiment application analyzes the sentiments of Twitter tweets and categorizes them as
 either positive, negative or neutral.  Key features include:
 
-- Real-time collection of data from Twitter (requires `Twitter Configuration` to be setup)
+- Real-time collection of data from Twitter (requires `Twitter Configuration`_ to be setup)
 - Real-time statistics on analyzed tweets with breakdown by sentiment
 
 Implementation Details
 ----------------------
 The TwitterSentiment application is primarily composed of:
+
 - A stream for ingesting data into the system
 - ``SentimentAnalysisFlow`` - collects and emits tweets based upon a sample stream from
   Twitter, analyzes the sentiment of the text, and stores the results. 
@@ -88,7 +89,7 @@ Configuration
 
 Twitter Configuration
 ---------------------
-In order to utilize the TweetCollector flowlet, which pulls a small sample stream via the Twitter
+In order to utilize the ``TweetCollector`` flowlet, which pulls a small sample stream via the Twitter
 API, the Twitter API key and Access token to use must be configured. Follow the steps provided by
 Twitter to obtain `OAuth access tokens`_.
 
@@ -100,8 +101,11 @@ argument as described below.
 
 Flow Runtime Arguments
 ----------------------
-When starting the ``TwitterSentimentAnalysis`` flow from the UI, the following runtime arguments
-can be specified:
+When starting the ``SentimentAnalysisFlow`` flow from the UI, runtime arguments can be
+specified to enable tweet collection.  To add runtime arguments, click on the gear icon above
+shown above and to the right of the flow display.
+
+The following arguments are supported:
 
 .. list-table::
    :widths: 20 80
@@ -112,17 +116,14 @@ can be specified:
    * - ``disable.public``
      - Specify any value for this key in order to disable the source flowlet ``TweetCollector``.
    * - ``oauth.consumerKey``
-     - Use the value shown under "Application Settings" -> "API key" from the `Twitter
-       Configuration`_ setup.
+     - Use the value shown under "Application Settings" -> "API key" from Twitter Configuration 
    * - ``oauth.consumerSecret``
-     - Use the value shown under "Application Settings" -> "API secret" from the `Twitter
-       Configuration`_ setup.
+     - Use the value shown under "Application Settings" -> "API secret" from Twitter Configuration 
    * - ``oauth.accessToken``
-     - Use the value shown under "Your access token" -> "Access token" from the `Twitter
-       Configuration`_ setup.
+     - Use the value shown under "Your access token" -> "Access token" from Twitter Configuration
    * - ``oauth.accessTokenSecret``
-     - Use the value shown under "Your access token" -> "Access token secret" from the `Twitter
-       Configuration`_ setup.
+     - Use the value shown under "Your access token" -> "Access token secret" from Twitter
+       Configuration 
 
 
 License
