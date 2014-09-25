@@ -6,7 +6,7 @@
 
   <groupId>co.cask.cdap.apps</groupId>
   <artifactId>Wise</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Web Insights Engine Application</name>
 
