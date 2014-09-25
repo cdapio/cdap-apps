@@ -6,20 +6,21 @@ Network traffic analytics application for CDAP_.
 Overview
 --------
 
-The Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns. Primary features:
+The Netlens application analyzes network packets to provide insights on traffic statistics, and
+detects anomalies in traffic patterns. The primary features are:
 
-* Use real-time raw network packets data as a data source
-* Provide real-time statistics on overall traffic with breakdown by source IPs
+* Uses real-time raw network packet data as a data source
+* Provides real-time statistics on overall traffic with a breakdown by source IP
 
-  - Identify source IPs that originate most traffic
-* Detect at real-time anomalies in traffic patterns
+  - Identifies source IPs originating the most traffic
+* Detects anomalies in traffic patterns in real-time
 
-  - Use different combinations of network packet attributes, 
-    e.g. detect unusual increase in UDP traffic originated from particular source IP
-* Allow drilling down into detected anomalies details for inspection
-* Provide overview of traffic stats and anomalies stats for selected source IP
+  - Uses different combinations of network packet attributes, 
+    e.g. detects an unusual increase in UDP traffic originated from particular source IP
+* Allows drilling down into detected anomalies' details for inspection
+* Provides an overview of traffic stats and anomaly stats for a selected source IP
 
-Example output of the application can be seen on the following screenshots.
+Sample output of the application can be seen on the following screenshots.
 
 *Dashboard View*
 
@@ -33,36 +34,39 @@ Example output of the application can be seen on the following screenshots.
 
 |(IPDetails)|
 
-The Dashboard page provides high-level real-time overview of traffic stats, detected anomalies with breakdown by IPs. The Anomalies page exposes more details on anomalies detected. Selecting an anomaly or IP in the tables brings user to the IP Details page, where he or she can inspect detected anomalies further.
+The Dashboard page provides a high-level, real-time overview of traffic stats, with detected anomalies
+broken down by IP. The Anomalies page exposes more details on the anomalies detected. Selecting an
+anomaly or IP in one of the tables brings the user to the IP Details page, where they can inspect
+detected anomalies further.
 
 Implementation Details
 ----------------------
 
-There are number of components that compose Netlens CDAP application:
+The Netlens application contains the following components:
 
-* Stream for ingesting data into the system
-* Flow to perform real-time analytics on the incoming data
+* A Stream for ingesting data into the system
+* A Flow to perform real-time analytics on the incoming data
 * Datasets to provide persistence for analytics algorithms and store results
 * Procedures to serve data to a front-end
-* Thin web UI
+* A thin web UI
 
-The main part of the application is ``analyticsFlow`` that performs network packet analysis.
+The main part of the application is ``AnalyticsFlow``, which performs network packet analysis.
 
 |(AnalyticsFlow)|
 
-The flow gets data from the stream where each event represents a 
-network packet with attributes like source IP, port, protocol type and others. 
-JSON-encoded packet details are parsed in ``fact-parser`` flowlet and converted into 
-a Fact Java object (timestamp + map of field name to value) that is passed along the rest of the flow. 
-``traffic-count`` flowlet takes stream of facts to compute traffic stats.
+The flow gets data from the stream, where each event represents a network packet with attributes
+like source IP, port, protocol type and others.  JSON-encoded packet details are parsed in the
+``fact-parser`` flowlet, and converted into a ``Fact`` Java object (containing a timestamp plus
+map of field name to value) that is passed along to the rest of the flow. The ``traffic-count``
+flowlet takes a stream of facts as input to compute traffic stats.
 
-Before applying anomaly detection algorithm in ``anomaly-detect`` flowlet, 
-the numeric values of attributes are categorized in ``categorize-numbers`` flowlet and
-additional facts are generated based on different combinations of attributes in ``anomaly-fanout`` flowlet.
-This keeps anomaly detection algorithm simple and allows controlling which combinations of 
-attributes are interesting to the analysis.
+Before applying an anomaly detection algorithm in the ``anomaly-detect`` flowlet, 
+the numeric values of attributes are categorized in the ``categorize-numbers`` flowlet, and
+additional facts are generated, based on the different combinations of attributes in the
+``anomaly-fanout`` flowlet.  This keeps the anomaly detection algorithm simple, and allows
+controlling which combinations of attributes are interesting to the analysis.
 
-``anomaly-count`` flowlet consumes detected anomalies and uses their details to compute 
+The ``anomaly-count`` flowlet consumes detected anomalies, and uses their details to compute 
 stats and fill in the anomalies history log.
 
 Installation & Usage
@@ -77,7 +81,7 @@ Deploy the Application to a CDAP instance defined by its host (defaults to local
 
   bin/app-manager.sh --host [host] --action deploy
 
-Start Application Flows and Procedures::
+Start the Application Flows and Procedures::
 
   bin/app-manager.sh --host [host] --action start
 
@@ -93,7 +97,8 @@ Ingest sample traffic data with anomalies::
 
   bin/ingest-anomalies.sh --host [host]
 
-Run Web UI (optionally use -Dcdap.host=hostname and -Dcdap.port=port to point to CDAP, localhost:10000 is used by default)::
+Run the Web UI (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to CDAP,
+localhost:10000 is used by default)::
 
   mvn -Pweb jetty:run
   
@@ -104,11 +109,15 @@ License
 
 Copyright © 2014 Cask Data, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+in compliance with the License. You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License
+is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied. See the License for the specific language governing permissions and limitations under
+the License.
 
 
 .. |(Dashboard)| image:: docs/img/dashboard.png
