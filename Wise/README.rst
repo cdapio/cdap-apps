@@ -363,7 +363,7 @@ We also define the graph of their connections:
 Here is how ``WiseFlow`` looks in the CDAP Console:
 
 .. image:: docs/img/wise_flow.png
-:width: 6in
+   :width: 6in
 
 Batch Processing of Logs with WiseWorkflow
 ==========================================
