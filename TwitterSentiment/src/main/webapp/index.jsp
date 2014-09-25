@@ -14,10 +14,12 @@
   ~ License for the specific language governing permissions and limitations under
   ~ the License.
   -->
-      <!-- Bootstrap core JavaScript -->
-      <script src="third_party/jquery-1.9.1.js"></script>
+	    <script src="js/jquery.js"></script>
       <script src="third_party/bootstrap.js"></script>
       <script src="js/main.js"></script>
+      <!--[if lte IE 8]><script src="js/excanvas.min.js"></script><![endif]-->
+      <script src="js/jquery.flot.js"></script></head>
+      <script src="js/jquery.flot.time.js"></script></head>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -29,14 +31,7 @@
     <link rel="stylesheet" href="./css/bootstrap.css" type="text/css" >
     <!-- Add custom CSS here -->
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-	    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
-      <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
-      <script language="javascript" type="text/javascript" src="js/jquery.flot.time.js"></script></head>
 
-    <script type="text/javascript">
-
-    	</script>
   </head>
   <body>
     <h1 style="padding-left:20px;">  <small>Twitter Sentiment Analysis Overview</small></h1>
@@ -46,7 +41,7 @@
       <div id="page-wrapper">
         <div class="col" style="min-width:10%; float:left;">
           <div class="row-lg-3">
-            <div class="panel panel-info">
+            <div class="panel panel-gray">
               <div class="panel-heading processed">
                 <div class="row">
                   <div class="col-xs-6 text-right">
@@ -82,7 +77,7 @@
             </div>
           </div>
           <div class="row-lg-3">
-              <div class="panel panel-gray">
+              <div class="panel panel-info">
                   <div class="panel-heading panel" id="neutral-sentences-panel">
                       <div class="row">
                           <div class="col-xs-6 text-right">
@@ -106,7 +101,7 @@
     <div style="clear: both"></div>
 
         <div class="row">
-          <div class="" style="max-width:33%; padding:5px; float:left;">
+          <div class="" style="width:33%; padding:5px; float:left;">
             <div class="panel panel-primary">
               <div class="panel-heading" id="panel-positive">
                 <h3 class="panel-title">Most Recent Positive Sentences</h3>
@@ -127,7 +122,7 @@
               </div>
             </div>
           </div>
-          <div class="" style="max-width:33%; padding:5px; float:left;">
+          <div class="" style="width:33%; padding:5px; float:left;">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="panel-negative">
                       <h3 class="panel-title">Most Recent Negative Sentences</h3>
@@ -148,7 +143,7 @@
                   </div>
               </div>
           </div>
-          <div class="" style="max-width:33%; padding:5px;  float:left;">
+          <div class="" style="width:33%; padding:5px;  float:left;">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="panel-neutral">
                       <h3 class="panel-title">Most Recent Neutral Sentences</h3>
