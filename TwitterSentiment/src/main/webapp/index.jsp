@@ -14,10 +14,12 @@
   ~ License for the specific language governing permissions and limitations under
   ~ the License.
   -->
-      <!-- Bootstrap core JavaScript -->
-      <script src="third_party/jquery-1.9.1.js"></script>
+	    <script src="js/jquery.js"></script>
       <script src="third_party/bootstrap.js"></script>
       <script src="js/main.js"></script>
+      <!--[if lte IE 8]><script src="js/excanvas.min.js"></script><![endif]-->
+      <script src="js/jquery.flot.js"></script></head>
+      <script src="js/jquery.flot.time.js"></script></head>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -29,14 +31,7 @@
     <link rel="stylesheet" href="./css/bootstrap.css" type="text/css" >
     <!-- Add custom CSS here -->
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-	    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
-      <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
-      <script language="javascript" type="text/javascript" src="js/jquery.flot.time.js"></script></head>
 
-    <script type="text/javascript">
-
-    	</script>
   </head>
   <body>
     <h1 style="padding-left:20px;">  <small>Twitter Sentiment Analysis Overview</small></h1>
