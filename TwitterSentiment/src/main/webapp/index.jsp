@@ -41,7 +41,7 @@
       <div id="page-wrapper">
         <div class="col" style="min-width:10%; float:left;">
           <div class="row-lg-3">
-            <div class="panel panel-info">
+            <div class="panel panel-gray">
               <div class="panel-heading processed">
                 <div class="row">
                   <div class="col-xs-6 text-right">
@@ -77,7 +77,7 @@
             </div>
           </div>
           <div class="row-lg-3">
-              <div class="panel panel-gray">
+              <div class="panel panel-info">
                   <div class="panel-heading panel" id="neutral-sentences-panel">
                       <div class="row">
                           <div class="col-xs-6 text-right">
