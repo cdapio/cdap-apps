@@ -99,82 +99,84 @@ appendK = function (str) {
 
 Homepage.prototype.enableIntervals = function () {
   var self = this;
-  this.interval = setInterval(function() {
-    $.ajax({
-      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/aggregates',
-      type: 'GET',
-      contentType: "application/json",
-      cache: false,
-      dataType: 'json',
-      success: function(data) {
-        if (!data.positive) {
-            data.positive = 0;
-        }
-        if (!data.negative) {
-            data.negative= 0;
-        }
-        if (!data.neutral) {
-            data.neutral= 0;
-        }
-        $("#positive-sentences-processed").text(appendK(data.positive));
-        $("#neutral-sentences-processed").text(appendK(data.neutral));
-        $("#negative-sentences-processed").text(appendK(data.negative));
-        $("#all-sentences-processed").text(appendK(parseInt(data.negative) + parseInt(data.positive) + parseInt(data.neutral)));
-      }
-    });
+  var updateFunc = function() {
+   $.ajax({
+     url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/aggregates',
+     type: 'GET',
+     contentType: "application/json",
+     cache: false,
+     dataType: 'json',
+     success: function(data) {
+       if (!data.positive) {
+           data.positive = 0;
+       }
+       if (!data.negative) {
+           data.negative= 0;
+       }
+       if (!data.neutral) {
+           data.neutral= 0;
+       }
+       $("#positive-sentences-processed").text(appendK(data.positive));
+       $("#neutral-sentences-processed").text(appendK(data.neutral));
+       $("#negative-sentences-processed").text(appendK(data.negative));
+       $("#all-sentences-processed").text(appendK(parseInt(data.negative) + parseInt(data.positive) + parseInt(data.neutral)));
+     }
+   });
 
-    $.ajax({
-      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=positive',
-      type: 'GET',
-      contentType: "application/json",
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        var list = [];
-        for (item in data) {
-          if(data.hasOwnProperty(item)) {
-            list.push('<tr><td>' + item + '</td></tr>');
-          }
-        }
-        $('#positive-sentences-table tbody').html(list.join(''));
-      }
-    });
+   $.ajax({
+     url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=positive',
+     type: 'GET',
+     contentType: "application/json",
+     dataType: 'json',
+     cache: false,
+     success: function(data) {
+       var list = [];
+       for (item in data) {
+         if(data.hasOwnProperty(item)) {
+           list.push('<tr><td>' + item + '</td></tr>');
+         }
+       }
+       $('#positive-sentences-table tbody').html(list.join(''));
+     }
+   });
 
-    $.ajax({
-      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=neutral',
-      type: 'GET',
-      contentType: "application/json",
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        var list = [];
-        for (item in data) {
-          if(data.hasOwnProperty(item)) {
-            list.push('<tr><td>' + item + '</td></tr>');
-          }
-        }
-        $('#neutral-sentences-table tbody').html(list.join(''));
-      }
-    });
+   $.ajax({
+     url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=neutral',
+     type: 'GET',
+     contentType: "application/json",
+     dataType: 'json',
+     cache: false,
+     success: function(data) {
+       var list = [];
+       for (item in data) {
+         if(data.hasOwnProperty(item)) {
+           list.push('<tr><td>' + item + '</td></tr>');
+         }
+       }
+       $('#neutral-sentences-table tbody').html(list.join(''));
+     }
+   });
 
-    $.ajax({
-      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=negative',
-      type: 'GET',
-      contentType: "application/json",
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        var list = [];
-        for (item in data) {
-          if(data.hasOwnProperty(item)) {
-            list.push('<tr><td>' + item + '</td></tr>');
-          }
-        }
-        $('#negative-sentences-table tbody').html(list.join(''));
-      }
-    });
+   $.ajax({
+     url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/sentiments?sentiment=negative',
+     type: 'GET',
+     contentType: "application/json",
+     dataType: 'json',
+     cache: false,
+     success: function(data) {
+       var list = [];
+       for (item in data) {
+         if(data.hasOwnProperty(item)) {
+           list.push('<tr><td>' + item + '</td></tr>');
+         }
+       }
+       $('#negative-sentences-table tbody').html(list.join(''));
+     }
+   });
 
-  }, 1000);
+  }
+  updateFunc();
+  this.interval = setInterval(updateFunc, 5000);
 };
 
 
