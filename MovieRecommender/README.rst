@@ -7,7 +7,7 @@ Overview
 --------
 The MovieRecommender recommends movies to users using collaborative filtering technique.
 
-* The ``ratings`` and ``movies`` data is taken from [MovieLens Dataset](http://grouplens.org/datasets/movielens/)
+* The ``ratings`` and ``movies`` data is taken from `MovieLens Dataset <http://grouplens.org/datasets/movielens/>`_
 * The recommendation engine is based on the ALS (Alternating Least Square) implementation in Apache Spark MLlib library.
 
 Implementation Details
@@ -32,7 +32,7 @@ Most interesting part that holds the logic behind building recommendations is Re
 
 Installation & Usage
 ====================
-From the project root, build ``MovieRecommender`` with the [Apache Maven](http://maven.apache.org) command::
+From the project root, build ``MovieRecommender`` with the `Apache Maven <http://maven.apache.org/>`_ command::
 
   MAVEN_OPTS="-Xmx512m" mvn clean package
   
@@ -56,16 +56,19 @@ Run the ``RecommendationBuilder`` Spark Program::
 
   bin/app-manager.sh --host [host] --action run
 
+Spark program will take some time to complete. You can check the status by::
+
+  bin/app-manager.sh --host [host] --action status
+  
 Query for recommendations
 
 Send a query via an HTTP request using the ``curl`` command. For example::
 
-	 curl -v -d '{"userId":"1"}' \
-	  -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
+  curl -v -d '{"userId":"1"}' \ -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
 
 On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the example::
 
-  libexec\curl...
+  libexec\curl -v -d '{"userId":"1"}' \ -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
 
 Stop the application::
 
