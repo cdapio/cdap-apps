@@ -43,7 +43,7 @@ Homepage.prototype.initGraph = function () {
     }
   });
   function zipData(sentiment) {
-    data[sentiment] = data[sentiment];
+    data[sentiment] = data[sentiment].slice(1);
     var dataArr = data[sentiment];
 
     // Zip the generated y values with the x values

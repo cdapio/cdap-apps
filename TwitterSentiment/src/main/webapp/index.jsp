@@ -24,17 +24,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>Sentiment Analysis Dashboard</title>
-
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="./css/bootstrap.css" type="text/css" >
-
     <!-- Add custom CSS here -->
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-
-
-
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
 	    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
       <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script></head>
@@ -44,14 +38,10 @@
 
     	</script>
   </head>
-
-
   <body>
-    <h1 style="padding-left:20px;">  Dashboard <small>Twitter Sentiment Analysis Overview</small></h1>
+    <h1 style="padding-left:20px;">  <small>Twitter Sentiment Analysis Overview</small></h1>
   	<div id="header">
   	</div>
-
-
     <div id="wrapper">
       <div id="page-wrapper">
         <div class="col" style="min-width:10%; float:left;">
@@ -106,7 +96,7 @@
         </div><!-- /.col -->
 
 
-  	<div id="content" style="width:65%;padding-left:20px;float:left;">
+  	<div id="content" style="width:85%;padding-left:20px;float:left;">
   		<div class="graph-container">
   		<td><p style="color:grey;">Tweets per second</p></td>
   			<div id="placeholder" class="graph-placeholder"></div>
@@ -116,12 +106,12 @@
     <div style="clear: both"></div>
 
         <div class="row">
-          <div class="" style="max-width:33%; padding:5px;  float:left;">
+          <div class="" style="max-width:33%; padding:5px; float:left;">
             <div class="panel panel-primary">
               <div class="panel-heading" id="panel-positive">
                 <h3 class="panel-title">Most Recent Positive Sentences</h3>
               </div>
-              <div class="panel-body">
+              <div class="panel-body" style="min-height:800px;">
                 <div class="table-responsive">
                   <a id="positive-sentences-table-link"></a>
                   <table class="table table-bordered table-hover table-striped" id="positive-sentences-table">
@@ -142,7 +132,7 @@
                   <div class="panel-heading" id="panel-negative">
                       <h3 class="panel-title">Most Recent Negative Sentences</h3>
                   </div>
-                  <div class="panel-body">
+              <div class="panel-body" style="min-height:800px;">
                       <div class="table-responsive">
                           <a id="negative-sentences-table-link"></a>
                           <table class="table table-bordered table-hover table-striped" id="negative-sentences-table">
@@ -163,7 +153,7 @@
                   <div class="panel-heading" id="panel-neutral">
                       <h3 class="panel-title">Most Recent Neutral Sentences</h3>
                   </div>
-                  <div class="panel-body">
+                    <div class="panel-body" style="min-height:800px;">
                       <div class="table-responsive">
                           <a id="neutral-sentences-table-link"></a>
                           <table class="table table-bordered table-hover table-striped" id="neutral-sentences-table">
