@@ -32,7 +32,6 @@
 
     <!-- Add custom CSS here -->
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-    <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
 
 
 
