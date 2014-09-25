@@ -9,16 +9,17 @@ The MovieRecommender recommends movies to users using collaborative filtering te
 
 * The ``ratings`` and ``movies`` data is taken from [MovieLens Dataset](http://grouplens.org/datasets/movielens/)
 * The recommendation engine is based on the ALS (Alternating Least Square) implementation in Apache Spark MLlib library.
-* Streams for ingesting ``ratings`` data into the system
-* ``Flowlet`` in a ``Flow`` which processes this ``ratings`` data and store them in a ``Dataset``
-* ``Service`` to store ``movies`` in ``Dataset``
-* ``Spark`` Program which builds a recommendation model using ALS algorithm and recommends movies for all the users
-* ``Procedure`` to query the application with userId to get recommendations for a particular user
 
 Implementation Details
 ----------------------
 
 There are number of components that compose MovieRecommender CDAP application.
+
+* Streams for ingesting ``ratings`` data into the system
+* ``Flowlet`` in a ``Flow`` which processes this ``ratings`` data and store them in a ``Dataset``
+* ``Service`` to store ``movies`` in ``Dataset``
+* ``Spark`` Program which builds a recommendation model using ALS algorithm and recommends movies for all the users
+* ``Procedure`` to query the application with userId to get recommendations for a particular user
 
 |(App)|
 
