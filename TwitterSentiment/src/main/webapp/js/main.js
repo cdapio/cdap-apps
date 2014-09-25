@@ -1,6 +1,9 @@
 /**
  * Js for main page.
  */
+var APP_NAME = "TwitterSentiment";
+var PROCEDURE_NAME = "SentimentQuery";
+var PROCEDURE_URL = 'proxy/v2/apps/' + APP_NAME + '/procedures/' + PROCEDURE_NAME + '/methods';
 
 var Homepage = function () {
   this.init(arguments);
@@ -56,12 +59,12 @@ Homepage.prototype.initGraph = function () {
   // Set up the control widget
   var updateInterval = 1000;
   // the chart will interpolate the results over the last few updates, as defined by:
-  var interpolateOver = 10;
+  var interpolateOver = 20;
 
 
   function update() {
     $.ajax({
-      url: 'proxy/v2/apps/TwitterSentiment/procedures/SentimentQuery/methods/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
+      url: PROCEDURE_URL + '/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
       type: 'GET',
       contentType: "application/json",
       dataType: 'json',
@@ -101,7 +104,7 @@ Homepage.prototype.enableIntervals = function () {
   var self = this;
   var updateFunc = function() {
    $.ajax({
-     url: 'proxy/v2/apps/TwitterSentiment/procedures/SentimentQuery/methods/aggregates',
+     url: PROCEDURE_URL + '/aggregates',
      type: 'GET',
      contentType: "application/json",
      cache: false,
@@ -124,7 +127,7 @@ Homepage.prototype.enableIntervals = function () {
    });
 
    $.ajax({
-     url: 'proxy/v2/apps/TwitterSentiment/procedures/SentimentQuery/methods/sentiments?sentiment=positive',
+     url: PROCEDURE_URL + '/sentiments?sentiment=positive',
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',
@@ -141,7 +144,7 @@ Homepage.prototype.enableIntervals = function () {
    });
 
    $.ajax({
-     url: 'proxy/v2/apps/TwitterSentiment/procedures/SentimentQuery/methods/sentiments?sentiment=neutral',
+     url: PROCEDURE_URL + '/sentiments?sentiment=neutral',
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',
@@ -158,7 +161,7 @@ Homepage.prototype.enableIntervals = function () {
    });
 
    $.ajax({
-     url: 'proxy/v2/apps/TwitterSentiment/procedures/SentimentQuery/methods/sentiments?sentiment=negative',
+     url: PROCEDURE_URL + '/sentiments?sentiment=negative',
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',

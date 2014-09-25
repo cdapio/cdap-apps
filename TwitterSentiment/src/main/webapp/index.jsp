@@ -106,7 +106,7 @@
     <div style="clear: both"></div>
 
         <div class="row">
-          <div class="" style="max-width:33%; padding:5px; float:left;">
+          <div class="" style="width:33%; padding:5px; float:left;">
             <div class="panel panel-primary">
               <div class="panel-heading" id="panel-positive">
                 <h3 class="panel-title">Most Recent Positive Sentences</h3>
@@ -127,7 +127,7 @@
               </div>
             </div>
           </div>
-          <div class="" style="max-width:33%; padding:5px; float:left;">
+          <div class="" style="width:33%; padding:5px; float:left;">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="panel-negative">
                       <h3 class="panel-title">Most Recent Negative Sentences</h3>
@@ -148,7 +148,7 @@
                   </div>
               </div>
           </div>
-          <div class="" style="max-width:33%; padding:5px;  float:left;">
+          <div class="" style="width:33%; padding:5px;  float:left;">
               <div class="panel panel-primary">
                   <div class="panel-heading" id="panel-neutral">
                       <h3 class="panel-title">Most Recent Neutral Sentences</h3>
