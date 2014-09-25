@@ -8,6 +8,7 @@ var Homepage = function () {
 
 Homepage.prototype.init  = function () {
   var self = this;
+  this.initGraph();
   this.enableIntervals();
 
   $("#text-inject-form").submit(function(e) {
@@ -30,6 +31,63 @@ Homepage.prototype.injectIntoStream = function() {
   });
   $("#stream-inject-textarea").val('');
 };
+
+Homepage.prototype.initGraph = function () {
+  var data = { positive: [], negative: [], neutral: [] };
+  var sentiments = ['positive', 'negative', 'neutral'];
+  totalPoints = 60*5;
+  sentiments.forEach(function(sentiment){
+    var arr = data[sentiment];
+    while (arr.length < totalPoints) {
+      arr.push(0);
+    }
+  });
+  function zipData(sentiment) {
+    data[sentiment] = data[sentiment];
+    var dataArr = data[sentiment];
+
+    // Zip the generated y values with the x values
+    var res = [];
+    for (var i = 0; i < dataArr.length; ++i) {
+      res.push([Date.now()-(dataArr.length - i)*1000, dataArr[i]])
+    }
+    return res;
+  }
+  // Set up the control widget
+  var updateInterval = 1000;
+  // the chart will interpolate the results over the last few updates, as defined by:
+  var interpolateOver = 10;
+
+
+  function update() {
+    $.ajax({
+      url: 'proxy/v2/apps/TwitterSentiment/procedures/sentiment-query/methods/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
+      type: 'GET',
+      contentType: "application/json",
+      dataType: 'json',
+      cache: false,
+      success: function(response) {
+      console.log(response);
+        sentiments.forEach(function(sentiment){
+          data[sentiment].push(response[sentiment] / interpolateOver);
+        });
+      }
+    });
+
+    var posData = {data:zipData('positive'), label:"Positive", color: "#468847" };
+    var negData = {data:zipData('negative'), label:"Negative", color: "#b94a48" };
+    var neutData = {data:zipData('neutral'), label:"Neutral", color: "#428bca" };
+    var plot = $.plot("#placeholder", [posData, negData, neutData], {
+      series: { shadowSize: 0 },
+      ylab:"tps",
+      yaxis: { min: 0 },
+      xaxis: { mode:"time" },
+    });
+    plot.draw();
+    setTimeout(update, updateInterval);
+  }
+  update();
+}
 
 Homepage.prototype.enableIntervals = function () {
   var self = this;

@@ -6,7 +6,6 @@ All Start Bootstrap themes are licensed under Apache 2.0.
 For more info and more free Bootstrap 3 HTML themes, visit http://startbootstrap.com!
 */
 
-/* ATTN: This is mobile first CSS - to update 786px and up screen width use the media query near the bottom of the document! */
 
 /* Global Styles */
 
@@ -23,32 +22,6 @@ body {
   padding: 5px 15px;
 }
 
-/* Nav Messages */
-
-.messages-dropdown .dropdown-menu .message-preview .avatar,
-.messages-dropdown .dropdown-menu .message-preview .name,
-.messages-dropdown .dropdown-menu .message-preview .message,
-.messages-dropdown .dropdown-menu .message-preview .time {
-  display: block;
-}
-
-.messages-dropdown .dropdown-menu .message-preview .avatar {
-  float: left;
-  margin-right: 15px;
-}
-
-.messages-dropdown .dropdown-menu .message-preview .name {
-  font-weight: bold;
-}
-
-.messages-dropdown .dropdown-menu .message-preview .message {
-  font-size: 12px;
-}
-
-.messages-dropdown .dropdown-menu .message-preview .time {
-  font-size: 12px;
-}
-
 
 /* Nav Announcements */
 
@@ -59,16 +32,6 @@ body {
 
 .announcement-text {
   margin: 0;
-}
-
-/* Table Headers */
-
-table.tablesorter thead {
-  cursor: pointer;
-}
-
-table.tablesorter thead tr th:hover {
-  background-color: #f5f5f5;
 }
 
 /* Flot Chart Containers */
@@ -159,6 +122,7 @@ table.tablesorter thead tr th:hover {
 
 #neutral-sentences-panel {
   margin-bottom: 0px;
+  background: #d9edf7;
 }
 
 .panel-gray {
@@ -174,7 +138,8 @@ table.tablesorter thead tr th:hover {
 }
 
 #panel-neutral {
-    background: #686868;
+    background: #3a87ad;
+    backgroundf: #686868;
 }
 
 .panel-primary {
@@ -185,8 +150,8 @@ table.tablesorter thead tr th:hover {
 	box-sizing: border-box;
 	width: 850px;
 	height: 450px;
-	padding: 20px 15px 15px 15px;
-	margin: 15px auto 30px auto;
+	padding: 20px 15px 40px 15px;
+	margin: auto auto 30px auto;
 	border: 1px solid #ddd;
 	background: #fff;
 	background: linear-gradient(#f6f6f6 0, #fff 50px);

@@ -60,7 +60,7 @@ public class Update extends AbstractFlowlet {
       sentiments.increment(new Increment("aggregate", sentiment, 1));
       textSentiments.write(new TimeseriesTable.Entry(sentiment.getBytes(Charsets.UTF_8),
                                                      sentence.getBytes(Charsets.UTF_8),
-                                                     tweet.getCreatedAt()));
+                                                     System.currentTimeMillis()));
 
     }
   }
