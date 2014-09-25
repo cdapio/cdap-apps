@@ -79,7 +79,9 @@ This will return a JSON of rated and recommended movies::
 
   {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
 
-Stop the application::
+Alternatively, you can use CDAP Console Procedure page to execute queries above.
+
+To stop the application execute::
 
   bin/app-manager.sh --host [host] --action stop
 
