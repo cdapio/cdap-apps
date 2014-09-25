@@ -67,7 +67,6 @@ Homepage.prototype.initGraph = function () {
       dataType: 'json',
       cache: false,
       success: function(response) {
-      console.log(response);
         sentiments.forEach(function(sentiment){
           data[sentiment].push(response[sentiment] / interpolateOver);
         });
@@ -93,7 +92,6 @@ appendK = function (str) {
   if ( val < 1000 ) {
     return val
   }
-  console.log(val);
   val = ~~(val / 1000)
   val += "K";
   return val;
