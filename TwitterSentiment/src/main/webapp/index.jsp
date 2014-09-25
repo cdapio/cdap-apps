@@ -55,10 +55,10 @@
 
     <div id="wrapper">
       <div id="page-wrapper">
-        <div class="col" style="width:15%; float:left;">
+        <div class="col" style="min-width:10%; float:left;">
           <div class="row-lg-3">
             <div class="panel panel-info">
-              <div class="panel-heading">
+              <div class="panel-heading processed">
                 <div class="row">
                   <div class="col-xs-6 text-right">
                     <p class="announcement-heading" id="all-sentences-processed">0</p>

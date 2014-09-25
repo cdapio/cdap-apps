@@ -88,6 +88,16 @@ Homepage.prototype.initGraph = function () {
   }
   update();
 }
+appendK = function (str) {
+  val = parseInt(str);
+  if ( val < 1000 ) {
+    return val
+  }
+  console.log(val);
+  val = ~~(val / 1000)
+  val += "K";
+  return val;
+}
 
 Homepage.prototype.enableIntervals = function () {
   var self = this;
@@ -108,10 +118,10 @@ Homepage.prototype.enableIntervals = function () {
         if (!data.neutral) {
             data.neutral= 0;
         }
-        $("#positive-sentences-processed").text(data.positive);
-        $("#neutral-sentences-processed").text(data.neutral);
-        $("#negative-sentences-processed").text(data.negative);
-        $("#all-sentences-processed").text(parseInt(data.negative) + parseInt(data.positive) + parseInt(data.neutral));
+        $("#positive-sentences-processed").text(appendK(data.positive));
+        $("#neutral-sentences-processed").text(appendK(data.neutral));
+        $("#negative-sentences-processed").text(appendK(data.negative));
+        $("#all-sentences-processed").text(appendK(parseInt(data.negative) + parseInt(data.positive) + parseInt(data.neutral)));
       }
     });
 

@@ -139,10 +139,13 @@ body {
 
 #panel-neutral {
     background: #3a87ad;
-    backgroundf: #686868;
 }
 
-.panel-primary {
+.processed {
+    background: white ! important;
+    background-color: white ! important;
+}
+.hprimary {
     border-color: #C9C9C9;
 }
 
