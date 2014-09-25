@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
+import java.text.ParseException;
 
 /**
  * Flow of the Wise application. It transforms access logs to extract their information and store
@@ -62,7 +62,7 @@ public class WiseFlow implements Flow {
 
     // Annotation indicates that this method can process incoming data
     @ProcessInput
-    public void processFromStream(StreamEvent event) throws CharacterCodingException {
+    public void processFromStream(StreamEvent event) {
 
       // Get a log event in String format from a StreamEvent instance
       String log = Charsets.UTF_8.decode(event.getBody()).toString();
@@ -73,7 +73,9 @@ public class WiseFlow implements Flow {
           output.emit(logInfo, "ip", logInfo.getIp().hashCode());
         }
       } catch (IOException e) {
-        LOG.info("Could not parse log event {}", log);
+        LOG.info("Exception while processing log event {}", log, e);
+      } catch (ParseException e) {
+        LOG.info("Could not parse log event {}", log, e);
       }
     }
   }

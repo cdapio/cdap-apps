@@ -24,6 +24,7 @@ import co.cask.cdap.api.dataset.DatasetSpecification;
 import co.cask.cdap.api.dataset.lib.AbstractDataset;
 import co.cask.cdap.api.dataset.lib.KeyValue;
 import co.cask.cdap.api.dataset.module.EmbeddedDataset;
+import co.cask.cdap.api.dataset.table.Get;
 import co.cask.cdap.api.dataset.table.Increment;
 import co.cask.cdap.api.dataset.table.Row;
 import co.cask.cdap.api.dataset.table.Table;
@@ -64,7 +65,7 @@ public class PageViewStore extends AbstractDataset
    * @return visited page URIs and their counts
    */
   public Map<String, Long> getPageCount(String ipAddress) {
-    Row row = this.table.get(Bytes.toBytes(ipAddress));
+    Row row = this.table.get(new Get(ipAddress));
     Map<String, Long> pageCount = getPageCounts(row);
     return pageCount;
   }
@@ -76,7 +77,7 @@ public class PageViewStore extends AbstractDataset
    * @return the number of visited pages
    */
   public long getCounts(String ipAddress) {
-    Row row = this.table.get(Bytes.toBytes(ipAddress));
+    Row row = this.table.get(new Get(ipAddress));
     if (row == null || row.isEmpty()) {
       return 0;
     }

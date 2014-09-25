@@ -55,31 +55,27 @@ public class LogInfo implements WritableComparable<LogInfo> {
   }
 
   @Nullable
-  public static LogInfo parse(String logLine) throws IOException {
+  public static LogInfo parse(String logLine) throws IOException, ParseException {
     Matcher matcher = ACCESS_LOG_PATTERN.matcher(logLine);
     if (!matcher.matches() || matcher.groupCount() < 8) {
       return null;
     }
 
-    try {
-      // Grab the IP address from a log event
-      String ip = matcher.group(1);
+    // Grab the IP address from a log event
+    String ip = matcher.group(1);
 
-      // Grab the requested page URI from the log event
-      String request = matcher.group(5);
-      int startIndex = request.indexOf(" ");
-      int endIndex = request.indexOf(" ", startIndex + 1);
-      String uri = request.substring(startIndex + 1, endIndex);
+    // Grab the requested page URI from the log event
+    String request = matcher.group(5);
+    int startIndex = request.indexOf(" ");
+    int endIndex = request.indexOf(" ", startIndex + 1);
+    String uri = request.substring(startIndex + 1, endIndex);
 
-      // Grab the timestamp from the log event
-      String tsStr = matcher.group(4);
-      Date date = TIMESTAMP_FORMAT.parse(tsStr);
-      long timestamp = date.getTime();
+    // Grab the timestamp from the log event
+    String tsStr = matcher.group(4);
+    Date date = TIMESTAMP_FORMAT.parse(tsStr);
+    long timestamp = date.getTime();
 
-      return new LogInfo(ip, uri, timestamp);
-    } catch (ParseException e) {
-      throw new IOException("Could not parse timestamp for log event " + logLine, e);
-    }
+    return new LogInfo(ip, uri, timestamp);
   }
 
   public Long getTimestamp() {

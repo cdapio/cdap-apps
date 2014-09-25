@@ -24,8 +24,11 @@ import co.cask.cdap.api.data.batch.Split;
 import co.cask.cdap.api.dataset.DatasetSpecification;
 import co.cask.cdap.api.dataset.lib.AbstractDataset;
 import co.cask.cdap.api.dataset.module.EmbeddedDataset;
+import co.cask.cdap.api.dataset.table.Get;
+import co.cask.cdap.api.dataset.table.Increment;
 import co.cask.cdap.api.dataset.table.Row;
 import co.cask.cdap.api.dataset.table.Table;
+import com.google.common.collect.ImmutableList;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -36,8 +39,8 @@ import java.util.List;
 public class BounceCountStore extends AbstractDataset
   implements BatchWritable<Void, PageBounce>,
              RecordScannable<PageBounce> {
-  static final byte[] COL_VISITS = new byte[] { 'v' };
-  static final byte[] COL_BOUNCES = new byte[] { 'b' };
+  static final String COL_VISITS = "v";
+  static final String COL_BOUNCES = "b";
 
   // Define the underlying table
   private final Table table;
@@ -55,9 +58,8 @@ public class BounceCountStore extends AbstractDataset
    * @param bounces number of bounces to add to the Web page
    */
   public void increment(String uri, long visits, long bounces) {
-    table.increment(Bytes.toBytes(uri),
-                    new byte[][] { COL_VISITS, COL_BOUNCES },
-                    new long[] { visits, bounces });
+    table.increment(new Increment(uri, COL_VISITS, visits));
+    table.increment(new Increment(uri, COL_BOUNCES, bounces));
   }
 
   /**
@@ -67,12 +69,12 @@ public class BounceCountStore extends AbstractDataset
    * @return the bounce count entry associated to the Web page with the {@code uri}
    */
   public PageBounce get(String uri) {
-    Row row = table.get(Bytes.toBytes(uri), new byte[][] { COL_VISITS, COL_BOUNCES });
+    Row row = table.get(new Get(uri, ImmutableList.of(COL_VISITS, COL_BOUNCES)));
     if (row.isEmpty()) {
       return new PageBounce(uri, 0, 0);
     }
-    long visits = Bytes.toLong(row.get(COL_VISITS));
-    long bounces = Bytes.toLong(row.get(COL_BOUNCES));
+    long visits = row.getLong(COL_VISITS, 0);
+    long bounces = row.getLong(COL_BOUNCES, 0);
     return new PageBounce(uri, visits, bounces);
   }
 
@@ -102,8 +104,8 @@ public class BounceCountStore extends AbstractDataset
   public class PageBounceRecordMaker implements Scannables.RecordMaker<byte[], Row, PageBounce> {
     @Override
     public PageBounce makeRecord(byte[] key, Row row) {
-      long visits = Bytes.toLong(row.get(COL_VISITS));
-      long bounces = Bytes.toLong(row.get(COL_BOUNCES));
+      long visits = row.getLong(COL_VISITS, 0);
+      long bounces = row.getLong(COL_BOUNCES, 0);
       return new PageBounce(Bytes.toString(key), visits, bounces);
     }
   }

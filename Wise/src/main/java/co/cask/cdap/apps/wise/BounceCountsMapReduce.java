@@ -33,6 +33,7 @@ import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -122,9 +123,13 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // The body of the stream event is contained in the Text value
       String streamBody = value.toString();
-      LogInfo logInfo = LogInfo.parse(streamBody);
-      if (logInfo != null) {
-        context.write(logInfo, OUTPUT_VALUE);
+      try {
+        LogInfo logInfo = LogInfo.parse(streamBody);
+        if (logInfo != null) {
+          context.write(logInfo, OUTPUT_VALUE);
+        }
+      } catch (ParseException e) {
+        throw new IOException("Error parsing log event " + streamBody);
       }
     }
   }

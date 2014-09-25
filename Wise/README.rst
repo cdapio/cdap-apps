@@ -660,7 +660,7 @@ With this object, we can:
     ResultSet resultSet =
       exploreConnection.prepareStatement("SELECT * FROM cdap_user_bouncecountstore ORDER BY uri").executeQuery();
 
-A complete example of the test is included in the downloaded zip.
+A complete example of the test is included in the source code of Wise.
 
 License
 =======
