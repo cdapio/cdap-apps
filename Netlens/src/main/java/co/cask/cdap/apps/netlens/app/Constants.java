@@ -14,33 +14,15 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.counter;
+package co.cask.cdap.apps.netlens.app;
+
+import java.util.concurrent.TimeUnit;
 
 /**
- * Represents timeseries data point.
+ * Configuration constants
+ * todo: should be configurable (not hardcoded)
  */
-public class DataPoint {
-  private long ts;
-  private int value;
-
-  public DataPoint(long ts, int value) {
-    this.ts = ts;
-    this.value = value;
-  }
-
-  public long getTs() {
-    return ts;
-  }
-
-  public void setTs(long ts) {
-    this.ts = ts;
-  }
-
-  public int getValue() {
-    return value;
-  }
-
-  public void setValue(int value) {
-    this.value = value;
-  }
+public class Constants {
+  public static final long AGG_INTERVAL_SIZE = TimeUnit.SECONDS.toMillis(5);
+  public static final long TOPN_AGG_INTERVAL_SIZE = TimeUnit.MINUTES.toMillis(1);
 }

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.anomaly;
+package co.cask.cdap.apps.netlens.app.anomaly;
 
 import co.cask.cdap.api.common.Bytes;
 import com.google.common.base.Objects;

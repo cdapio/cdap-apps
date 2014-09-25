@@ -14,17 +14,17 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app;
+package co.cask.cdap.apps.netlens.app;
 
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.flow.Flow;
 import co.cask.cdap.api.flow.FlowSpecification;
-import co.cask.cdap.netlens.app.anomaly.AnomalyDetectionFlowlet;
-import co.cask.cdap.netlens.app.anomaly.AnomalyFanOutFlowlet;
-import co.cask.cdap.netlens.app.anomaly.FactParser;
-import co.cask.cdap.netlens.app.counter.AnomalyCounterFlowlet;
-import co.cask.cdap.netlens.app.counter.TrafficCounterFlowlet;
-import co.cask.cdap.netlens.app.histo.NumberCategorizationFlowlet;
+import co.cask.cdap.apps.netlens.app.anomaly.AnomalyDetectionFlowlet;
+import co.cask.cdap.apps.netlens.app.anomaly.AnomalyFanOutFlowlet;
+import co.cask.cdap.apps.netlens.app.anomaly.FactParser;
+import co.cask.cdap.apps.netlens.app.counter.AnomalyCounterFlowlet;
+import co.cask.cdap.apps.netlens.app.counter.TrafficCounterFlowlet;
+import co.cask.cdap.apps.netlens.app.histo.NumberCategorizationFlowlet;
 
 /**
  *
