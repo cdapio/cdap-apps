@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.counter;
+package co.cask.cdap.apps.netlens.app.counter;
 
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.dataset.table.Row;

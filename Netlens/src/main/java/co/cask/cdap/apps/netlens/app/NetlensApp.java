@@ -14,15 +14,15 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app;
+package co.cask.cdap.apps.netlens.app;
 
 import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.TimeseriesTables;
 import co.cask.cdap.api.dataset.table.Table;
-import co.cask.cdap.netlens.app.anomaly.AnomaliesProcedure;
-import co.cask.cdap.netlens.app.counter.AnomalyCountsProcedure;
-import co.cask.cdap.netlens.app.counter.CountersProcedure;
+import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesProcedure;
+import co.cask.cdap.apps.netlens.app.counter.AnomalyCountsProcedure;
+import co.cask.cdap.apps.netlens.app.counter.CountersProcedure;
 
 import java.util.concurrent.TimeUnit;
 

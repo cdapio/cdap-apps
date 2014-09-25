@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.counter;
+package co.cask.cdap.apps.netlens.app.counter;
 
 import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
@@ -24,7 +24,7 @@ import co.cask.cdap.api.dataset.table.Table;
 import co.cask.cdap.api.procedure.AbstractProcedure;
 import co.cask.cdap.api.procedure.ProcedureRequest;
 import co.cask.cdap.api.procedure.ProcedureResponder;
-import co.cask.cdap.netlens.app.Constants;
+import co.cask.cdap.apps.netlens.app.Constants;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 

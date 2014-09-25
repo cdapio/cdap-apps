@@ -14,9 +14,8 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.anomaly;
+package co.cask.cdap.apps.netlens.app.anomaly;
 
-import co.cask.cdap.netlens.app.anomaly.AnomalyFanOutFlowlet;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

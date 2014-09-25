@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.anomaly;
+package co.cask.cdap.apps.netlens.app.anomaly;
 
 import co.cask.cdap.api.annotation.Batch;
 import co.cask.cdap.api.annotation.ProcessInput;
@@ -25,7 +25,7 @@ import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.FlowletException;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
-import co.cask.cdap.netlens.app.Constants;
+import co.cask.cdap.apps.netlens.app.Constants;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 

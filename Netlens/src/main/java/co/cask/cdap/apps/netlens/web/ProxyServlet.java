@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.web;
+package co.cask.cdap.apps.netlens.web;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;

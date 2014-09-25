@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.histo;
+package co.cask.cdap.apps.netlens.app.histo;
 
 import co.cask.cdap.api.annotation.Batch;
 import co.cask.cdap.api.annotation.ProcessInput;
@@ -23,7 +23,7 @@ import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.FlowletException;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.lib.histo.DynamicHistogram;
-import co.cask.cdap.netlens.app.anomaly.Fact;
+import co.cask.cdap.apps.netlens.app.anomaly.Fact;
 import com.google.common.collect.Maps;
 
 import java.util.Iterator;

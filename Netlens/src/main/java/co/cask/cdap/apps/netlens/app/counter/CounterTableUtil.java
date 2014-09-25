@@ -14,13 +14,13 @@
  * the License.
  */
 
-package co.cask.cdap.netlens.app.counter;
+package co.cask.cdap.apps.netlens.app.counter;
 
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.dataset.table.Row;
 import co.cask.cdap.api.dataset.table.Scanner;
 import co.cask.cdap.api.dataset.table.Table;
-import co.cask.cdap.netlens.app.Constants;
+import co.cask.cdap.apps.netlens.app.Constants;
 
 /**
  * Provides utility methods for dealing with counters in datasets

@@ -27,7 +27,7 @@
 
   <servlet>
     <servlet-name>ProxyServlet</servlet-name>
-    <servlet-class>co.cask.cdap.netlens.web.ProxyServlet</servlet-class>
+    <servlet-class>co.cask.cdap.apps.netlens.web.ProxyServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
