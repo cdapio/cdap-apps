@@ -20,13 +20,13 @@ import co.cask.cdap.api.service.AbstractService;
 import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
+import com.google.common.base.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Map;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -50,6 +50,15 @@ class WiseService extends AbstractService {
     @UseDataSet("pageViewStore")
     private PageViewStore pageViewStore;
 
+    /**
+     * Queries the total number of visited pages viewed from a specified IP address. It expects GET request to
+     * a URL Of the form:
+     *
+     * <pre>{@code
+     *
+     * GET http://[host]:[port]/v2/apps/Wise/services/WiseService/methods/ip/[ip]/count
+     * }</pre>
+     */
     @GET
     @Path("/ip/{ip}/count")
     public void getIPCount(HttpServiceRequest request, HttpServiceResponder responder,
@@ -58,24 +67,29 @@ class WiseService extends AbstractService {
       responder.sendJson(200, counts);
     }
 
-    @GET
-    @Path("/ip/{ip}/uri/{uri}/count")
+    /**
+     * Queries the page view count of a given URI of an IP. It expects POST request to a URL of the form:
+     *
+     * <pre>{@code
+     *
+     * POST http://[host]:[port]/v2/apps/Wise/services/WiseService/methods/ip/[ip]/count
+     * }</pre>
+     *
+     * With the URI to query form in the POST body.
+     */
+    @POST
+    @Path("/ip/{ip}/count")
     public void getPageViewCount(HttpServiceRequest request, HttpServiceResponder responder,
-                                 @PathParam("ip") String ipAddress, @PathParam("uri") String uri) {
-      try {
-        // The uri should be HTML-encoded here. We have to decode it
-        String decodedUri = URLDecoder.decode(uri, "UTF-8");
-        Map<String, Long> pageCounts = pageViewStore.getPageCount(ipAddress);
-        Long counts = pageCounts.get(decodedUri);
-        if (counts == null) {
-          LOG.info("No entry found for page URI: {} and IP address: {}", decodedUri, ipAddress);
-          counts = new Long(0);
-        }
-        responder.sendJson(200, counts.longValue());
-      } catch (UnsupportedEncodingException e) {
-        LOG.info("Could not decode the uri {}", uri, e);
-        responder.sendStatus(400);
+                                 @PathParam("ip") String ipAddress) {
+      // The whole request body is the request URI.
+      String uri = Charsets.UTF_8.decode(request.getContent()).toString();
+      Map<String, Long> pageCounts = pageViewStore.getPageCount(ipAddress);
+      Long counts = pageCounts.get(uri);
+      if (counts == null) {
+        LOG.debug("No entry found for page URI: {} and IP address: {}", uri, ipAddress);
+        counts = 0L;
       }
+      responder.sendJson(200, counts);
     }
   }
 }
