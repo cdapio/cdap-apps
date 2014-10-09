@@ -16,9 +16,6 @@
 package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.common.Bytes;
-import co.cask.cdap.apps.wise.BounceCountStore;
-import co.cask.cdap.apps.wise.PageBounce;
-import co.cask.cdap.apps.wise.WiseApp;
 import co.cask.cdap.common.http.HttpRequest;
 import co.cask.cdap.common.http.HttpRequests;
 import co.cask.cdap.common.http.HttpResponse;
@@ -131,8 +128,8 @@ public class WiseAppTest extends TestBase {
     Assert.assertEquals(200, response.getResponseCode());
     Assert.assertEquals("3", Bytes.toString(response.getResponseBody()));
 
-    url = new URL(serviceManager.getServiceURL(), "ip/1.202.218.8/uri/%252Fcareer.html/count");
-    request = HttpRequest.get(url).build();
+    url = new URL(serviceManager.getServiceURL(), "ip/1.202.218.8/count");
+    request = HttpRequest.post(url).withBody("/career.html").build();
     response = HttpRequests.execute(request);
     Assert.assertEquals(200, response.getResponseCode());
     Assert.assertEquals("1", Bytes.toString(response.getResponseBody()));
