@@ -535,7 +535,7 @@ The ``PageViewCountHandler`` class is registered in the ``WiseService`` class, w
 - The ``PageViewCountHandler`` that responds to the HTTP endpoint exposed by the Service is
   specified by the ``addHandler()`` method.
 
-You can use ``curl`` command to make call to the service URL. For example, to query total page view count
+You can use the ``curl`` command to make calls to the service URL. For example, to query total page view count
 from IP ``255.255.255.207``::
 
   $ curl http://localhost:10000/v2/apps/Wise/services/WiseService/methods/ip/255.255.255.207/count
