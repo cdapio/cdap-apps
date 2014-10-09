@@ -1,6 +1,6 @@
 TwitterSentiment
 =================
-TwitterSentiment Analysis application for CDAP_. Try it out and discuss it at our `mailing list 
+TwitterSentiment Analysis example application for CDAP_. Try it out and discuss it at our `mailing list 
 <https://groups.google.com/forum/?hl=en#!forum/cdap-user/>`_.
 
 Overview
