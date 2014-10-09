@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>co.cask.cdap.apps</groupId>
-  <artifactId>Wise</artifactId>
+  <artifactId>cdap-wise</artifactId>
   <version>0.2.0</version>
   <packaging>jar</packaging>
   <name>Web Insights Engine Application</name>
@@ -121,9 +121,10 @@
               <goal>single</goal>
             </goals>
             <configuration>
-              <descriptorRefs>
-                <descriptorRef>project</descriptorRef>
-              </descriptorRefs>
+              <descriptors>
+                <descriptor>src/assembly/project.xml</descriptor>
+              </descriptors>
+              <appendAssemblyId>false</appendAssemblyId>
             </configuration>
           </execution>
         </executions>
