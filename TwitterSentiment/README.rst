@@ -1,6 +1,7 @@
 TwitterSentiment
 =================
-TwitterSentiment Analysis application for CDAP_.
+TwitterSentiment Analysis application for CDAP_. Try it out and discuss it at our `mailing list 
+<https://groups.google.com/forum/?hl=en#!forum/cdap-user/>`_.
 
 Overview
 --------
@@ -148,3 +149,4 @@ the License.
 .. |(SentimentFlow)| image:: docs/img/sentiment-flow.png
 
 .. _CDAP: http://cdap.io
+
