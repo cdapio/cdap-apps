@@ -14,9 +14,16 @@
         <exclude>**/.idea/**</exclude>
         <exclude>**/*.iml</exclude>
         <exclude>**/*.ipr</exclude>
-        <exclude></exclude>
         <exclude>**/${project.build.directory}/**</exclude>
       </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <outputDirectory>/</outputDirectory>
+      <useDefaultExcludes>true</useDefaultExcludes>
+      <includes>
+        <include>${project.build.directory}/${project.artifactId}-${project.version}.jar</include>
+      </includes>
     </fileSet>
   </fileSets>
 </assembly>
