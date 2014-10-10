@@ -5,10 +5,10 @@ Collection of data applications built using `CDAP
 <http://cdap.io/>`_.
 
 `WISE </Wise/>`_: Web Analytics
-  WISE Web Insights Engine analyzes behaviour of users of a web-site.
+  WISE (Web Insights Engine) analyzes behaviour of users of a web-site.
 
 `Netlens </Netlens/>`_: Network Analytics
-  The Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns
+  Netlens application analyzes network packets to provide insights on traffic statistics and detects anomalies in the traffic patterns.
 
 `TwitterSentiment </TwitterSentiment/>`_: Social Analytics
   TwitterSentiment performs sentiment analysis on Twitter data to understand consumer feelings and attitudes towards brands or topics in online conversations.
