@@ -17,7 +17,6 @@ package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
-import co.cask.cdap.api.dataset.lib.KeyValueTable;
 
 /**
  * The Wise application performs analytics on Apache access logs.
@@ -33,8 +32,6 @@ public class WiseApp extends AbstractApplication {
     createDataset("pageViewStore", PageViewStore.class);
     // Custom Dataset to store bounce information for every web page
     createDataset("bounceCountStore", BounceCountStore.class);
-    // Utility Dataset used in the Map/Reduce job
-    createDataset("bounceCountsMapReduceLastRun", KeyValueTable.class);
     // Add the WiseFlow flow
     addFlow(new WiseFlow());
     // Add the WiseWorkflow workflow

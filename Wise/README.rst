@@ -382,15 +382,11 @@ The ``configure()`` method is defined as::
     return MapReduceSpecification.Builder.with()
       .setName("BounceCountsMapReduce")
       .setDescription("Bounce Counts MapReduce job")
-      .useDataSet("bounceCountsMapReduceLastRun")
       .useOutputDataSet("bounceCountStore")
       .build();
   }
 
 It sets the ID of the MapReduce job, ``BounceCountsMapReduce``, and specifies which Datasets will be used in the job.
-This job uses the ``bounceCountsMapReduceLastRun`` system Dataset—of type ``KeyValueTable``—to
-store the time of the last successful run of ``BounceCountsMapReduce``.
-
 We will talk about the ``useOutputDataset()`` method in only a minute.
 
 Plugging the Stream to the Input of the MapReduce Job
@@ -400,18 +396,20 @@ method of the ``BounceCountsMapReduce`` class::
 
   @Override
   public void beforeSubmit(MapReduceContext context) throws Exception {
-    Job job = context.getHadoopJob();
     ...
-    KeyValueTable lastRunDataset = context.getDataSet("bounceCountsMapReduceLastRun");
-    ...
+    final long endTime = context.getLogicalStartTime();
+    final long startTime = endTime - TimeUnit.MINUTES.toMillis(10);
+
     StreamBatchReadable.useStreamInput(context, "logEventStream", startTime, endTime);
   }
 
 As mentioned earlier, the input of the MapReduce job is the ``logEventStream``. This connection is made above using
 the ``StreamBatchReadable.useStreamInput()`` method.
 
-The ``startTime`` is computed using the last value stored in the ``bounceCountsMapReduceLastRun`` Dataset, which can
-be accessed using the ``MapReduceContext.getDataSet()`` method.
+This MapReduce runs as part of a workflow that is scheduled every 10 minutes. Every time it runs, it reads 10 minutes
+worth of events from the stream, ending at the logical start time of the job (the same as the scheduled time of the
+containing workflow).
+
 
 Writing to the *bounceCountStore* Dataset from the MapReduce Job
 ----------------------------------------------------------------
@@ -613,7 +611,6 @@ To create the Wise application with all these components mentioned above, define
       addStream(new Stream("logEventStream"));
       createDataset("pageViewStore", PageViewStore.class);
       createDataset("bounceCountStore", BounceCountStore.class);
-      createDataset("bounceCountsMapReduceLastRun", KeyValueTable.class);
       addFlow(new WiseFlow());
       addWorkflow(new WiseWorkflow());
       addService(new WiseService());
