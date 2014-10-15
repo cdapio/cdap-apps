@@ -18,6 +18,6 @@
  * 
  * An application that categorizes tweets into positive, negative, or neutral in real time.
  */
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.apps.sentiment;
 
 

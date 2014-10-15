@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.apps.sentiment;
 
 public class Tweet {
   private String text;

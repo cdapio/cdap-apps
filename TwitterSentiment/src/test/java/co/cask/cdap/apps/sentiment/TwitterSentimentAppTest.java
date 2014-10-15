@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.apps.sentiment;
 
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.FlowManager;

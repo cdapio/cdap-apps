@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.apps.sentiment;
 
 import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
