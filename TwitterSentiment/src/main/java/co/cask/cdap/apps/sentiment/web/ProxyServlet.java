@@ -1,4 +1,4 @@
-package co.cask.cdap.examples.sentiment.web;
+package co.cask.cdap.apps.sentiment.web;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;

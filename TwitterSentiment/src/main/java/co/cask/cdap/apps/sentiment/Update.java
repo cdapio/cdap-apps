@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.examples.sentiment;
+package co.cask.cdap.apps.sentiment;
 
 import co.cask.cdap.api.ResourceSpecification;
 import co.cask.cdap.api.annotation.Batch;

@@ -11,7 +11,7 @@
 
   <servlet>
     <servlet-name>ProxyServlet</servlet-name>
-    <servlet-class>co.cask.cdap.examples.sentiment.web.ProxyServlet</servlet-class>
+    <servlet-class>co.cask.cdap.apps.sentiment.web.ProxyServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
