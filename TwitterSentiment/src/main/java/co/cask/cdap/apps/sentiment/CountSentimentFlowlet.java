@@ -27,8 +27,6 @@ import co.cask.cdap.api.flow.flowlet.FlowletSpecification;
 import co.cask.cdap.api.metrics.Metrics;
 import com.google.common.base.Charsets;
 
-import java.util.Iterator;
-
 /**
  * Updates the timeseries table with sentiments received.
  */
@@ -45,18 +43,15 @@ public class CountSentimentFlowlet extends AbstractFlowlet {
 
   @Batch(10)
   @ProcessInput
-  public void process(Iterator<Tweet> sentimentItr) {
-    while (sentimentItr.hasNext()) {
-      Tweet tweet = sentimentItr.next();
-      String sentence = tweet.getText();
-      String sentiment = tweet.getSentiment();
-      metrics.count("sentiment." + sentiment, 1);
-      sentiments.increment(new Increment("aggregate", sentiment, 1));
-      textSentiments.write(new TimeseriesTable.Entry(sentiment.getBytes(Charsets.UTF_8),
-                                                     sentence.getBytes(Charsets.UTF_8),
-                                                     System.currentTimeMillis()));
+  public void process(Tweet tweet) {
+    String sentence = tweet.getText();
+    String sentiment = tweet.getSentiment();
+    metrics.count("sentiment." + sentiment, 1);
+    sentiments.increment(new Increment("aggregate", sentiment, 1));
+    textSentiments.write(new TimeseriesTable.Entry(sentiment.getBytes(Charsets.UTF_8),
+                                                   sentence.getBytes(Charsets.UTF_8),
+                                                   System.currentTimeMillis()));
 
-    }
   }
 
   @Override
