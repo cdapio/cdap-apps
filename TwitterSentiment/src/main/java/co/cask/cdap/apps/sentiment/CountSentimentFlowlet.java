@@ -16,7 +16,6 @@
 
 package co.cask.cdap.apps.sentiment;
 
-import co.cask.cdap.api.ResourceSpecification;
 import co.cask.cdap.api.annotation.Batch;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.annotation.UseDataSet;
@@ -27,19 +26,14 @@ import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.FlowletSpecification;
 import co.cask.cdap.api.metrics.Metrics;
 import com.google.common.base.Charsets;
-import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
 /**
  * Updates the timeseries table with sentiments received.
  */
-public class Update extends AbstractFlowlet {
-  private static final Logger LOG = LoggerFactory.getLogger(Update.class);
-  private static final Gson GSON = new Gson();
-  static final String UPDATE_FLOWLET_NAME = "Update";
+public class CountSentimentFlowlet extends AbstractFlowlet {
+  static final String NAME = "CountSentimentFlowlet";
 
   @UseDataSet(TwitterSentimentApp.TABLE_NAME)
   private Table sentiments;
@@ -68,9 +62,8 @@ public class Update extends AbstractFlowlet {
   @Override
   public FlowletSpecification configure() {
     return FlowletSpecification.Builder.with()
-      .setName(UPDATE_FLOWLET_NAME)
+      .setName(NAME)
       .setDescription("Updates the sentiment counts")
-      .withResources(ResourceSpecification.BASIC)
       .build();
   }
 }

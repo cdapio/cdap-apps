@@ -30,14 +30,14 @@ public class SentimentAnalysisFlow implements Flow {
       .setDescription("Analysis of text to generate sentiments")
       .withFlowlets()
         .add(new TweetCollector())
-        .add(new Normalization())
+        .add(new TweetParserFlowlet())
         .add(new PythonAnalyzer())
-        .add(new Update())
+        .add(new CountSentimentFlowlet())
       .connect()
-        .fromStream(TwitterSentimentApp.STREAM_NAME).to(new Normalization())
-        .from(new Normalization()).to(new PythonAnalyzer())
-        .from(new TweetCollector()).to(new Normalization())
-        .from(new PythonAnalyzer()).to(new Update())
+        .fromStream(TwitterSentimentApp.STREAM_NAME).to(new TweetParserFlowlet())
+        .from(new TweetParserFlowlet()).to(new PythonAnalyzer())
+        .from(new TweetCollector()).to(new PythonAnalyzer())
+        .from(new PythonAnalyzer()).to(new CountSentimentFlowlet())
       .build();
   }
 

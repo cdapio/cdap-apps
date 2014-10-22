@@ -16,7 +16,6 @@
 
 package co.cask.cdap.apps.sentiment;
 
-import co.cask.cdap.api.ResourceSpecification;
 import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.common.Bytes;
@@ -134,7 +133,6 @@ public class SentimentQueryProcedure extends AbstractProcedure {
     return ProcedureSpecification.Builder.with()
       .setName(PROCEDURE_NAME)
       .setDescription("Queries data relating to tweets' sentiments.")
-      .withResources(ResourceSpecification.BASIC)
       .build();
   }
 }
