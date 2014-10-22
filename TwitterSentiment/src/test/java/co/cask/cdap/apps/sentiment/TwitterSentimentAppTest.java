@@ -59,7 +59,7 @@ public class TwitterSentimentAppTest extends TestBase {
         streamWriter.send("i am happy today that I got this working.");
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.APP_NAME, SentimentAnalysisFlow.FLOW_NAME, CountSentimentFlowlet.NAME);
+        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.NAME, SentimentAnalysisFlow.FLOW_NAME, CountSentimentFlowlet.NAME);
         countMetrics.waitForProcessed(4, 15, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();
