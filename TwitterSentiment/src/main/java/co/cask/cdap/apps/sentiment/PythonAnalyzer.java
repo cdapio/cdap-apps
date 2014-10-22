@@ -37,7 +37,7 @@ import java.util.Iterator;
  * written in Python.
  */
 public class PythonAnalyzer extends ExternalProgramFlowlet<Tweet, Tweet> {
-  private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TweetParserFlowlet.class);
   private static final Gson GSON = new Gson();
 
   private OutputEmitter<Tweet> sentiment;
@@ -75,7 +75,7 @@ public class PythonAnalyzer extends ExternalProgramFlowlet<Tweet, Tweet> {
   }
 
   @Batch(100)
-  @ProcessInput("python")
+  @ProcessInput
   public void process(Iterator<Tweet> iterator) throws Exception {
     super.process(iterator);
   }

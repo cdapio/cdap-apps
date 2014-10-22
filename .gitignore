@@ -21,5 +21,3 @@ out/
 .idea
 
 twitter4j.properties
-# Intermediary output by java classifier.
-localized.txt

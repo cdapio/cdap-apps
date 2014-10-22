@@ -28,18 +28,18 @@ tweet data, analyzes the tweet text, and stores the results.
 
 |(SentimentFlow)|
 
-Statements can optionally be ingested into the stream, which feeds into the ``Normalization``
+Statements can optionally be ingested into the stream, which feeds into the ``TweetParserFlowlet``
 flowlet. This flowlet deserializes the simple statements into a ``Tweet`` object and then passes the
 ``Tweet`` object to the analyzer flowlet.
 
 By retrieving a sample stream of tweets from Twitter, the ``TweetCollector`` flowlet also produces
-``Tweet`` objects and passes them to the ``Normalization`` flowlet and then to the analyze flowlets for
+``Tweet`` objects and passes them to the ``TweetParserFlowlet`` flowlet and then to the analyze flowlets for
 processing.
 
 As the tweets arrive to the analyzer flowlet, the ``ExternalProgramFlowlet`` is responsible for
 passing them to a python script which uses NLTK to yield a sentiment for each tweet.
 
-After the tweet is analyzed, it proceeds to the ``Update`` flowlet which persists the data to a
+After the tweet is analyzed, it proceeds to the ``CountSentimentFlowlet`` flowlet which persists the data to a
 timeseries table based upon the tweet’s timestamp. It also updates a table which keeps track of
 the running total of each sentiment.
 

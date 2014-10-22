@@ -17,7 +17,6 @@
 package co.cask.cdap.apps.sentiment;
 
 import co.cask.cdap.api.annotation.Batch;
-import co.cask.cdap.api.annotation.Output;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
@@ -25,22 +24,16 @@ import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import co.cask.cdap.api.metrics.Metrics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 /**
  * Normalizes the sentences.
  */
-public class Normalization extends AbstractFlowlet {
-  private static final Logger LOG = LoggerFactory.getLogger(Normalization.class);
+public class TweetParserFlowlet extends AbstractFlowlet {
 
   /**
    * Emitters for emitting sentences from this Flowlet.
    */
-  @Output("python")
-  private OutputEmitter<Tweet> pythonOut;
+  private OutputEmitter<Tweet> out;
 
   /**
    * Handler to emit metrics.
@@ -59,19 +52,10 @@ public class Normalization extends AbstractFlowlet {
     if (text != null) {
       metrics.count("data.processed.size", text.length());
       Tweet tweet = new Tweet(text, System.currentTimeMillis());
-      emit(tweet);
+      out.emit(tweet);
     } else {
       metrics.count("data.ignored.text", 1);
     }
   }
 
-  @Batch(100)
-  @ProcessInput
-  public void processTweets(Tweet tweet) {
-    emit(tweet);
-  }
-
-  private void emit(Tweet tweet) {
-    pythonOut.emit(tweet);
-  }
 }
