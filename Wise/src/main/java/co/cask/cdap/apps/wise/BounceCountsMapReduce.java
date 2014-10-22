@@ -15,9 +15,7 @@
  */
 package co.cask.cdap.apps.wise;
 
-import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.data.stream.StreamBatchReadable;
-import co.cask.cdap.api.dataset.lib.KeyValueTable;
 import co.cask.cdap.api.mapreduce.AbstractMapReduce;
 import co.cask.cdap.api.mapreduce.MapReduceContext;
 import co.cask.cdap.api.mapreduce.MapReduceSpecification;
@@ -42,15 +40,12 @@ import java.util.concurrent.TimeUnit;
  * The mapper uses the stream {@code logEventStream} as input.
  */
 public class BounceCountsMapReduce extends AbstractMapReduce {
-  private static final String STREAM_END_TIME = "stream.end.time";
-  private static final byte[] LAST_RUN_COLUMN = new byte[] { 'c' };
 
   @Override
   public MapReduceSpecification configure() {
     return MapReduceSpecification.Builder.with()
       .setName("BounceCountsMapReduce")
       .setDescription("Bounce Counts MapReduce job")
-      .useDataSet("bounceCountsMapReduceLastRun")
       .useOutputDataSet("bounceCountStore")
       .build();
   }
@@ -77,40 +72,13 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
     job.setPartitionerClass(NaturalKeyPartitioner.class);
     job.setSortComparatorClass(CompositeKeyComparator.class);
 
-    long endTime = System.currentTimeMillis();
-    long startTime = getLastStartTime(context);
+    final long endTime = context.getLogicalStartTime();
+    final long startTime = endTime - TimeUnit.MINUTES.toMillis(10);
 
     // Use the logEventStream as the input of the mapper. We only read the data that has
     // not been read by previous runs
     // This statement forces our Mapper to have as input LongWritable/Text
     StreamBatchReadable.useStreamInput(context, "logEventStream", startTime, endTime);
-
-    // Store the end time in the MapReduce job, to be retrieved later
-    job.getConfiguration().setLong(STREAM_END_TIME, endTime);
-  }
-
-  private long getLastStartTime(MapReduceContext context) {
-    // Use the BounceCountsMapReduceLastRun Dataset to retrieve the last run timestamp
-    KeyValueTable lastRunDataset = context.getDataSet("bounceCountsMapReduceLastRun");
-    byte[] startTimeBytes = lastRunDataset.read(LAST_RUN_COLUMN);
-    long startTime = 0;
-    if (startTimeBytes != null) {
-      startTime = Bytes.toLong(startTimeBytes);
-    }
-    return startTime;
-  }
-
-  @Override
-  public void onFinish(boolean succeeded, MapReduceContext context) throws Exception {
-    super.onFinish(succeeded, context);
-    KeyValueTable lastRunDataset = context.getDataSet("bounceCountsMapReduceLastRun");
-
-    //Retrieve the end time used in the MapReduce job
-    Job job = context.getHadoopJob();
-    long endTime = job.getConfiguration().getLong(STREAM_END_TIME, 0);
-
-    // Update the Dataset with the last time the MapReduce job ran
-    lastRunDataset.write(LAST_RUN_COLUMN, Bytes.toBytes(endTime));
   }
 
   /**
