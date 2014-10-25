@@ -65,7 +65,6 @@ public class TweetCollector extends AbstractFlowlet {
      || !args.containsKey("oauth.accessToken") || !args.containsKey("oauth.accessTokenSecret")) {
       final String CREDENTIALS_MISSING = "Twitter API credentials not provided in runtime arguments.";
       LOG.error(CREDENTIALS_MISSING);
-//      throw new IllegalArgumentException(CREDENTIALS_MISSING);
     }
 
     queue = new LinkedBlockingQueue<Tweet>(10000);
