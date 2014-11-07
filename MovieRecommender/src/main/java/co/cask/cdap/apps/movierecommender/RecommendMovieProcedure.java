@@ -25,9 +25,6 @@ import co.cask.cdap.api.procedure.AbstractProcedure;
 import co.cask.cdap.api.procedure.ProcedureRequest;
 import co.cask.cdap.api.procedure.ProcedureResponder;
 import co.cask.cdap.api.procedure.ProcedureResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.apache.spark.mllib.recommendation.Rating;
 
 import java.io.IOException;
@@ -37,9 +34,6 @@ import java.util.Iterator;
  * Procedure that returns movie recommendations for users
  */
 public class RecommendMovieProcedure extends AbstractProcedure {
-
-  private static final Gson GSON = new Gson();
-
   @UseDataSet("recommendations")
   private ObjectStore<Rating> recommendations;
 
@@ -73,35 +67,7 @@ public class RecommendMovieProcedure extends AbstractProcedure {
       return;
     }
 
-    responder.sendJson(ProcedureResponse.Code.SUCCESS, prepareResponse(userRatings, userPredictions));
-  }
-
-  /**
-   * Prepares a json sting of watched and recommended movies in the following format:
-   * {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
-   * @param userRatings user given rating to movies
-   * @param userPredictions movie recommendation to user with predicted rating
-   * @return {@link JsonObject} of watched and recommended movies
-   */
-  private JsonObject prepareResponse(Iterator<KeyValue<byte[], UserScore>> userRatings,
-                                     Iterator<KeyValue<byte[], Rating>> userPredictions) {
-
-    JsonArray watched = new JsonArray();
-    while (userRatings.hasNext()) {
-      UserScore curRating = userRatings.next().getValue();
-      watched.add(GSON.toJsonTree(movies.read(Bytes.toBytes(curRating.getMovieID()))));
-    }
-
-    JsonArray recommended = new JsonArray();
-    while (userPredictions.hasNext()) {
-      Rating curPrediction = userPredictions.next().getValue();
-      recommended.add(GSON.toJsonTree(movies.read(Bytes.toBytes(curPrediction.product()))));
-    }
-
-    JsonObject response = new JsonObject();
-    response.add("rated", watched);
-    response.add("recommended", recommended);
-
-    return response;
+    responder.sendJson(ProcedureResponse.Code.SUCCESS,
+                       MovieRecommenderHelper.prepareResponse(movies, userRatings, userPredictions));
   }
 }

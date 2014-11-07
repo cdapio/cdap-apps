@@ -20,11 +20,7 @@ import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.ObjectStores;
 import co.cask.cdap.internal.io.UnsupportedTypeException;
-import org.apache.spark.mllib.recommendation.ALS;
 import org.apache.spark.mllib.recommendation.Rating;
-
-import java.nio.charset.Charset;
-import java.util.regex.Pattern;
 
 /**
  * Application that provides movie recommendations to users.
@@ -37,7 +33,9 @@ public class MovieRecommenderApp extends AbstractApplication {
     addStream(new Stream("ratingsStream"));
     addFlow(new RatingsFlow());
     addSpark(new RecommendationBuilderSpecification());
+    // TODO (CDAP-413): Procedures will deprecated, so it's should be removed after total replaced by Services
     addProcedure(new RecommendMovieProcedure());
+    addService(new MovieRecommendService());
     addService(new MovieDictionaryService());
 
     try {
@@ -52,5 +50,4 @@ public class MovieRecommenderApp extends AbstractApplication {
       throw new RuntimeException(e);
     }
   }
-
 }
