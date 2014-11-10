@@ -33,8 +33,6 @@ public class MovieRecommenderApp extends AbstractApplication {
     addStream(new Stream("ratingsStream"));
     addFlow(new RatingsFlow());
     addSpark(new RecommendationBuilderSpecification());
-    // TODO (CDAP-413): Procedures will deprecated, so it's should be removed after total replaced by Services
-    addProcedure(new RecommendMovieProcedure());
     addService(new MovieRecommenderService());
     addService(new MovieDictionaryService());
 

@@ -18,9 +18,9 @@ The MovieRecommender application is composed of the components:
 * ``Streams`` for ingesting ``ratings`` data into the system
 * A ``Flowlet`` in a ``Flow`` which processes the ``ratings`` data and stores them in a ``Dataset``
 * A ``Service`` to store ``movies`` in a ``Dataset``
+* A ``Service`` that recommends movies for a particular user
 * A ``Spark`` Program which builds a recommendation model using the ALS algorithm and recommends
   movies for all the users
-* A ``Procedure`` to query the application by ``userId`` to get recommendations for a particular user
 
 |(App)|
 
@@ -49,11 +49,11 @@ Deploy the Application to a CDAP instance defined by its host (defaults to local
 
   bin/app-manager.sh --host [host] --action deploy
   
-Start the Application Flows, Services and Procedures::
+Start the Application Flows and Services::
 
   bin/app-manager.sh --host [host] --action start
   
-Make sure that the Flows, Services and Procedures are running (note that the
+Make sure that the Flows and Services are running (note that the
 ``RecommendationBuilder`` Spark program will be started later)::
 
   bin/app-manager.sh --host [host] --action status
@@ -73,19 +73,19 @@ status (once done, it becomes STOPPED)::
   
 Once the Spark program is complete, you can query for recommendations via an HTTP request using the ``curl`` command::
 
-  curl -v -d '{"userId":"1"}' \
-  -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
+  curl -v \
+  -X GET 'http://localhost:10000/v2/apps/MovieRecommender/services/MovieRecommenderService/methods/recommend/1'
 
 On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the example::
 
-  libexec\curl -v -d '{"userId":"1"}' \
-  -X POST 'http://localhost:10000/v2/apps/MovieRecommender/procedures/RecommendMovieProcedure/methods/getRecommendation'
+  libexec\curl -v \
+  -X GET 'http://localhost:10000/v2/apps/MovieRecommender/services/MovieRecommenderService/methods/recommend/1'
   
 This will return a JSON response of rated and recommended movies::
 
-  {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
+  {"rated":["ratedMovie1","ratedMovie2"],"recommended":["recommendedMovie1","recommendedMovie2"]}
 
-Alternately, you can use the CDAP Console Procedure page to execute the queries above.
+Alternately, you can use any browser to request the url above.
 
 To stop the application, execute::
 
