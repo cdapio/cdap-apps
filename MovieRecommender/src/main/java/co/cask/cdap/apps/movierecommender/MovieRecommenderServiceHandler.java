@@ -82,7 +82,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
   }
 
   /**
-   * Prepares a json sting of watched and recommended movies in the following format:
+   * Prepares a json string of watched and recommended movies in the following format:
    * {"rated":["ratedMovie1","ratedMovie2"],"recommended":["recommendedMovie1","recommendedMovie2"]}
    *
    * @param userRatings user given rating to movies
