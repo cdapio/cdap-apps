@@ -35,7 +35,7 @@ public class MovieRecommenderApp extends AbstractApplication {
     addSpark(new RecommendationBuilderSpecification());
     // TODO (CDAP-413): Procedures will deprecated, so it's should be removed after total replaced by Services
     addProcedure(new RecommendMovieProcedure());
-    addService(new MovieRecommendService());
+    addService(new MovieRecommenderService());
     addService(new MovieDictionaryService());
 
     try {

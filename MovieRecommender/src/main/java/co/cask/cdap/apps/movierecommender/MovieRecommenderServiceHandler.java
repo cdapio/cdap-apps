@@ -23,23 +23,18 @@ import co.cask.cdap.api.dataset.lib.ObjectStore;
 import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
-import com.google.common.base.Splitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.spark.mllib.recommendation.Rating;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.Iterator;
-import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
  * Handler that exposes HTTP API to retrieve recommended movies.
  */
-public class MovieRecommendServiceHandler extends AbstractHttpServiceHandler {
-  private static final String PARAM_USER_ID = "userId";
-
+public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
   @UseDataSet("recommendations")
   private ObjectStore<Rating> recommendations;
 
@@ -49,34 +44,10 @@ public class MovieRecommendServiceHandler extends AbstractHttpServiceHandler {
   @UseDataSet("movies")
   private ObjectStore<String> movies;
 
-  @Path("getrecommendation")
+  @Path("/recommend/{userId}")
   @GET
-  public void getRecommendation(HttpServiceRequest request,
-                                HttpServiceResponder responder) throws IOException, InterruptedException {
-    String userId = null;
-    byte[] userID;
-
-    // Parse the userId parameter
-    try {
-      URI uri = new URI(request.getRequestURI());
-      String query = uri.getQuery();
-      if (null != query) {
-        Map<String, String> params = Splitter.on('&').trimResults().withKeyValueSeparator("=").split(query);
-        userId = params.get(PARAM_USER_ID);
-      }
-      if (null == userId) {
-        responder.sendError(HttpResponseStatus.BAD_REQUEST.code(), "Parameter userId must be given in URI.");
-        return;
-      } else {
-        userID = Bytes.toBytes(Integer.parseInt(userId));
-      }
-    } catch (NumberFormatException e) {
-      responder.sendError(HttpResponseStatus.BAD_REQUEST.code(), "Value of userId must be a correct number.");
-      return;
-    } catch (Exception e) {
-      responder.sendError(HttpResponseStatus.BAD_REQUEST.code(), "Parameter userId must be given in correct URI.");
-      return;
-    }
+  public void recommend(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("userId") int userId) {
+    byte[] userID = Bytes.toBytes(userId);
 
     Iterator<KeyValue<byte[], UserScore>> userRatings = ratings.scan(userID, Bytes.stopKeyForPrefix(userID));
     if (!userRatings.hasNext()) {

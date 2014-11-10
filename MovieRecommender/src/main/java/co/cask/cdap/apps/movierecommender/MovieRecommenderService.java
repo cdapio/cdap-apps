@@ -20,13 +20,13 @@ import co.cask.cdap.api.service.AbstractService;
 import co.cask.cdap.api.service.Service;
 
 /**
- * {@link Service} that provides access to recommended movies.
+ * A {@link Service} that recommends movies for a user.
  */
-public class MovieRecommendService extends AbstractService {
+public class MovieRecommenderService extends AbstractService {
   @Override
   protected void configure() {
-    setName("MovieRecommendService");
-    setDescription("Service to store recommended movies information to dataset");
-    addHandler(new MovieRecommendServiceHandler());
+    setName("MovieRecommenderService");
+    setDescription("Service to recommend movies to a user");
+    addHandler(new MovieRecommenderServiceHandler());
   }
 }
