@@ -85,8 +85,6 @@ This will return a JSON response of rated and recommended movies::
 
   {"rated":["ratedMovie1","ratedMovie2"],"recommended":["recommendedMovie1","recommendedMovie2"]}
 
-Alternately, you can use any browser to request the url above.
-
 To stop the application, execute::
 
   bin/app-manager.sh --host [host] --action stop
