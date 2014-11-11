@@ -27,7 +27,6 @@ public class MovieDictionaryService extends AbstractService {
   protected void configure() {
     setName("MovieDictionaryService");
     setDescription("Service to store moviesStore information to dataset");
-    useDataset("movies");
     addHandler(new MovieDictionaryServiceHandler());
   }
 }
