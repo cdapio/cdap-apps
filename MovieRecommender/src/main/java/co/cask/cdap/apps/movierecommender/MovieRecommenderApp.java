@@ -35,7 +35,6 @@ public class MovieRecommenderApp extends AbstractApplication {
     setName("MovieRecommender");
     setDescription("Movie Recommendation App");
     addStream(new Stream("ratingsStream"));
-    addFlow(new RatingsFlow());
     addSpark(new RecommendationBuilderSpecification());
     addProcedure(new RecommendMovieProcedure());
     addService(new MovieDictionaryService());

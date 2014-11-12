@@ -27,7 +27,7 @@
   <properties>
     <app.main.class>co.cask.cdap.apps.movierecommender.MovieRecommenderApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>2.5.0</cdap.version>
+    <cdap.version>2.6.0-SNAPSHOT</cdap.version>
     <spark.core.version>1.1.0</spark.core.version>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>13.0.1</guava.version>
@@ -35,6 +35,7 @@
     <scala.version>2.10.3</scala.version>
     <scalanlp.version>0.9</scalanlp.version>
     <mllib.version>1.1.0</mllib.version>
+    <hadoop.version>2.3.0</hadoop.version>
   </properties>
 
   <repositories>
@@ -58,6 +59,32 @@
   </pluginRepositories>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>co.cask.cdap</groupId>
       <artifactId>cdap-api</artifactId>
