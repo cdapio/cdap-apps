@@ -67,7 +67,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
           return;
         }
 
-        responder.sendJson(prepareResponse(movies, userRatings, userPredictions));
+        responder.sendJson(getRecommendation(movies, userRatings, userPredictions));
       } finally {
         userPredictions.close();
       }
@@ -86,9 +86,9 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
    *
    * @return {@link Recommendation} of watched and recommended movies
    */
-  private Recommendation prepareResponse(ObjectStore<String> store,
-                                         CloseableIterator<KeyValue<byte[], UserScore>> userRatings,
-                                         CloseableIterator<KeyValue<byte[], Rating>> userPredictions) {
+  private Recommendation getRecommendation(ObjectStore<String> store,
+                                           CloseableIterator<KeyValue<byte[], UserScore>> userRatings,
+                                           CloseableIterator<KeyValue<byte[], Rating>> userPredictions) {
     Recommendation recommendations = new Recommendation();
 
     while (userRatings.hasNext()) {
