@@ -15,6 +15,7 @@
  */
 package co.cask.cdap.apps.sentiment;
 
+import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.FlowManager;
 import co.cask.cdap.test.RuntimeMetrics;
@@ -28,10 +29,6 @@ import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -105,10 +102,15 @@ public class TwitterSentimentAppTest extends TestBase {
         // Verify the counts of the following sentiments
         url = new URL(serviceManager.getServiceURL(), "counts/300");
 
-        HttpPost post = new HttpPost(url.toURI());
-        post.setEntity(new StringEntity("['positive','negative','neutral']"));
-        HttpResponse httpResponse = HttpClients.createDefault().execute(post);
-        String response = new String(ByteStreams.toByteArray(httpResponse.getEntity().getContent()), Charsets.UTF_8);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        String response;
+        try {
+          connection.getOutputStream().write(Bytes.toBytes("['positive','negative','neutral']"));
+          response = new String(ByteStreams.toByteArray(connection.getInputStream()), Charsets.UTF_8);
+        } finally {
+          connection.disconnect();
+        }
 
         result = GSON.fromJson(response, MAP_OF_STRING_LONG);
         Assert.assertEquals(2, result.get("positive").intValue());

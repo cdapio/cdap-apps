@@ -68,7 +68,7 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
     for (Map.Entry<byte[], byte[]> entry : result.entrySet()) {
       resp.put(Bytes.toString(entry.getKey()), Bytes.toLong(entry.getValue()));
     }
-    responder.sendJson(HttpResponseStatus.OK.getCode(), resp);
+    responder.sendJson(resp);
   }
 
   @Path("/sentiments/{sentiment}/{seconds}/{limit}")
@@ -92,7 +92,7 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
       }
       textTimeMap.put(Bytes.toString(entry.getValue()), entry.getTimestamp());
     }
-    responder.sendJson(HttpResponseStatus.OK.getCode(), textTimeMap);
+    responder.sendJson(textTimeMap);
   }
 
   @Path("counts/{seconds}")
@@ -118,6 +118,6 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
       }
       sentimentCountMap.put(sentiment, count);
     }
-    responder.sendJson(HttpResponseStatus.OK.getCode(), sentimentCountMap);
+    responder.sendJson(sentimentCountMap);
   }
 }
