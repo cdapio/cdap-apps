@@ -36,6 +36,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -45,6 +46,9 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class TwitterSentimentAppTest extends TestBase {
+
+  private static final Gson GSON = new Gson();
+  private static final Type MAP_OF_STRING_LONG = new TypeToken<Map<String, Long>>() {}.getType();
 
   @Test
   public void testSentimentService() throws Exception {
@@ -80,26 +84,22 @@ public class TwitterSentimentAppTest extends TestBase {
 
       try {
         // Verify the aggregates
-        Map<String, Long> result = new Gson().fromJson(doRequest(url), new TypeToken<Map<String, Long>>() {
-        }.getType());
+        Map<String, Long> result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(2, result.get("positive").intValue());
         Assert.assertEquals(1, result.get("negative").intValue());
         Assert.assertEquals(1, result.get("neutral").intValue());
 
         // Verify retrieval of sentiments
         url = new URL(serviceManager.getServiceURL(), "sentiments/positive/300/10");
-        result = new Gson().fromJson(doRequest(url), new TypeToken<Map<String, Long>>() {
-        }.getType());
+        result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i love movie", "i am happy today that I got this working."),
                             result.keySet());
         url = new URL(serviceManager.getServiceURL(), "sentiments/negative/300/10");
-        result = new Gson().fromJson(doRequest(url), new TypeToken<Map<String, Long>>() {
-        }.getType());
+        result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i hate movie"), result.keySet());
 
         url = new URL(serviceManager.getServiceURL(), "sentiments/neutral/300/10");
-        result = new Gson().fromJson(doRequest(url), new TypeToken<Map<String, Long>>() {
-        }.getType());
+        result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i am neutral to movie"), result.keySet());
 
         // Verify the counts of the following sentiments
@@ -110,8 +110,7 @@ public class TwitterSentimentAppTest extends TestBase {
         HttpResponse httpResponse = HttpClients.createDefault().execute(post);
         String response = new String(ByteStreams.toByteArray(httpResponse.getEntity().getContent()), Charsets.UTF_8);
 
-        result = new Gson().fromJson(response, new TypeToken<Map<String, Long>>() {
-        }.getType());
+        result = GSON.fromJson(response, MAP_OF_STRING_LONG);
         Assert.assertEquals(2, result.get("positive").intValue());
         Assert.assertEquals(1, result.get("negative").intValue());
         Assert.assertEquals(1, result.get("neutral").intValue());
