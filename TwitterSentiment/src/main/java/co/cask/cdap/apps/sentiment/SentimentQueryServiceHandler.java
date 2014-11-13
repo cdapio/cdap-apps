@@ -16,35 +16,38 @@
 
 package co.cask.cdap.apps.sentiment;
 
-import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.dataset.lib.TimeseriesTable;
 import co.cask.cdap.api.dataset.table.Get;
 import co.cask.cdap.api.dataset.table.Row;
 import co.cask.cdap.api.dataset.table.Table;
-import co.cask.cdap.api.procedure.AbstractProcedure;
-import co.cask.cdap.api.procedure.ProcedureRequest;
-import co.cask.cdap.api.procedure.ProcedureResponder;
-import co.cask.cdap.api.procedure.ProcedureResponse;
-import co.cask.cdap.api.procedure.ProcedureSpecification;
+import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
+import co.cask.cdap.api.service.http.HttpServiceRequest;
+import co.cask.cdap.api.service.http.HttpServiceResponder;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
- * Procedure that returns the aggregates timeseries sentiment data.
+ * Handler that exposes HTTP API to retrieve the aggregates timeseries sentiment data.
  */
-public class SentimentQueryProcedure extends AbstractProcedure {
-  private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryProcedure.class);
+public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
+  private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryServiceHandler.class);
   private static final Gson GSON = new Gson();
-  static final String PROCEDURE_NAME = "SentimentQuery";
+
 
   @UseDataSet(TwitterSentimentApp.TABLE_NAME)
   private Table sentiments;
@@ -52,36 +55,29 @@ public class SentimentQueryProcedure extends AbstractProcedure {
   @UseDataSet(TwitterSentimentApp.TIMESERIES_TABLE_NAME)
   private TimeseriesTable textSentiments;
 
-  @Handle("aggregates")
-  public void sentimentAggregates(ProcedureRequest request, ProcedureResponder response) throws Exception {
+  @Path("/aggregates")
+  @GET
+  public void sentimentAggregates(HttpServiceRequest request, HttpServiceResponder responder) {
     Row row = sentiments.get(new Get("aggregate"));
     Map<byte[], byte[]> result = row.getColumns();
     if (result == null) {
-      response.error(ProcedureResponse.Code.FAILURE, "No sentiments processed.");
+      responder.sendError(HttpResponseStatus.NOT_FOUND.getCode(), "No sentiments processed.");
       return;
     }
     Map<String, Long> resp = Maps.newHashMap();
     for (Map.Entry<byte[], byte[]> entry : result.entrySet()) {
       resp.put(Bytes.toString(entry.getKey()), Bytes.toLong(entry.getValue()));
     }
-    response.sendJson(ProcedureResponse.Code.SUCCESS, resp);
+    responder.sendJson(HttpResponseStatus.OK.getCode(), resp);
   }
 
-  @Handle("sentiments")
-  public void getSentiments(ProcedureRequest request, ProcedureResponder response) throws Exception {
-    String sentiment = request.getArgument("sentiment");
-    if (sentiment == null) {
-      response.error(ProcedureResponse.Code.CLIENT_ERROR, "No sentiment sent");
-      return;
-    }
-    String seconds = request.getArgument("seconds");
-    if (seconds == null) {
-      seconds = "300";
-    }
-    String limit = request.getArgument("limit");
-    if (limit == null) {
-      limit = "10";
-    }
+  @Path("/sentiments/{sentiment}/{seconds}/{limit}")
+  @GET
+  public void getSentiments(HttpServiceRequest request, HttpServiceResponder responder,
+                            @PathParam("sentiment") String sentiment,
+                            @PathParam("seconds") String seconds,
+                            @PathParam("limit") String limit) {
+
     int remaining = Integer.parseInt(limit);
 
     long time = System.currentTimeMillis();
@@ -89,35 +85,32 @@ public class SentimentQueryProcedure extends AbstractProcedure {
     Iterator<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8), beginTime, time);
 
     Map<String, Long> textTimeMap = Maps.newHashMap();
-    while(entries.hasNext()) {
+    while (entries.hasNext()) {
       TimeseriesTable.Entry entry = entries.next();
       if (remaining-- <= 0) {
         break;
       }
       textTimeMap.put(Bytes.toString(entry.getValue()), entry.getTimestamp());
     }
-    response.sendJson(ProcedureResponse.Code.SUCCESS, textTimeMap);
+    responder.sendJson(HttpResponseStatus.OK.getCode(), textTimeMap);
   }
 
-  @Handle("counts")
-  public void getCount(ProcedureRequest request, ProcedureResponder response) throws Exception {
-    String sentiments = request.getArgument("sentiments");
-    if (sentiments == null) {
-      response.error(ProcedureResponse.Code.CLIENT_ERROR, "No sentiment sent");
-      return;
-    }
-    String seconds = request.getArgument("seconds");
-    if (seconds == null) {
-      seconds = "300";
-    }
+  @Path("counts/{seconds}")
+  @POST
+  public void getCount(HttpServiceRequest request, HttpServiceResponder responder,
+                       @PathParam("seconds") String seconds) {
 
-    String[] sentimentArr = GSON.fromJson(sentiments, String[].class);
+    ByteBuffer requestContents = request.getContent();
+    String sentimentsData = Charsets.UTF_8.decode(requestContents).toString();
+    String[] sentimentArr = GSON.fromJson(sentimentsData, String[].class);
+
 
     Map<String, Integer> sentimentCountMap = Maps.newHashMapWithExpectedSize(sentimentArr.length);
     long time = System.currentTimeMillis();
     long beginTime = time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS);
     for (String sentiment: sentimentArr) {
-      Iterator<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8), beginTime, time);
+      Iterator<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8),
+                                                                    beginTime, time);
       int count = 0;
       while(entries.hasNext()) {
         entries.next();
@@ -125,14 +118,6 @@ public class SentimentQueryProcedure extends AbstractProcedure {
       }
       sentimentCountMap.put(sentiment, count);
     }
-    response.sendJson(ProcedureResponse.Code.SUCCESS, sentimentCountMap);
-  }
-
-  @Override
-  public ProcedureSpecification configure() {
-    return ProcedureSpecification.Builder.with()
-      .setName(PROCEDURE_NAME)
-      .setDescription("Queries data relating to tweets' sentiments.")
-      .build();
+    responder.sendJson(HttpResponseStatus.OK.getCode(), sentimentCountMap);
   }
 }
