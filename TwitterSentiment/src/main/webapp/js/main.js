@@ -41,9 +41,10 @@ Homepage.prototype.initGraph = function () {
 
   function update() {
     $.ajax({
-      url: SERVICE_URL + '/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
-      type: 'GET',
-      contentType: "application/json",
+      url: SERVICE_URL + '/counts/300',
+      type: 'POST',
+      contentType: "text",
+      data: "['positive', 'negative', 'neutral']",
       dataType: 'json',
       cache: false,
       success: function(response) {
@@ -78,7 +79,7 @@ var appendK = function (str) {
 
 var updateTable = function(sentiment) {
    $.ajax({
-     url: SERVICE_URL + '/sentiments?sentiment=' + sentiment,
+     url: SERVICE_URL + '/sentiments/' + sentiment + "/300/10",
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',
