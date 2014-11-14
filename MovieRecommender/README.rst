@@ -5,8 +5,7 @@ Movie recommendation application for CDAP_.
 
 .. pull-quote::
 
-  **Note:**  The MovieRecommender application does not work with CDAP version 2.5.2 due to
-  a class loading problem. Currently, applications that include Spark or Scala classes in
+  **Note:** Currently, applications that include Spark or Scala classes in
   user classes not extended from either ``JavaSparkProgram`` or ``ScalaSparkProgram``
   (depending upon the language) fail with a class loading error. Spark or Scala classes
   should not be used outside of the Spark program. (`CDAP-599 <https://issues.cask.co/browse/CDAP-599>`__)
