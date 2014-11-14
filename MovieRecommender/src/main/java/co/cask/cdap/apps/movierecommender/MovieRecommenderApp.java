@@ -20,7 +20,6 @@ import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.ObjectStores;
 import co.cask.cdap.internal.io.UnsupportedTypeException;
-import org.apache.spark.mllib.recommendation.Rating;
 
 /**
  * Application that provides movie recommendations to users.
@@ -38,7 +37,7 @@ public class MovieRecommenderApp extends AbstractApplication {
 
     try {
       ObjectStores.createObjectStore(getConfigurer(), "ratings", UserScore.class);
-      ObjectStores.createObjectStore(getConfigurer(), "recommendations", Rating.class);
+      ObjectStores.createObjectStore(getConfigurer(), "recommendations", UserScore.class);
       ObjectStores.createObjectStore(getConfigurer(), "movies", String.class);
     } catch (UnsupportedTypeException e) {
       // This exception is thrown by ObjectStore if its parameter type cannot be

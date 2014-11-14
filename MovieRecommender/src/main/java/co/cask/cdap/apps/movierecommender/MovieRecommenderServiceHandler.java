@@ -36,7 +36,7 @@ import javax.ws.rs.PathParam;
  */
 public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
   @UseDataSet("recommendations")
-  private ObjectStore<Rating> recommendations;
+  private ObjectStore<UserScore> recommendations;
 
   @UseDataSet("ratings")
   private ObjectStore<UserScore> ratings;
@@ -58,7 +58,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
         return;
       }
 
-      CloseableIterator<KeyValue<byte[], Rating>> userPredictions =
+      CloseableIterator<KeyValue<byte[], UserScore>> userPredictions =
         recommendations.scan(userID, Bytes.stopKeyForPrefix(userID));
       try {
         if (!userPredictions.hasNext()) {
@@ -88,7 +88,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
    */
   private Recommendation getRecommendation(ObjectStore<String> store,
                                            CloseableIterator<KeyValue<byte[], UserScore>> userRatings,
-                                           CloseableIterator<KeyValue<byte[], Rating>> userPredictions) {
+                                           CloseableIterator<KeyValue<byte[], UserScore>> userPredictions) {
     Recommendation recommendations = new Recommendation();
 
     while (userRatings.hasNext()) {
@@ -96,7 +96,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
     }
 
     while (userPredictions.hasNext()) {
-      recommendations.addRecommended(store.read(Bytes.toBytes(userPredictions.next().getValue().product())));
+      recommendations.addRecommended(store.read(Bytes.toBytes(userPredictions.next().getValue().getMovieID())));
     }
 
     return recommendations;

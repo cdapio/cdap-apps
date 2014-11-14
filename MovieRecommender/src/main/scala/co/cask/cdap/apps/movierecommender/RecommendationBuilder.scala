@@ -108,9 +108,10 @@ class RecommendationBuilder extends ScalaSparkProgram {
       var recom = originalContext.parallelize(model.predict(nr.map((curUser._1, _)))
         .collect().sortBy(-_.rating).take(20))
 
-      var recomRDD = recom.keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product)))
+      var recomRDD = recom.keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product))).
+        map(x => (x._1, new UserScore(x._2.user, x._2.product, x._2.rating.toInt)))
 
-      sc.writeToDataset(recomRDD, "recommendations", classOf[Array[Byte]], classOf[Rating])
+      sc.writeToDataset(recomRDD, "recommendations", classOf[Array[Byte]], classOf[UserScore])
     }
 
     LOG.debug("Stored predictions in dataset. Done!")
