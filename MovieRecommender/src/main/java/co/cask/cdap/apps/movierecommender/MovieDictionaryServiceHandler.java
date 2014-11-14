@@ -23,8 +23,8 @@ import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
 import com.google.common.base.Charsets;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
+import java.net.HttpURLConnection;
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 import javax.ws.rs.POST;
@@ -45,16 +45,16 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
   public void uploadHandler(HttpServiceRequest request, HttpServiceResponder responder) {
     ByteBuffer requestContents = request.getContent();
     if (requestContents == null) {
-      responder.sendError(HttpResponseStatus.NO_CONTENT.code(), "Movies information is empty.");
+      responder.sendError(HttpURLConnection.HTTP_BAD_REQUEST, "Movies information is empty.");
       return;
     }
 
     String moviesData = Charsets.UTF_8.decode(requestContents).toString();
 
     if (parseAndStoreMovies(moviesData)) {
-      responder.sendStatus(HttpResponseStatus.OK.code());
+      responder.sendStatus(HttpURLConnection.HTTP_OK);
     } else {
-      responder.sendError(HttpResponseStatus.BAD_REQUEST.code(), "Malformed movies information.");
+      responder.sendError(HttpURLConnection.HTTP_BAD_REQUEST, "Malformed movies information.");
     }
   }
 
