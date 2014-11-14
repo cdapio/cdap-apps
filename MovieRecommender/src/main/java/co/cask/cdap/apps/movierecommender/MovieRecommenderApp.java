@@ -32,8 +32,8 @@ public class MovieRecommenderApp extends AbstractApplication {
     addStream(new Stream("ratingsStream"));
     addFlow(new RatingsFlow());
     addSpark(new RecommendationBuilderSpecification());
-    addService(new MovieRecommenderService());
-    addService(new MovieDictionaryService());
+    addService("MovieDictionaryService", new MovieDictionaryServiceHandler());
+    addService("MovieRecommenderService", new MovieRecommenderServiceHandler());
 
     try {
       ObjectStores.createObjectStore(getConfigurer(), "ratings", UserScore.class);
