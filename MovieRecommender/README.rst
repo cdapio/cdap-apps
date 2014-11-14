@@ -3,13 +3,6 @@ MovieRecommender
 
 Movie recommendation application for CDAP_.
 
-.. pull-quote::
-
-  **Note:** Currently, applications that include Spark or Scala classes in
-  user classes not extended from either ``JavaSparkProgram`` or ``ScalaSparkProgram``
-  (depending upon the language) fail with a class loading error. Spark or Scala classes
-  should not be used outside of the Spark program. (`CDAP-599 <https://issues.cask.co/browse/CDAP-599>`__)
-
 Overview
 --------
 The MovieRecommender application recommends movies to users using collaborative filtering.
