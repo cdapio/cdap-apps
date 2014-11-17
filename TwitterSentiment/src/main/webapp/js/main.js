@@ -79,7 +79,7 @@ var appendK = function (str) {
 
 var updateTable = function(sentiment) {
    $.ajax({
-     url: SERVICE_URL + '/sentiments/' + sentiment + "/300/10",
+     url: SERVICE_URL + '/sentiments/' + sentiment + "/300",
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',

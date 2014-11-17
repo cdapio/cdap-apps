@@ -28,10 +28,10 @@ import co.cask.cdap.api.service.http.HttpServiceResponder;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
-import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.HttpURLConnection;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,11 +42,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 /**
- * Handler that exposes HTTP API to retrieve the aggregates timeseries sentiment data.
+ * Handler that exposes HTTP endpoints to retrieve the aggregates timeseries sentiment data.
  */
 public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
   private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryServiceHandler.class);
   private static final Gson GSON = new Gson();
+  private static final String DEFAULT_LIMIT = "10";
 
 
   @UseDataSet(TwitterSentimentApp.TABLE_NAME)
@@ -61,7 +62,7 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
     Row row = sentiments.get(new Get("aggregate"));
     Map<byte[], byte[]> result = row.getColumns();
     if (result == null) {
-      responder.sendError(HttpResponseStatus.NOT_FOUND.getCode(), "No sentiments processed.");
+      responder.sendError(HttpURLConnection.HTTP_NOT_FOUND, "No sentiments processed.");
       return;
     }
     Map<String, Long> resp = Maps.newHashMap();
@@ -70,6 +71,15 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
     }
     responder.sendJson(resp);
   }
+
+  @Path("/sentiments/{sentiment}/{seconds}")
+  @GET
+  public void getSentiments(HttpServiceRequest request, HttpServiceResponder responder,
+                            @PathParam("sentiment") String sentiment,
+                            @PathParam("seconds") String seconds) {
+    getSentiments(request, responder, sentiment, seconds, DEFAULT_LIMIT);
+  }
+
 
   @Path("/sentiments/{sentiment}/{seconds}/{limit}")
   @GET
@@ -108,11 +118,11 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
     Map<String, Integer> sentimentCountMap = Maps.newHashMapWithExpectedSize(sentimentArr.length);
     long time = System.currentTimeMillis();
     long beginTime = time - TimeUnit.MILLISECONDS.convert(Integer.parseInt(seconds), TimeUnit.SECONDS);
-    for (String sentiment: sentimentArr) {
+    for (String sentiment : sentimentArr) {
       Iterator<TimeseriesTable.Entry> entries = textSentiments.read(sentiment.getBytes(Charsets.UTF_8),
                                                                     beginTime, time);
       int count = 0;
-      while(entries.hasNext()) {
+      while (entries.hasNext()) {
         entries.next();
         count++;
       }
