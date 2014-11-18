@@ -16,16 +16,14 @@
 
 package co.cask.cdap.apps.netlens.app.counter;
 
-import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.dataset.lib.TimeseriesTable;
 import co.cask.cdap.api.dataset.table.Table;
-import co.cask.cdap.api.procedure.AbstractProcedure;
-import co.cask.cdap.api.procedure.ProcedureRequest;
-import co.cask.cdap.api.procedure.ProcedureResponder;
+import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
+import co.cask.cdap.api.service.http.HttpServiceRequest;
+import co.cask.cdap.api.service.http.HttpServiceResponder;
 import co.cask.cdap.apps.netlens.app.Constants;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
@@ -33,11 +31,16 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 
 /**
- *
+ * Anomalies counts service handler
  */
-public class AnomalyCountsProcedure extends AbstractProcedure {
+public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
+
   private static final Gson GSON = new Gson();
 
   @UseDataSet("anomalyCounters")
@@ -49,15 +52,21 @@ public class AnomalyCountsProcedure extends AbstractProcedure {
   @UseDataSet("topN")
   private Table topNTable;
 
-  @Handle("count")
-  public void count(ProcedureRequest request, ProcedureResponder responder) throws IOException {
-    Preconditions.checkArgument(request.getArgument("startTs") != null, "Missing required argument: 'startTs'");
-    Preconditions.checkArgument(request.getArgument("endTs") != null, "Missing required argument: 'endTs'");
+  @GET
+  @Path("count/{startTs}/{endTs}/{src}")
+  public void count(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                    @PathParam("endTs") Long endTs, @PathParam("src") String src) throws IOException {
+    doCount(responder, startTs, endTs, src);
+  }
 
-    long startTs = Long.valueOf(request.getArgument("startTs"));
-    long endTs = Long.valueOf(request.getArgument("endTs"));
-    String src = request.getArgument("src");
+  @GET
+  @Path("count/{startTs}/{endTs}")
+  public void count(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                    @PathParam("endTs") Long endTs) throws IOException {
+    doCount(responder, startTs, endTs, null);
+  }
 
+  private void doCount(HttpServiceResponder responder, Long startTs, Long endTs, String src) {
     DataPoint[] dataPoints;
     if (src != null) {
       dataPoints = getCounts(anomalyCounters, startTs, endTs,
@@ -65,18 +74,14 @@ public class AnomalyCountsProcedure extends AbstractProcedure {
     } else {
       dataPoints = getCounts(anomalyCounters, startTs, endTs, AnomalyCounterFlowlet.TOTAL_COUNTER_KEY_PREFIX);
     }
-
     responder.sendJson(GSON.toJson(dataPoints));
   }
 
-  @Handle("uniqueIpsCount")
-  public void uniquesCount(ProcedureRequest request, ProcedureResponder responder) throws IOException {
-    Preconditions.checkArgument(request.getArgument("startTs") != null, "Missing required argument: 'startTs'");
-    Preconditions.checkArgument(request.getArgument("endTs") != null, "Missing required argument: 'endTs'");
 
-    long startTs = Long.valueOf(request.getArgument("startTs"));
-    long endTs = Long.valueOf(request.getArgument("endTs"));
-
+  @GET
+  @Path("uniqueIpsCount/{startTs}/{endTs}")
+  public void uniquesCount(HttpServiceRequest request, HttpServiceResponder responder,
+                           @PathParam("startTs") Long startTs, @PathParam("endTs") Long endTs) throws IOException {
     DataPoint[] dataPoints = CounterTableUtil.getCounts(uniqueCounters,
                                                         AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_KEY_PREFIX,
                                                         AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_COLUMN,
@@ -84,20 +89,25 @@ public class AnomalyCountsProcedure extends AbstractProcedure {
     responder.sendJson(GSON.toJson(dataPoints));
   }
 
-  @Handle("topN")
-  public void topN(ProcedureRequest request, ProcedureResponder responder) throws IOException {
-    // the interval length is fixed for top N, so we only need startTs
-    Preconditions.checkArgument(request.getArgument("startTs") != null, "Missing required argument: 'startTs'");
+  @GET
+  @Path("topN/{startTs}/{limit}")
+  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                   @PathParam("limit") Long limit) throws IOException {
+    doTopN(responder, startTs, limit);
+  }
 
-    long startTs = Long.valueOf(request.getArgument("startTs"));
-    String limitArg = request.getArgument("limit");
-    long limit = limitArg == null ? 100 : Long.valueOf(limitArg);
+  @GET
+  @Path("topN/{startTs}")
+  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs)
+    throws IOException {
+    doTopN(responder, startTs, 10L);
+  }
+
+  private void doTopN(HttpServiceResponder responder, Long startTs, Long limit) {
     Table topNTable = this.topNTable;
     byte[] prefix = AnomalyCounterFlowlet.TOPN_IP_WITH_ANOMALIES_KEY_PREFIX;
-
     List<TopNTableUtil.TopNResult> result = TopNTableUtil.get(topNTable, prefix, startTs,
                                                               Constants.TOPN_AGG_INTERVAL_SIZE, limit);
-
     responder.sendJson(GSON.toJson(result));
   }
 

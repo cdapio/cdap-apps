@@ -36,12 +36,11 @@ the License.
     function drawTrafficChart() {
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/CountersProcedure/methods/counts",
-                        "{startTs:" + startTs + ", endTs:" + endTs + "}")
+        var url = "proxy/v2/apps/Netlens/services/CountersService/methods/counts/" + startTs + "/" + endTs;
+        $.post(url)
                 .done(function( data ) {
-                    var points = JSON.parse(JSON.parse(data));
+                    var points = JSON.parse(data);
                     renderTrafficChart(points);
-
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#ttraffic').html("<div class='server_error''>Failed to get data from server<div>");

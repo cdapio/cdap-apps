@@ -145,7 +145,7 @@ if [ "x$action" == "xdeploy" ]; then
   deploy_action $app $jar_path $host
 else
   program_action $app "AnalyticsFlow" "flow" $action $host
-  program_action $app "CountersProcedure" "procedure" $action $host
-  program_action $app "AnomalyCountsProcedure" "procedure" $action $host
-  program_action $app "AnomaliesProcedure" "procedure" $action $host
+  program_action $app "CountersService" "service" $action $host
+  program_action $app "AnomaliesCountService" "service" $action $host
+  program_action $app "AnomaliesService" "service" $action $host
 fi

@@ -36,12 +36,11 @@ the License.
     function drawAnomaliesCountChart() {
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/AnomalyCountsProcedure/methods/count",
-                        "{startTs:" + startTs + ", endTs:" + endTs + "}")
+        var url = "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/count/" + startTs + "/" + endTs;
+        $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
+                    var anomalies = JSON.parse(data);
                     renderAnomaliesCountChart(anomalies);
-
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#anomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");

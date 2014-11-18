@@ -16,14 +16,12 @@
 
 package co.cask.cdap.apps.netlens.app.anomaly;
 
-import co.cask.cdap.api.annotation.Handle;
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.dataset.lib.TimeseriesTable;
-import co.cask.cdap.api.procedure.AbstractProcedure;
-import co.cask.cdap.api.procedure.ProcedureRequest;
-import co.cask.cdap.api.procedure.ProcedureResponder;
-import com.google.common.base.Preconditions;
+import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
+import co.cask.cdap.api.service.http.HttpServiceRequest;
+import co.cask.cdap.api.service.http.HttpServiceResponder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -35,31 +33,48 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 
 /**
- *
+ * Anomalies service handler
  */
-public class AnomaliesProcedure extends AbstractProcedure {
+public class AnomaliesServiceHandler extends AbstractHttpServiceHandler {
+
   private static final Gson GSON = new Gson();
 
   @UseDataSet("anomalies")
   private TimeseriesTable anomalies;
 
-  @Handle("timeRange")
-  public void timeRange(ProcedureRequest request, ProcedureResponder responder) throws IOException {
-    Preconditions.checkArgument(request.getArgument("startTs") != null, "Missing required argument: 'startTs'");
-    Preconditions.checkArgument(request.getArgument("endTs") != null, "Missing required argument: 'endTs'");
+  @GET
+  @Path("timeRange/{startTs}/{endTs}/{groupFor}/{src}")
+  public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                        @PathParam("endTs") Long endTs, @PathParam("groupFor") String groupFor,
+                        @PathParam("src") String src) throws IOException {
+    if("none".equals(groupFor))
+      groupFor = null;
+    doTimeRange(responder, startTs, endTs, groupFor, src);
+  }
 
-    long startTs = Long.valueOf(request.getArgument("startTs"));
-    long endTs = Long.valueOf(request.getArgument("endTs"));
-    String src = request.getArgument("src");
-    // NOTE: this is not analogue to "GROUP BY" but rather smth like "group for"
-    String groupFor = request.getArgument("groupFor");
+  @GET
+  @Path("timeRange/{startTs}/{endTs}/{groupFor}")
+  public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                        @PathParam("endTs") Long endTs, @PathParam("groupFor") String groupFor) throws IOException {
+    doTimeRange(responder, startTs, endTs, groupFor, null);
+  }
 
+  @GET
+  @Path("timeRange/{startTs}/{endTs}")
+  public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                        @PathParam("endTs") Long endTs) throws IOException {
+    doTimeRange(responder, startTs, endTs, null, null);
+  }
+
+  private void doTimeRange(HttpServiceResponder responder, Long startTs, Long endTs, String groupFor, String src) {
     Map<String, String> filterBy = src == null ? null : ImmutableMap.of("src", src);
-
     List<Anomaly> anomalies = getAnomalies(endTs, startTs, filterBy, groupFor);
-
     // we want most recent on top
     Collections.reverse(anomalies);
     responder.sendJson(GSON.toJson(anomalies));

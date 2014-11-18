@@ -37,12 +37,12 @@ the License.
     function drawUniqueIpsWithAnomaliesCountChart() {
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/AnomalyCountsProcedure/methods/uniqueIpsCount",
-                        "{startTs:" + startTs + ", endTs:" + endTs + "}")
+        var url = "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/uniqueIpsCount/"
+                + startTs + "/" + endTs;
+        $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
+                    var anomalies = JSON.parse(data);
                     renderUniqueIpsWithAnomaliesCountChart(anomalies);
-
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#uniqueIpsWithAnomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");

@@ -37,14 +37,11 @@ the License.
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
         var shorten = '<%= request.getAttribute("shorten")%>';
-        var params = shorten == 'null' ?
-                "{startTs:" + startTs + ", endTs:" + endTs + "}" :
-                "{startTs:" + startTs + ", endTs:" + endTs + ", groupFor: 'src'}";
-
-            $.post( "proxy/v2/apps/Netlens/procedures/AnomaliesProcedure/methods/timeRange", params)
+        var url = "proxy/v2/apps/Netlens/services/AnomaliesService/methods/timeRange/" + startTs + "/" + endTs;
+        if (shorten) url += "/src";
+        $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
-
+                    var anomalies = JSON.parse(data);
                     var tableHtml =
                             "<table id='anomalies_table' class='anomalies_table' align='center'>" +
                                 "<tr class='anomalies_table_header'>";

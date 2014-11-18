@@ -38,12 +38,12 @@ the License.
         var endTs = Date.now();
         var fact = JSON.parse(decodeURIComponent('<%= request.getParameter("fact") %>'));
         var src = fact.dimensions.src;
-        $.post( "proxy/v2/apps/Netlens/procedures/AnomalyCountsProcedure/methods/count",
-                        "{startTs:" + startTs + ", endTs:" + endTs + ", src:" + src + "}")
+        var url = "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/count/"
+                + startTs + "/" + endTs + "/" + src;
+        $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
+                    var anomalies = JSON.parse(data);
                     renderAnomaliesCountChart(anomalies);
-
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#anomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");

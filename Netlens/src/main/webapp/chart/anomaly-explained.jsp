@@ -46,12 +46,12 @@ the License.
 
         var startTs = fact.ts - 5000 * 10;
         var endTs = fact.ts + 5000 * 10;
-        $.post( "proxy/v2/apps/Netlens/procedures/CountersProcedure/methods/counts",
-                        "{startTs:" + startTs + ", endTs:" + endTs + ", key:" + key + "}")
+        var url = "proxy/v2/apps/Netlens/services/CountersService/methods/counts/"
+                + startTs + "/" + endTs + "/" + key;
+        $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
+                    var anomalies = JSON.parse(data);
                     renderExplanationChart(anomalies);
-
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#explanation').html("<div class='server_error''>Failed to get data from server<div>");

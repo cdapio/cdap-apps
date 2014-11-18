@@ -38,11 +38,11 @@ the License.
         var src = fact.dimensions.src;
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/AnomaliesProcedure/methods/timeRange",
-                        "{startTs:" + startTs + ", endTs:" + endTs + ", src:'" + src + "'}")
+        var url = "proxy/v2/apps/Netlens/services/AnomaliesService/methods/timeRange/"
+                + startTs + "/" + endTs + "/none/" + src;
+        $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
-
+                    var anomalies = JSON.parse(data);
                     var tableHtml =
                             "<table id='anomalies_table' class='anomalies_table' align='center'>" +
                                     "<tr class='anomalies_table_header'>";
