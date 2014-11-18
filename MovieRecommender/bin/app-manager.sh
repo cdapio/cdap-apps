@@ -146,7 +146,6 @@ if [ "x$action" == "xdeploy" ]; then
 elif [ "x$action" == "xrun" ]; then
   program_action $app "RecommendationBuilder" "spark" "start" $host
 else
-  program_action $app "RatingsFlow" "flow" $action $host
   program_action $app "RecommendMovieProcedure" "procedure" $action $host
   program_action $app "MovieDictionaryService" "service" $action $host
   if [ "x$action" == "xstatus" ]; then
