@@ -22,7 +22,6 @@ REM Application Manager for managing application lifecycle for MovieRecommender
 SET APP_JAR_PREFIX=MovieRecommender
 
 SET APP_NAME=MovieRecommender
-SET FLOW_NAME=RatingsFlow
 SET SPARK_NAME=RecommendationBuilder
 SET SERVICE_RECOMMENDER_NAME=MovieRecommenderService
 SET SERVICE_DICTIONARY_NAME=MovieDictionaryService
@@ -71,19 +70,16 @@ CALL :POST %APP_NAME% spark %SPARK_NAME% start
 GOTO :EOF
 
 :START
-CALL :POST %APP_NAME% flows %FLOW_NAME% start
 CALL :POST %APP_NAME% services %SERVICE_RECOMMENDER_NAME% start
 CALL :POST %APP_NAME% services %SERVICE_DICTIONARY_NAME% start
 GOTO :EOF
 
 :STOP
-CALL :POST %APP_NAME% flows %FLOW_NAME% stop
 CALL :POST %APP_NAME% services %SERVICE_RECOMMENDER_NAME% stop
 CALL :POST %APP_NAME% services %SERVICE_DICTIONARY_NAME% stop
 GOTO :EOF
 
 :STATUS
-CALL :GET %APP_NAME% flows %FLOW_NAME% status
 CALL :GET %APP_NAME% services %SERVICE_RECOMMENDER_NAME% status
 CALL :GET %APP_NAME% services %SERVICE_DICTIONARY_NAME% status
 CALL :GET %APP_NAME% spark %SPARK_NAME% status

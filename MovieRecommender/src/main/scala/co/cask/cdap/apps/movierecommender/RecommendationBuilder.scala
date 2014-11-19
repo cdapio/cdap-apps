@@ -27,6 +27,7 @@ package co.cask.cdap.apps.movierecommender
 
 import co.cask.cdap.api.common.Bytes
 import co.cask.cdap.api.spark.{ScalaSparkProgram, SparkContext}
+import org.apache.hadoop.io.Text
 import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.recommendation.{ALS, Rating}
 import org.apache.spark.rdd.NewHadoopRDD
@@ -53,22 +54,35 @@ class RecommendationBuilder extends ScalaSparkProgram {
     val params = parseArguments(sc, Params())
     LOG.info("Processing ratings data with parameters {}", params)
 
-    val ratingsDataset: NewHadoopRDD[Array[Byte], UserScore] =
-      sc.readFromDataset("ratings", classOf[Array[Byte]], classOf[UserScore])
+    val ratingsDataset: NewHadoopRDD[Array[Byte], Text] = sc.readFromStream("ratingsStream", classOf[Text])
     val userScores = ratingsDataset.values
-    val ratingData = userScores.map { curUserScore =>
 
+    val usRDD = userScores.map { e =>
+      val userScore = e.toString.split("::")
+      new UserScore(userScore(0).toInt, userScore(1).toInt, userScore(2).toInt)
+    }.cache()
+    val scores = usRDD.collect()
+
+    val ratingData = userScores.map { curUserScore =>
+      val userScore = curUserScore.toString.split("::")
       if (params.implicitPrefs) {
         /*
-         * MovieLens ratings are on a scale of 1-5:
-         * To map ratings to confidence scores, we subtract 2.5
-         * 5 -> 2.5
-         */
-        Rating(curUserScore.getUserID, curUserScore.getMovieID, curUserScore.getRating - 2.5)
+        * MovieLens ratings are on a scale of 1-5:
+        * To map ratings to confidence scores, we subtract 2.5
+        * 5 -> 2.5
+        */
+        Rating(userScore(0).toInt, userScore(1).toInt, userScore(2).toDouble - 2.5)
       } else {
-        Rating(curUserScore.getUserID, curUserScore.getMovieID, curUserScore.getRating)
+        Rating(userScore(0).toInt, userScore(1).toInt, userScore(2).toDouble)
       }
     }.cache()
+
+    val originalContext: org.apache.spark.SparkContext = sc.getOriginalSparkContext.
+      asInstanceOf[org.apache.spark.SparkContext]
+    val parallelizedScores = originalContext.parallelize(scores)
+
+    val scoresRDD = parallelizedScores.keyBy(x => Bytes.add(Bytes.toBytes(x.getUserID), Bytes.toBytes(x.getMovieID)))
+    sc.writeToDataset(scoresRDD, "ratings", classOf[Array[Byte]], classOf[UserScore])
 
     val moviesDataset: NewHadoopRDD[Array[Byte], String] = sc.readFromDataset("movies", classOf[Array[Byte]],
       classOf[String])
@@ -77,7 +91,7 @@ class RecommendationBuilder extends ScalaSparkProgram {
     val numUsers = ratingData.map(_.user).distinct().count()
     val numRatedMovies = ratingData.map(_.product).distinct().count()
 
-    val numMovies = moviesDataset.count();
+    val numMovies = moviesDataset.count()
 
     println(s"Got $numRatings ratings from $numUsers users on $numRatedMovies movies out of $numMovies")
 
@@ -98,9 +112,6 @@ class RecommendationBuilder extends ScalaSparkProgram {
     val userRatedMovies = ratingData.map(x => (x.user, x.product)).groupByKey().map(x => (x._1, x._2.toSet))
 
     val movies = moviesDataset.map(x => (Bytes.toInt(x._1), x._2)).collect().toMap
-
-    val originalContext: org.apache.spark.SparkContext = sc.getOriginalSparkContext.
-      asInstanceOf[org.apache.spark.SparkContext]
     val notRatedMovies = userRatedMovies.map(x => (x._1, movies.keys.filter(!x._2.contains(_)).toSeq)).collect()
 
     for (curUser <- notRatedMovies) {

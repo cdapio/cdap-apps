@@ -24,9 +24,8 @@ import co.cask.cdap.api.dataset.lib.ObjectStore;
 import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import org.apache.spark.mllib.recommendation.Rating;
 
+import java.net.HttpURLConnection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -53,7 +52,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
       ratings.scan(userID, Bytes.stopKeyForPrefix(userID));
     try {
       if (!userRatings.hasNext()) {
-        responder.sendError(HttpResponseStatus.NOT_FOUND.code(),
+        responder.sendError(HttpURLConnection.HTTP_NOT_FOUND,
                             String.format("No ratings found for user %s.", userId));
         return;
       }
@@ -62,7 +61,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
         recommendations.scan(userID, Bytes.stopKeyForPrefix(userID));
       try {
         if (!userPredictions.hasNext()) {
-          responder.sendError(HttpResponseStatus.NOT_FOUND.code(),
+          responder.sendError(HttpURLConnection.HTTP_NOT_FOUND,
                               String.format("No recommendations found for user %s.", userId));
           return;
         }
