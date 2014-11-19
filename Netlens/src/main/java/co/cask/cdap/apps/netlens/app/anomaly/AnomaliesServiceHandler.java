@@ -122,7 +122,7 @@ public class AnomaliesServiceHandler extends AbstractHttpServiceHandler {
 
   private List<Anomaly> getAnomalies(Iterator<TimeseriesTable.Entry> entries, String groupFor) {
     // map of ts -> anomaly group -> anomaly details
-    // NOTE: has to bee sorted map to keep order by time
+    // NOTE: has to be a sorted map to keep order by time
     Map<Long, Map<String, Anomaly>> facts = Maps.newTreeMap();
     while (entries.hasNext()) {
       TimeseriesTable.Entry entry = entries.next();

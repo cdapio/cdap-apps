@@ -18,7 +18,7 @@ package co.cask.cdap.apps.netlens.app.counter;
 import co.cask.cdap.api.service.AbstractService;
 
 /**
- * Anomalies counts service.
+ * Anomalies count service.
  */
 public class AnomaliesCountService extends AbstractService {
   public static final String SERVICE_NAME = "AnomaliesCountService";
@@ -26,7 +26,7 @@ public class AnomaliesCountService extends AbstractService {
   @Override
   protected void configure() {
     setName(SERVICE_NAME);
-    setDescription("Anomalies counts service.");
+    setDescription("Anomalies count service.");
     addHandler(new AnomaliesCountServiceHandler());
   }
 }

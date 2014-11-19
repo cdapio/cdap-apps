@@ -37,7 +37,7 @@ import javax.ws.rs.PathParam;
 
 
 /**
- * Anomalies counts service handler
+ * Anomalies count service handler
  */
 public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
 

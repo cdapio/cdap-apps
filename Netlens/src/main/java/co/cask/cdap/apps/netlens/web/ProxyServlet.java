@@ -31,10 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Proxies POST requests to a given url (specified thru cdap.host and cdap.port system properties).
- * By default proxies to http://localhost:10000.
- * <p/>
+ * Proxies POST requests to a given url (specified thru <code>cdap.host</code> and
+ * <code>cdap.port</code> system properties); by default, proxies to <code>http://localhost:10000</code>.
+ * <p>
  * Needed for resolving cross-domain javascript complexities.
+ * </p>
  */
 public class ProxyServlet extends HttpServlet {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);

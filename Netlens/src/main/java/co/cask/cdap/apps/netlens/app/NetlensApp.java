@@ -20,8 +20,8 @@ import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.TimeseriesTables;
 import co.cask.cdap.api.dataset.table.Table;
-import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesService;
 import co.cask.cdap.apps.netlens.app.counter.AnomaliesCountService;
+import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesService;
 import co.cask.cdap.apps.netlens.app.counter.CountersService;
 
 import java.util.concurrent.TimeUnit;
@@ -60,10 +60,10 @@ public class NetlensApp extends AbstractApplication {
     // "counters" dataset keeps aggregated counters for different combinations of
     TimeseriesTables.createTable(getConfigurer(), "counters", (int) TimeUnit.MINUTES.toMillis(5));
 
-    // Service to serve anomalies details
-    addService(new AnomaliesService());
     // Service to serve anomalies stats
     addService(new AnomaliesCountService());
+    // Service to serve anomalies details
+    addService(new AnomaliesService());
     // Service to serve traffic stats requests
     addService(new CountersService());
 
