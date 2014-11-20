@@ -40,6 +40,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 /**
  * Handler that exposes HTTP endpoints to retrieve the aggregates timeseries sentiment data.
@@ -72,21 +73,19 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
     responder.sendJson(resp);
   }
 
-  @Path("/sentiments/{sentiment}/{seconds}")
+  @Path("/sentiments/{sentiment}")
   @GET
   public void getSentiments(HttpServiceRequest request, HttpServiceResponder responder,
                             @PathParam("sentiment") String sentiment,
-                            @PathParam("seconds") String seconds) {
-    getSentiments(request, responder, sentiment, seconds, DEFAULT_LIMIT);
-  }
+                            @QueryParam("seconds") String seconds,
+                            @QueryParam("limit") String limit) {
 
-
-  @Path("/sentiments/{sentiment}/{seconds}/{limit}")
-  @GET
-  public void getSentiments(HttpServiceRequest request, HttpServiceResponder responder,
-                            @PathParam("sentiment") String sentiment,
-                            @PathParam("seconds") String seconds,
-                            @PathParam("limit") String limit) {
+    if (seconds == null) {
+      seconds = "300";
+    }
+    if (limit == null) {
+      limit = "10";
+    }
 
     int remaining = Integer.parseInt(limit);
 
@@ -105,10 +104,14 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
     responder.sendJson(textTimeMap);
   }
 
-  @Path("counts/{seconds}")
+  @Path("counts")
   @POST
   public void getCount(HttpServiceRequest request, HttpServiceResponder responder,
-                       @PathParam("seconds") String seconds) {
+                       @QueryParam("seconds") String seconds) {
+
+    if (seconds == null) {
+      seconds = "300";
+    }
 
     ByteBuffer requestContents = request.getContent();
     String sentimentsData = Charsets.UTF_8.decode(requestContents).toString();

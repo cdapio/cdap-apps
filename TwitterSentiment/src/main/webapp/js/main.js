@@ -41,7 +41,7 @@ Homepage.prototype.initGraph = function () {
 
   function update() {
     $.ajax({
-      url: SERVICE_URL + '/counts/300',
+      url: SERVICE_URL + '/counts?seconds=300',
       type: 'POST',
       contentType: "text",
       data: "['positive', 'negative', 'neutral']",
@@ -79,7 +79,7 @@ var appendK = function (str) {
 
 var updateTable = function(sentiment) {
    $.ajax({
-     url: SERVICE_URL + '/sentiments/' + sentiment + "/300",
+     url: SERVICE_URL + '/sentiments/' + sentiment + "?seconds=300",
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',

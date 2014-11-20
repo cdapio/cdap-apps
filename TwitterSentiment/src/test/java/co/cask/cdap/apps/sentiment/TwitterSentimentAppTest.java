@@ -76,7 +76,7 @@ public class TwitterSentimentAppTest extends TestBase {
 
       // Start service and verify
       ServiceManager serviceManager = appManager.startService(SentimentQueryService.SERVICE_NAME);
-
+      serviceStatusCheck(serviceManager, true);
       URL url = new URL(serviceManager.getServiceURL(), "aggregates");
 
       try {
@@ -85,22 +85,21 @@ public class TwitterSentimentAppTest extends TestBase {
         Assert.assertEquals(2, result.get("positive").intValue());
         Assert.assertEquals(1, result.get("negative").intValue());
         Assert.assertEquals(1, result.get("neutral").intValue());
-
         // Verify retrieval of sentiments
-        url = new URL(serviceManager.getServiceURL(), "sentiments/positive/300/10");
+        url = new URL(serviceManager.getServiceURL(), "sentiments/positive?seconds=300&limit=10");
         result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i love movie", "i am happy today that I got this working."),
                             result.keySet());
-        url = new URL(serviceManager.getServiceURL(), "sentiments/negative/300/10");
+        url = new URL(serviceManager.getServiceURL(), "sentiments/negative?limit=10");
         result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i hate movie"), result.keySet());
 
-        url = new URL(serviceManager.getServiceURL(), "sentiments/neutral/300/10");
+        url = new URL(serviceManager.getServiceURL(), "sentiments/neutral?seconds=300");
         result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i am neutral to movie"), result.keySet());
 
         // Verify the counts of the following sentiments
-        url = new URL(serviceManager.getServiceURL(), "counts/300");
+        url = new URL(serviceManager.getServiceURL(), "counts?seconds=300");
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
@@ -124,6 +123,17 @@ public class TwitterSentimentAppTest extends TestBase {
       RuntimeStats.clearStats("");
       clear();
     }
+  }
+
+  private void serviceStatusCheck(ServiceManager serviceManger, boolean running) throws InterruptedException {
+    int trial = 0;
+    while (trial++ < 5) {
+      if (serviceManger.isRunning() == running) {
+        return;
+      }
+      TimeUnit.SECONDS.sleep(1);
+    }
+    throw new IllegalStateException("Service state not executed. Expected " + running);
   }
 
   private static String doRequest(URL url) throws IOException {
