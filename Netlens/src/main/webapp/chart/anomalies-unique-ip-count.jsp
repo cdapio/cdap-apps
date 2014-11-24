@@ -41,8 +41,7 @@ the License.
                 + startTs + "/" + endTs;
         $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(data);
-                    renderUniqueIpsWithAnomaliesCountChart(anomalies);
+                    renderUniqueIpsWithAnomaliesCountChart(data);
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#uniqueIpsWithAnomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");

@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 
 /**
@@ -49,35 +50,23 @@ public class AnomaliesServiceHandler extends AbstractHttpServiceHandler {
   private TimeseriesTable anomalies;
 
   @GET
-  @Path("timeRange/{startTs}/{endTs}/{groupFor}/{src}")
-  public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                        @PathParam("endTs") Long endTs, @PathParam("groupFor") String groupFor,
-                        @PathParam("src") String src) throws IOException {
-    if("none".equals(groupFor))
-      groupFor = null;
-    doTimeRange(responder, startTs, endTs, groupFor, src);
-  }
-
-  @GET
-  @Path("timeRange/{startTs}/{endTs}/{groupFor}")
-  public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                        @PathParam("endTs") Long endTs, @PathParam("groupFor") String groupFor) throws IOException {
-    doTimeRange(responder, startTs, endTs, groupFor, null);
-  }
-
-  @GET
   @Path("timeRange/{startTs}/{endTs}")
   public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                        @PathParam("endTs") Long endTs) throws IOException {
-    doTimeRange(responder, startTs, endTs, null, null);
+                        @PathParam("endTs") Long endTs, @QueryParam("groupFor") String groupFor,
+                        @QueryParam("src") String src) throws IOException {
+
+    doTimeRange(responder, startTs, endTs, groupFor, src);
   }
 
   private void doTimeRange(HttpServiceResponder responder, Long startTs, Long endTs, String groupFor, String src) {
     Map<String, String> filterBy = src == null ? null : ImmutableMap.of("src", src);
+    if ("none".equals(groupFor)) {
+      groupFor = null;
+    }
     List<Anomaly> anomalies = getAnomalies(endTs, startTs, filterBy, groupFor);
     // we want most recent on top
     Collections.reverse(anomalies);
-    responder.sendJson(GSON.toJson(anomalies));
+    responder.sendJson(anomalies);
   }
 
   private List<Anomaly> getAnomalies(long endTs, long startTs, String groupFor) {
@@ -178,7 +167,7 @@ public class AnomaliesServiceHandler extends AbstractHttpServiceHandler {
   }
 
   // defines the format of response
-  private static class Anomaly {
+  public static class Anomaly {
     private String dataSeriesKey;
     private Fact fact;
 

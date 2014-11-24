@@ -38,10 +38,10 @@ the License.
         var endTs = Date.now();
         var shorten = '<%= request.getAttribute("shorten")%>';
         var url = "proxy/v2/apps/Netlens/services/AnomaliesService/methods/timeRange/" + startTs + "/" + endTs;
-        if (shorten) url += "/src";
+        if (shorten) url += "?groupFor=src";
         $.post(url)
                 .done(function( data ) {
-                    var anomalies = JSON.parse(data);
+                    var anomalies = data;
                     var tableHtml =
                             "<table id='anomalies_table' class='anomalies_table' align='center'>" +
                                 "<tr class='anomalies_table_header'>";

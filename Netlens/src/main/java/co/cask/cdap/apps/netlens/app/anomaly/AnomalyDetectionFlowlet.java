@@ -28,6 +28,8 @@ import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.apps.netlens.app.Constants;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Set;

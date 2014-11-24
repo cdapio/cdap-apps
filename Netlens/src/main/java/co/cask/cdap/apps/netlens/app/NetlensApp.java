@@ -30,14 +30,16 @@ import java.util.concurrent.TimeUnit;
  * Network traffic analytics application.
  */
 public class NetlensApp extends AbstractApplication {
+  static final String STREAM_NAME = "packets";
+  static final String APP_NAME = "Netlens";
 
   @Override
   public void configure() {
-    setName("Netlens");
+    setName(APP_NAME);
     setDescription("Network traffic analytics application.");
 
     // Network data is pushed to a stream
-    addStream(new Stream("packets"));
+    addStream(new Stream(STREAM_NAME));
 
     // Network data analysis flow (processing).
     addFlow(new AnalyticsFlow());

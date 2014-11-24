@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 
 /**
@@ -53,17 +54,10 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
   private Table topNTable;
 
   @GET
-  @Path("count/{startTs}/{endTs}/{src}")
-  public void count(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                    @PathParam("endTs") Long endTs, @PathParam("src") String src) throws IOException {
-    doCount(responder, startTs, endTs, src);
-  }
-
-  @GET
   @Path("count/{startTs}/{endTs}")
   public void count(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                    @PathParam("endTs") Long endTs) throws IOException {
-    doCount(responder, startTs, endTs, null);
+                    @PathParam("endTs") Long endTs, @QueryParam("src") String src) throws IOException {
+    doCount(responder, startTs, endTs, src);
   }
 
   private void doCount(HttpServiceResponder responder, Long startTs, Long endTs, String src) {
@@ -74,9 +68,8 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
     } else {
       dataPoints = getCounts(anomalyCounters, startTs, endTs, AnomalyCounterFlowlet.TOTAL_COUNTER_KEY_PREFIX);
     }
-    responder.sendJson(GSON.toJson(dataPoints));
+    responder.sendJson(dataPoints);
   }
-
 
   @GET
   @Path("uniqueIpsCount/{startTs}/{endTs}")
@@ -86,21 +79,17 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
                                                         AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_KEY_PREFIX,
                                                         AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_COLUMN,
                                                         startTs, endTs);
-    responder.sendJson(GSON.toJson(dataPoints));
-  }
-
-  @GET
-  @Path("topN/{startTs}/{limit}")
-  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                   @PathParam("limit") Long limit) throws IOException {
-    doTopN(responder, startTs, limit);
+    responder.sendJson(dataPoints);
   }
 
   @GET
   @Path("topN/{startTs}")
-  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs)
-    throws IOException {
-    doTopN(responder, startTs, 10L);
+  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                   @QueryParam("limit") Long limit) throws IOException {
+    if (limit == null) {
+      limit = 10L;
+    }
+    doTopN(responder, startTs, limit);
   }
 
   private void doTopN(HttpServiceResponder responder, Long startTs, Long limit) {
@@ -108,7 +97,7 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
     byte[] prefix = AnomalyCounterFlowlet.TOPN_IP_WITH_ANOMALIES_KEY_PREFIX;
     List<TopNTableUtil.TopNResult> result = TopNTableUtil.get(topNTable, prefix, startTs,
                                                               Constants.TOPN_AGG_INTERVAL_SIZE, limit);
-    responder.sendJson(GSON.toJson(result));
+    responder.sendJson(result);
   }
 
   private static DataPoint[] getCounts(TimeseriesTable tsTable, long startTs, long endTs, byte[] seriesKey) {

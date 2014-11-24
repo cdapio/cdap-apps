@@ -41,11 +41,10 @@ the License.
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
         var url = "proxy/v2/apps/Netlens/services/CountersService/methods/counts/"
-                + startTs + "/" + endTs + "/" + key;
+                + startTs + "/" + endTs + "?key=" + key;
         $.post(url)
                 .done(function( data ) {
-                    var points = JSON.parse(data);
-                    renderTrafficChart(points);
+                    renderTrafficChart(data);
                 })
                 .fail( function(xhr, textStatus, errorThrown) {
                     $('#traffic').html("<div class='server_error''>Failed to get data from server<div>");

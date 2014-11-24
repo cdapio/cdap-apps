@@ -35,10 +35,10 @@ the License.
 
     function drawTopIpWithAnomaliesList() {
         var startTs = Date.now() - 5000 * 108;
-        var url = "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/topN/" + startTs;
+        var url = "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/topN/" + startTs + "?limit=10";
         $.post(url)
                 .done(function( data ) {
-                    var topN = JSON.parse(data);
+                    var topN = data;
                     var tableHtml =
                             "<table id='topIpAnomaly_table' class='anomalies_table' align='center'>" +
                                 "<tr class='anomalies_table_header'>";

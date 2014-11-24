@@ -32,6 +32,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 
 /**
@@ -50,16 +51,13 @@ public class CountersServiceHandler extends AbstractHttpServiceHandler {
   private Table topNTable;
 
   @GET
-  @Path("topN/{startTs}/{limit}")
-  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                   @PathParam("limit") Long limit) throws IOException {
-    doTopN(responder, startTs, limit);
-  }
-
-  @GET
   @Path("topN/{startTs}")
-  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs) throws IOException {
-    doTopN(responder, startTs, 10L);
+  public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
+                   @QueryParam("limit") Long limit) throws IOException {
+    if (limit == null) {
+      limit = 10L;
+    }
+    doTopN(responder, startTs, limit);
   }
 
   private void doTopN(HttpServiceResponder responder, Long startTs, Long limit) {
@@ -67,21 +65,14 @@ public class CountersServiceHandler extends AbstractHttpServiceHandler {
     byte[] prefix = TrafficCounterFlowlet.TOPN_IP_KEY_PREFIX;
     List<TopNTableUtil.TopNResult> result = TopNTableUtil.get(topNTable, prefix, startTs,
                                                               Constants.TOPN_AGG_INTERVAL_SIZE, limit);
-    responder.sendJson(GSON.toJson(result));
-  }
-
-  @GET
-  @Path("counts/{startTs}/{endTs}/{key}")
-  public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                        @PathParam("endTs") Long endTs, @PathParam("key") String key) throws IOException {
-    doTimeRange(responder, startTs, endTs, key);
+    responder.sendJson(result);
   }
 
   @GET
   @Path("counts/{startTs}/{endTs}")
   public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                        @PathParam("endTs") Long endTs) throws IOException {
-    doTimeRange(responder, startTs, endTs, null);
+                        @PathParam("endTs") Long endTs, @QueryParam("key") String key) throws IOException {
+    doTimeRange(responder, startTs, endTs, key);
   }
 
   private void doTimeRange(HttpServiceResponder responder, Long startTs, Long endTs, String key) throws IOException {
@@ -97,7 +88,7 @@ public class CountersServiceHandler extends AbstractHttpServiceHandler {
     DataPoint[] counts = CounterTableUtil.getCounts(trafficCounters,
                                                     Bytes.EMPTY_BYTE_ARRAY, TrafficCounterFlowlet.TOTAL_COUNTER_COLUMN,
                                                     startTs, endTs);
-    responder.sendJson(GSON.toJson(counts));
+    responder.sendJson(counts);
   }
 
   private void getIPsCounts(String key, long startTs, long endTs, HttpServiceResponder responder) throws IOException {
@@ -118,6 +109,6 @@ public class CountersServiceHandler extends AbstractHttpServiceHandler {
       }
     }
 
-    responder.sendJson(GSON.toJson(dataPoints));
+    responder.sendJson(dataPoints);
   }
 }
