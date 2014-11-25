@@ -47,10 +47,7 @@ import javax.ws.rs.QueryParam;
  * Handler that exposes HTTP endpoints to retrieve the aggregates timeseries sentiment data.
  */
 public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
-  private static final Logger LOG = LoggerFactory.getLogger(SentimentQueryServiceHandler.class);
   private static final Gson GSON = new Gson();
-  private static final String DEFAULT_LIMIT = "10";
-
 
   @UseDataSet(TwitterSentimentApp.TABLE_NAME)
   private Table sentiments;
