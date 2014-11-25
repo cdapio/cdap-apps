@@ -22,13 +22,13 @@ the License.
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         reloadAnomaliesCountChart();
     });
 
     function reloadAnomaliesCountChart() {
         drawAnomaliesCountChart();
-        setTimeout(function() {
+        setTimeout(function () {
             reloadAnomaliesCountChart();
         }, 5000);
     }
@@ -36,21 +36,24 @@ the License.
     function drawAnomaliesCountChart() {
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/AnomalyCountsProcedure/methods/count",
-                        "{startTs:" + startTs + ", endTs:" + endTs + "}")
-                .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
-                    renderAnomaliesCountChart(anomalies);
-
-                })
-                .fail( function(xhr, textStatus, errorThrown) {
-                    $('#anomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");
-                })
+        $.ajax({
+            url: "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/count/" + startTs + "/" + endTs,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                renderAnomaliesCountChart(data);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#anomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");
+            }
+        });
     }
 
     function renderAnomaliesCountChart(anomalies) {
         var data = [];
-        anomalies.forEach(function(point){
+        anomalies.forEach(function (point) {
             data.push([point.ts, point.value]);
         });
 

@@ -23,10 +23,9 @@ SET APP_JAR_PREFIX=Netlens
 
 SET APP_NAME=Netlens
 SET FLOW_NAME=AnalyticsFlow
-SET PROCEDURE1_NAME=CountersProcedure
-SET PROCEDURE2_NAME=AnomalyCountsProcedure
-SET PROCEDURE3_NAME=AnomaliesProcedure
-
+SET SERVICE1_NAME=AnomaliesCountService
+SET SERVICE2_NAME=AnomaliesService
+SET SERVICE3_NAME=CountersService
 
 REM Set the base directory
 for %%i in ("%~dp0..\") do (SET APP_HOME=%%~dpi)
@@ -67,23 +66,23 @@ GOTO :EOF
 
 :START
 CALL :POST %APP_NAME% flows %FLOW_NAME% start
-CALL :POST %APP_NAME% procedures %PROCEDURE1_NAME% start
-CALL :POST %APP_NAME% procedures %PROCEDURE2_NAME% start
-CALL :POST %APP_NAME% procedures %PROCEDURE3_NAME% start
+CALL :POST %APP_NAME% services %SERVICE1_NAME% start
+CALL :POST %APP_NAME% services %SERVICE2_NAME% start
+CALL :POST %APP_NAME% services %SERVICE3_NAME% start
 GOTO :EOF
 
 :STOP
 CALL :POST %APP_NAME% flows %FLOW_NAME% stop
-CALL :POST %APP_NAME% procedures %PROCEDURE1_NAME% stop
-CALL :POST %APP_NAME% procedures %PROCEDURE2_NAME% stop
-CALL :POST %APP_NAME% procedures %PROCEDURE3_NAME% stop
+CALL :POST %APP_NAME% services %SERVICE1_NAME% stop
+CALL :POST %APP_NAME% services %SERVICE2_NAME% stop
+CALL :POST %APP_NAME% services %SERVICE3_NAME% stop
 GOTO :EOF
 
 :STATUS
 CALL :GET %APP_NAME% flows %FLOW_NAME% status
-CALL :GET %APP_NAME% procedures %PROCEDURE1_NAME% status
-CALL :GET %APP_NAME% procedures %PROCEDURE2_NAME% status
-CALL :GET %APP_NAME% procedures %PROCEDURE3_NAME% status
+CALL :GET %APP_NAME% services %SERVICE1_NAME% status
+CALL :GET %APP_NAME% services %SERVICE2_NAME% status
+CALL :GET %APP_NAME% services %SERVICE3_NAME% status
 GOTO :EOF
 
 :POST

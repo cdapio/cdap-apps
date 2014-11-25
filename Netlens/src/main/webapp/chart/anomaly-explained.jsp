@@ -22,13 +22,13 @@ the License.
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         reloadExplanationChart();
     });
 
     function reloadExplanationChart() {
         drawExplanationChart();
-        setTimeout(function() {
+        setTimeout(function () {
             reloadExplanationChart();
         }, 5000);
     }
@@ -40,27 +40,31 @@ the License.
             return;
         }
         var fact = JSON.parse(decodeURIComponent('<%= request.getParameter("fact") %>'));
-        var title= '<div>Anomaly<div/>' +
-                   '<div style="font-size: 80%; margin-top: 12px">' + JSON.stringify(fact.dimensions) + '</div>';
+        var title = '<div>Anomaly<div/>' +
+                '<div style="font-size: 80%; margin-top: 12px">' + JSON.stringify(fact.dimensions) + '</div>';
         $('#explanationTitle').html(title);
 
         var startTs = fact.ts - 5000 * 10;
         var endTs = fact.ts + 5000 * 10;
-        $.post( "proxy/v2/apps/Netlens/procedures/CountersProcedure/methods/counts",
-                        "{startTs:" + startTs + ", endTs:" + endTs + ", key:" + key + "}")
-                .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
-                    renderExplanationChart(anomalies);
-
-                })
-                .fail( function(xhr, textStatus, errorThrown) {
-                    $('#explanation').html("<div class='server_error''>Failed to get data from server<div>");
-                })
+        $.ajax({
+            url: "proxy/v2/apps/Netlens/services/CountersService/methods/counts/"
+                    + startTs + "/" + endTs + "?key=" + key,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                renderExplanationChart(data);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#explanation').html("<div class='server_error''>Failed to get data from server<div>");
+            }
+        });
     }
 
     function renderExplanationChart(dataPoints) {
         var data = [];
-        dataPoints.forEach(function(point){
+        dataPoints.forEach(function (point) {
             data.push([point.ts, point.value]);
         });
 
