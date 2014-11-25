@@ -17,6 +17,7 @@
 package co.cask.cdap.apps.netlens.web;
 
 import com.google.common.base.Throwables;
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Response;
@@ -71,6 +72,38 @@ public class ProxyServlet extends HttpServlet {
       resp.setContentType("application/json");
       out.write(responseBody);
       out.close();
+    } finally {
+      client.close();
+    }
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    AsyncHttpClient client =
+      new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
+    try {
+      String url = cdapURL + req.getPathInfo() + "?" + req.getQueryString();
+      try {
+        client.prepareGet(url).execute(new AsyncCompletionHandler<Response>(){
+          @Override
+          public Response onCompleted(Response response) throws Exception {
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            resp.setStatus(response.getStatusCode());
+            try {
+              out.write(response.getResponseBody());
+            } finally {
+              out.close();
+            }
+            return response;
+          }
+        }).get();
+      } catch (Exception e) {
+        LOG.error("handling request failed", e);
+        e.printStackTrace();
+        throw Throwables.propagate(e);
+      }
+
     } finally {
       client.close();
     }
