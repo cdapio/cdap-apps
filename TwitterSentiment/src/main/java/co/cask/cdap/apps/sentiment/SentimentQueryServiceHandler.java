@@ -36,6 +36,7 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -77,16 +78,8 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
   @GET
   public void getSentiments(HttpServiceRequest request, HttpServiceResponder responder,
                             @PathParam("sentiment") String sentiment,
-                            @QueryParam("seconds") String seconds,
-                            @QueryParam("limit") String limit) {
-
-    if (seconds == null) {
-      seconds = "300";
-    }
-    if (limit == null) {
-      limit = "10";
-    }
-
+                            @DefaultValue("300") @QueryParam("seconds") String seconds,
+                            @DefaultValue("10") @QueryParam("limit") String limit) {
     int remaining = Integer.parseInt(limit);
 
     long time = System.currentTimeMillis();
