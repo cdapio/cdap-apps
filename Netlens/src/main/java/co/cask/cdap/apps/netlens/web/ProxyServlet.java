@@ -53,31 +53,6 @@ public class ProxyServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    AsyncHttpClient client =
-      new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
-    try {
-      String url = cdapURL + req.getPathInfo();
-      String responseBody;
-      try {
-        Response serviceResponse = client.prepareGet(url).execute().get();
-        responseBody = serviceResponse.getResponseBody();
-      } catch (Exception e) {
-        LOG.error("handling request failed", e);
-        e.printStackTrace();
-        throw Throwables.propagate(e);
-      }
-
-      PrintWriter out = resp.getWriter();
-      resp.setContentType("application/json");
-      out.write(responseBody);
-      out.close();
-    } finally {
-      client.close();
-    }
-  }
-
-  @Override
   protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
     AsyncHttpClient client =
       new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
