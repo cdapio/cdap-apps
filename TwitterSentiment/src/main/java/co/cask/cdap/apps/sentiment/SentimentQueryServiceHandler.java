@@ -100,12 +100,7 @@ public class SentimentQueryServiceHandler extends AbstractHttpServiceHandler {
   @Path("counts")
   @POST
   public void getCount(HttpServiceRequest request, HttpServiceResponder responder,
-                       @QueryParam("seconds") String seconds) {
-
-    if (seconds == null) {
-      seconds = "300";
-    }
-
+                       @DefaultValue("300") @QueryParam("seconds") String seconds) {
     ByteBuffer requestContents = request.getContent();
     String sentimentsData = Charsets.UTF_8.decode(requestContents).toString();
     String[] sentimentArr = GSON.fromJson(sentimentsData, String[].class);

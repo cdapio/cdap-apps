@@ -86,7 +86,7 @@ public class TwitterSentimentAppTest extends TestBase {
         Assert.assertEquals(1, result.get("negative").intValue());
         Assert.assertEquals(1, result.get("neutral").intValue());
         // Verify retrieval of sentiments
-        url = new URL(serviceManager.getServiceURL(), "sentiments/positive?seconds=300&limit=10");
+        url = new URL(serviceManager.getServiceURL(), "sentiments/positive");
         result = GSON.fromJson(doRequest(url), MAP_OF_STRING_LONG);
         Assert.assertEquals(ImmutableSet.of("i love movie", "i am happy today that I got this working."),
                             result.keySet());
@@ -99,7 +99,7 @@ public class TwitterSentimentAppTest extends TestBase {
         Assert.assertEquals(ImmutableSet.of("i am neutral to movie"), result.keySet());
 
         // Verify the counts of the following sentiments
-        url = new URL(serviceManager.getServiceURL(), "counts?seconds=300");
+        url = new URL(serviceManager.getServiceURL(), "counts");
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
