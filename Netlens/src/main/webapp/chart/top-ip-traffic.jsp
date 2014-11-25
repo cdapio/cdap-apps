@@ -22,66 +22,70 @@ the License.
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         reloadTopIpList();
     });
 
     function reloadTopIpList() {
         drawTopIpList();
-        setTimeout(function() {
+        setTimeout(function () {
             reloadTopIpList();
         }, 5000);
     }
 
     function drawTopIpList() {
         var startTs = Date.now() - 5000 * 108;
-        $.post( "proxy/v2/apps/Netlens/procedures/CountersProcedure/methods/topN",
-                        "{startTs:" + startTs + "}")
-                .done(function( data ) {
-                    var topN = JSON.parse(JSON.parse(data));
+        $.ajax({
+            url: "proxy/v2/apps/Netlens/services/CountersService/methods/topN/" + startTs,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                var topN = data;
+                var tableHtml =
+                        "<table id='topIp_table' class='anomalies_table' align='center'>" +
+                        "<tr class='anomalies_table_header'>";
+                tableHtml +=
+                        "<td style='display: none'></td>" +
+                        "<td class='cell'>IP</td>" +
+                        "<td class='cell'>Packets</td>";
+                tableHtml +=
+                        "</tr>";
+                if (topN.length > 0) {
+                    for (i = 0; i < topN.length; i++) {
+                        tableHtml += i % 2 == 0 ? "<tr>" : "<tr class='anomalies_table_even'>";
+                        // Link
+                        var params = $.param({
+                            fact: JSON.stringify({dimensions: {src: topN[i].value}})
+                        });
+                        tableHtml += "<td style='display: none'>ip-details.jsp?" + params + "</td>";
+                        // IP
+                        tableHtml += td(topN[i].value);
+                        // Packets #
+                        tableHtml += td(topN[i].count);
 
-                    var tableHtml =
-                            "<table id='topIp_table' class='anomalies_table' align='center'>" +
-                                "<tr class='anomalies_table_header'>";
-                    tableHtml +=
-                                "<td style='display: none'></td>" +
-                                "<td class='cell'>IP</td>" +
-                                "<td class='cell'>Packets</td>";
-                    tableHtml +=
-                                "</tr>";
-                    if (topN.length > 0) {
-                        for (i = 0; i < topN.length; i++) {
-                            tableHtml += i % 2 == 0 ? "<tr>" : "<tr class='anomalies_table_even'>";
-                            // Link
-                            var params = $.param ({
-                                fact: JSON.stringify({dimensions:{src:topN[i].value}})
-                            });
-                            tableHtml += "<td style='display: none'>ip-details.jsp?" + params + "</td>";
-                            // IP
-                            tableHtml += td(topN[i].value);
-                            // Packets #
-                            tableHtml += td(topN[i].count);
-
-                            tableHtml += "</tr>";
-                        }
-                    } else {
-                        tableHtml += "<tr>" + td("&nbsp;") + td("");
                         tableHtml += "</tr>";
                     }
+                } else {
+                    tableHtml += "<tr>" + td("&nbsp;") + td("");
+                    tableHtml += "</tr>";
+                }
 
-                    tableHtml += "</table>";
-                    $("#topIpsList").html(tableHtml);
+                tableHtml += "</table>";
+                $("#topIpsList").html(tableHtml);
 
-                    if (topN.length > 0) {
-                        $('#topIp_table tbody').on('click', 'tr', function () {
-                            var url = $('td', this).eq(0).text();
-                            window.location.href=url;
-                        } );
-                    }
-                })
-                .fail( function(xhr, textStatus, errorThrown) {
-                    $('#topIpsList').html("<div class='server_error''>Failed to get data from server<div>");
-                })
+                if (topN.length > 0) {
+                    $('#topIp_table tbody').on('click', 'tr', function () {
+                        var url = $('td', this).eq(0).text();
+                        window.location.href = url;
+                    });
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#topIpsList').html("<div class='server_error''>Failed to get data from server<div>");
+            }
+        });
     }
 
     function td(html) {
