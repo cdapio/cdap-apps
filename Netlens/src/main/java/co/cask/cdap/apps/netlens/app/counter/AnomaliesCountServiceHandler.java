@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -85,10 +86,7 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
   @GET
   @Path("topN/{startTs}")
   public void topN(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
-                   @QueryParam("limit") Long limit) throws IOException {
-    if (limit == null) {
-      limit = 10L;
-    }
+                   @DefaultValue("10") @QueryParam("limit") Long limit) throws IOException {
     doTopN(responder, startTs, limit);
   }
 

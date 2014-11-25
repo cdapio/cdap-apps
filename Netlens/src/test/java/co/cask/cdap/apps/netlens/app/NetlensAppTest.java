@@ -87,7 +87,7 @@ public class NetlensAppTest extends TestBase {
       result = new Gson().fromJson(doRequest(url), DATA_POINT_ARRAY_TYPE);
       Assert.assertFalse(result.length == 0);
 
-      url = new URL(String.format("%stopN/%d?limit=10", serviceManager.getServiceURL(), START));
+      url = new URL(String.format("%stopN/%d", serviceManager.getServiceURL(), START));
       List<TopNTableUtil.TopNResult> topNResults = new Gson().fromJson(doRequest(url), TOP_N_RESULT_LIST_TYPE);
       Assert.assertFalse(topNResults.isEmpty());
     } finally {
@@ -117,7 +117,7 @@ public class NetlensAppTest extends TestBase {
       DataPoint[] result = new Gson().fromJson(doRequest(url), DATA_POINT_ARRAY_TYPE);
       Assert.assertFalse(result.length == 0);
 
-      url = new URL(String.format("%stopN/%d?limit=10", serviceManager.getServiceURL(), START));
+      url = new URL(String.format("%stopN/%d", serviceManager.getServiceURL(), START));
       List<TopNTableUtil.TopNResult> topNResults = new Gson().fromJson(doRequest(url), TOP_N_RESULT_LIST_TYPE);
       Assert.assertFalse(topNResults.isEmpty());
     } finally {
