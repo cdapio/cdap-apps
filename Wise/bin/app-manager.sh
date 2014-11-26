@@ -50,6 +50,8 @@ function deploy_action() {
   local host=$1; shift;
 
   echo "Deploying application $app..."
+  status=`echo curl -o /dev/null -sL -w "%{http_code}\\n" -H "X-Archive-Name: $app" -H "Authorization: Bearer $auth_token" -X POST http://$host:10000/v2/apps --data-binary @"$jar"`
+  echo $status
   status=`curl -o /dev/null -sL -w "%{http_code}\\n" -H "X-Archive-Name: $app" -H "Authorization: Bearer $auth_token" -X POST http://$host:10000/v2/apps --data-binary @"$jar"`
   if [ $status -ne 200 ]; then
     echo "Failed to deploy app"
@@ -141,7 +143,9 @@ fi
 get_auth_token
 
 if [ "x$action" == "xdeploy" ]; then
-  jar_path=`ls $dir/../target/Wise-*.jar`
+  jar_path=`echo ls $dir/../target/cdap-wise*.jar`
+  echo $jar_path
+  jar_path=`ls $dir/../target/cdap-wise*.jar`
   deploy_action $app $jar_path $host
 elif [ "x$action" == "xrun" ]; then
   program_action $app "WiseWorkflow_BounceCountsMapReduce" "mapreduce" "start" $host
