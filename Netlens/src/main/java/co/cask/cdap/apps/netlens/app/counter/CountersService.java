@@ -18,7 +18,7 @@ package co.cask.cdap.apps.netlens.app.counter;
 import co.cask.cdap.api.service.AbstractService;
 
 /**
- * Anomalies service.
+ * Counters Service.
  */
 public class CountersService extends AbstractService {
   public static final String SERVICE_NAME = "CountersService";
@@ -26,7 +26,7 @@ public class CountersService extends AbstractService {
   @Override
   protected void configure() {
     setName(SERVICE_NAME);
-    setDescription("Counters service.");
+    setDescription("Service to get traffic counters");
     addHandler(new CountersServiceHandler());
   }
 }

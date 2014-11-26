@@ -67,10 +67,6 @@ public class CountersServiceHandler extends AbstractHttpServiceHandler {
   @Path("counts/{startTs}/{endTs}")
   public void timeRange(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
                         @PathParam("endTs") Long endTs, @QueryParam("key") String key) throws IOException {
-    doTimeRange(responder, startTs, endTs, key);
-  }
-
-  private void doTimeRange(HttpServiceResponder responder, Long startTs, Long endTs, String key) throws IOException {
     startTs = (startTs / Constants.AGG_INTERVAL_SIZE) * Constants.AGG_INTERVAL_SIZE;
     if (key != null) {
       getIPsCounts(key, startTs, endTs, responder);

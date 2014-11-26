@@ -59,10 +59,6 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
   @Path("count/{startTs}/{endTs}")
   public void count(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("startTs") Long startTs,
                     @PathParam("endTs") Long endTs, @QueryParam("src") String src) throws IOException {
-    doCount(responder, startTs, endTs, src);
-  }
-
-  private void doCount(HttpServiceResponder responder, Long startTs, Long endTs, String src) {
     List<DataPoint> dataPoints;
     if (src != null) {
       dataPoints = getCounts(anomalyCounters, startTs, endTs,
@@ -78,9 +74,9 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
   public void uniquesCount(HttpServiceRequest request, HttpServiceResponder responder,
                            @PathParam("startTs") Long startTs, @PathParam("endTs") Long endTs) throws IOException {
     List<DataPoint> dataPoints = CounterTableUtil.getCounts(uniqueCounters,
-                                                        AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_KEY_PREFIX,
-                                                        AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_COLUMN,
-                                                        startTs, endTs);
+                                                            AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_KEY_PREFIX,
+                                                            AnomalyCounterFlowlet.UNIQUE_IP_ANOMALY_COUNT_COLUMN,
+                                                            startTs, endTs);
     responder.sendJson(dataPoints);
   }
 
@@ -120,7 +116,7 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
 
     // preparing output
     List<DataPoint> dataPoints = Lists.newArrayList();
-    Iterator<Map.Entry<Long,Integer>> it = data.entrySet().iterator();
+    Iterator<Map.Entry<Long, Integer>> it = data.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<Long, Integer> item = it.next();
       dataPoints.add(new DataPoint(item.getKey(), item.getValue()));

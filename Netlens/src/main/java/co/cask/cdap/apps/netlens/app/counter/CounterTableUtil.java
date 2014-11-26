@@ -44,7 +44,6 @@ public final class CounterTableUtil {
         break;
       }
       long ts = Bytes.toLong(row.getRow(), prefix.length);
-      int index = (int) ((ts - startTs) / Constants.AGG_INTERVAL_SIZE);
       dataPoints.add(new DataPoint(ts, row.getLong(column).intValue()));
     }
     return dataPoints;
