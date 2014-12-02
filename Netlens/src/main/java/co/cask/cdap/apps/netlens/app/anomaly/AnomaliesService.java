@@ -21,11 +21,11 @@ import co.cask.cdap.api.service.AbstractService;
  * Anomalies service.
  */
 public class AnomaliesService extends AbstractService {
-  public static final String SERVICE_NAME = "AnomaliesService";
+  public static final String NAME = "AnomaliesService";
 
   @Override
   protected void configure() {
-    setName(SERVICE_NAME);
+    setName(NAME);
     setDescription("Anomalies service.");
     addHandler(new AnomaliesServiceHandler());
   }

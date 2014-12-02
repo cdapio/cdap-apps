@@ -21,11 +21,11 @@ import co.cask.cdap.api.service.AbstractService;
  * Counters Service.
  */
 public class CountersService extends AbstractService {
-  public static final String SERVICE_NAME = "CountersService";
+  public static final String NAME = "CountersService";
 
   @Override
   protected void configure() {
-    setName(SERVICE_NAME);
+    setName(NAME);
     setDescription("Service to get traffic counters");
     addHandler(new CountersServiceHandler());
   }

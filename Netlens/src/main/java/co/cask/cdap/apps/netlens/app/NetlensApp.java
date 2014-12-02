@@ -22,6 +22,7 @@ import co.cask.cdap.api.dataset.lib.TimeseriesTables;
 import co.cask.cdap.api.dataset.table.Table;
 import co.cask.cdap.apps.netlens.app.counter.AnomaliesCountService;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesService;
+import co.cask.cdap.apps.netlens.app.counter.AnomaliesCountServiceHandler;
 import co.cask.cdap.apps.netlens.app.counter.CountersService;
 
 import java.util.concurrent.TimeUnit;
@@ -31,11 +32,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class NetlensApp extends AbstractApplication {
   static final String STREAM_NAME = "packets";
-  static final String APP_NAME = "Netlens";
+  static final String NAME = "Netlens";
 
   @Override
   public void configure() {
-    setName(APP_NAME);
+    setName(NAME);
     setDescription("Network traffic analytics application.");
 
     // Network data is pushed to a stream

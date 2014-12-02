@@ -40,7 +40,7 @@ public class NetlensAppTest extends TestBase {
   private static final Gson GSON = new Gson();
 
   @Test
-  public void testSentimentProcedure() throws Exception {
+  public void testNetlensApp() throws Exception {
     try {
       ApplicationManager appManager = deployApplication(NetlensApp.class);
 
@@ -56,15 +56,15 @@ public class NetlensAppTest extends TestBase {
         sendData(streamWriter);
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.APP_NAME, AnalyticsFlow.FLOW_NAME, "traffic-count");
+        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.FLOW_NAME, "traffic-count");
         countMetrics.waitForProcessed(1000, 60, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();
       }
 
-      ServiceManager anomaliesCountServiceManager = appManager.startService(AnomaliesCountService.SERVICE_NAME);
-      ServiceManager anomaliesServiceManager = appManager.startService(AnomaliesService.SERVICE_NAME);
-      ServiceManager countersServiceManager = appManager.startService(CountersService.SERVICE_NAME);
+      ServiceManager anomaliesCountServiceManager = appManager.startService(AnomaliesCountService.NAME);
+      ServiceManager anomaliesServiceManager = appManager.startService(AnomaliesService.NAME);
+      ServiceManager countersServiceManager = appManager.startService(CountersService.NAME);
       serviceStatusCheck(anomaliesCountServiceManager, true);
       serviceStatusCheck(anomaliesServiceManager, true);
       serviceStatusCheck(countersServiceManager, true);
