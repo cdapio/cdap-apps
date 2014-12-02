@@ -1,9 +1,6 @@
 package co.cask.cdap.apps.netlens.app;
 
-import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesService;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesServiceHandler;
-import co.cask.cdap.apps.netlens.app.counter.AnomaliesCountService;
-import co.cask.cdap.apps.netlens.app.counter.CountersService;
 import co.cask.cdap.apps.netlens.app.counter.DataPoint;
 import co.cask.cdap.apps.netlens.app.counter.TopNTableUtil;
 import co.cask.cdap.test.ApplicationManager;
@@ -48,7 +45,7 @@ public class NetlensAppTest extends TestBase {
       args.put("disable.public", "true");
 
       // Starts a Flow
-      FlowManager flowManager = appManager.startFlow(AnalyticsFlow.FLOW_NAME, args);
+      FlowManager flowManager = appManager.startFlow(AnalyticsFlow.NAME, args);
 
       try {
         // Write a message to Stream
@@ -56,15 +53,15 @@ public class NetlensAppTest extends TestBase {
         sendData(streamWriter);
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.FLOW_NAME, "traffic-count");
+        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.NAME, "traffic-count");
         countMetrics.waitForProcessed(1000, 60, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();
       }
 
-      ServiceManager anomaliesCountServiceManager = appManager.startService(AnomaliesCountService.NAME);
-      ServiceManager anomaliesServiceManager = appManager.startService(AnomaliesService.NAME);
-      ServiceManager countersServiceManager = appManager.startService(CountersService.NAME);
+      ServiceManager anomaliesCountServiceManager = appManager.startService(NetlensApp.ANOMALIES_COUNT_SERVICE_NAME);
+      ServiceManager anomaliesServiceManager = appManager.startService(NetlensApp.ANOMALIES_SERVICE_NAME);
+      ServiceManager countersServiceManager = appManager.startService(NetlensApp.COUNTERS_SERVICE_NAME);
       serviceStatusCheck(anomaliesCountServiceManager, true);
       serviceStatusCheck(anomaliesServiceManager, true);
       serviceStatusCheck(countersServiceManager, true);

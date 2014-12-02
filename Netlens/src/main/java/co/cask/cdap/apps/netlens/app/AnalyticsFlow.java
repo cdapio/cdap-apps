@@ -16,7 +16,6 @@
 
 package co.cask.cdap.apps.netlens.app;
 
-import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.flow.Flow;
 import co.cask.cdap.api.flow.FlowSpecification;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomalyDetectionFlowlet;
@@ -30,12 +29,12 @@ import co.cask.cdap.apps.netlens.app.histo.NumberCategorizationFlowlet;
  *
  */
 public class AnalyticsFlow implements Flow {
-  static final String FLOW_NAME = "AnalyticsFlow";
+  static final String NAME = "AnalyticsFlow";
 
   @Override
   public FlowSpecification configure() {
     return FlowSpecification.Builder.with()
-      .setName(FLOW_NAME)
+      .setName(NAME)
       .setDescription("Performs analysis of network packets.")
       .withFlowlets()
         .add("fact-parser", new FactParser())

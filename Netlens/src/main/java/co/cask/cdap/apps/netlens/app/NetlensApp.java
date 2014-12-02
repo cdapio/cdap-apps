@@ -20,10 +20,9 @@ import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.TimeseriesTables;
 import co.cask.cdap.api.dataset.table.Table;
-import co.cask.cdap.apps.netlens.app.counter.AnomaliesCountService;
-import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesService;
+import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesServiceHandler;
 import co.cask.cdap.apps.netlens.app.counter.AnomaliesCountServiceHandler;
-import co.cask.cdap.apps.netlens.app.counter.CountersService;
+import co.cask.cdap.apps.netlens.app.counter.CountersServiceHandler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +32,9 @@ import java.util.concurrent.TimeUnit;
 public class NetlensApp extends AbstractApplication {
   static final String STREAM_NAME = "packets";
   static final String NAME = "Netlens";
+  static final String ANOMALIES_COUNT_SERVICE_NAME = "AnomaliesCountService";
+  static final String ANOMALIES_SERVICE_NAME = "AnomaliesService";
+  static final String COUNTERS_SERVICE_NAME = "CountersService";
 
   @Override
   public void configure() {
@@ -64,11 +66,11 @@ public class NetlensApp extends AbstractApplication {
     TimeseriesTables.createTable(getConfigurer(), "counters", (int) TimeUnit.MINUTES.toMillis(5));
 
     // Service to serve anomalies stats
-    addService(new AnomaliesCountService());
+    addService(ANOMALIES_COUNT_SERVICE_NAME, new AnomaliesCountServiceHandler());
     // Service to serve anomalies details
-    addService(new AnomaliesService());
+    addService(ANOMALIES_SERVICE_NAME, new AnomaliesServiceHandler());
     // Service to serve traffic stats requests
-    addService(new CountersService());
+    addService(COUNTERS_SERVICE_NAME, new CountersServiceHandler());
 
   }
 }
