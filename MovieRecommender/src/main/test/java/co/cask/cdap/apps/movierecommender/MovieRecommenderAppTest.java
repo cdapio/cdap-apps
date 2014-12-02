@@ -53,7 +53,7 @@ public class MovieRecommenderAppTest extends TestBase {
 
   @Test
   public void testRecommendation() throws Exception {
-    // Deploy an Application
+
     ApplicationManager appManager = deployApplication(MovieRecommenderApp.class);
 
     // Send movies data through service
@@ -62,27 +62,34 @@ public class MovieRecommenderAppTest extends TestBase {
     try {
       // Inject ratings data
       sendRatingsData(appManager);
-
       // Start the Spark Program
       SparkManager sparkManager = appManager.startSpark(RecommendationBuilder.class.getSimpleName());
       sparkManager.waitForFinish(10, TimeUnit.MINUTES);
     } catch (Exception e) {
-      LOG.warn("Failed to send ratings data to {}", "ratingsStream", e);
+      LOG.warn("Failed to send ratings data to {}", MovieRecommenderApp.MOVIE_RECOMMENDER_RATINGS_STREAM, e);
       throw Throwables.propagate(e);
     }
 
     verifyRecommenderServiceHandler(appManager);
   }
 
+  /**
+   * Verify that the movie recommendations were generated for the users
+   *
+   * @param appManager {@link ApplicationManager} for the deployed application
+   * @throws InterruptedException
+   * @throws IOException
+   */
   private void verifyRecommenderServiceHandler(ApplicationManager appManager) throws InterruptedException, IOException {
-    ServiceManager serviceManager = appManager.startService("MovieRecommenderService");
+    ServiceManager serviceManager = appManager.startService(MovieRecommenderApp.
+                                                              MOVIE_RECOMMENDER_RECOMMENDATION_SERVICE);
     // Wait service startup
     serviceStatusCheck(serviceManager);
 
     // Verify that recommendation are generated
-    String response = requestService(new URL(serviceManager.getServiceURL(), "recommend" + "/1"));
+    String response = requestService(new URL(serviceManager.getServiceURL(), MovieRecommenderServiceHandler.RECOMMEND +
+      "/1"));
 
-    System.out.println("reply: " + response);
     Map<String, String[]> responseMap = GSON.fromJson(response, new TypeToken<Map<String, String[]>>() {
     }.getType());
 
@@ -101,25 +108,26 @@ public class MovieRecommenderAppTest extends TestBase {
   }
 
   /**
-   * Sends movies data to {@link MovieDictionaryService}
+   * Sends movies data to {@link MovieRecommenderApp#MOVIE_RECOMMENDER_DICTIONARY_SERVICE}
    */
   private void sendMovieData(ApplicationManager applicationManager) {
     String moviesData = "0::Movie0\n1::Movie1\n2::Movie2\n3::Movie3\n";
-    ServiceManager serviceManager = applicationManager.startService(MovieDictionaryService.class.getSimpleName());
+    ServiceManager serviceManager = applicationManager.startService(MovieRecommenderApp.
+                                                                      MOVIE_RECOMMENDER_DICTIONARY_SERVICE);
     try {
       serviceStatusCheck(serviceManager);
     } catch (InterruptedException e) {
-      LOG.error("Failed to start {} service", MovieDictionaryService.class.getSimpleName(), e);
+      LOG.error("Failed to start {} service", MovieRecommenderApp.MOVIE_RECOMMENDER_DICTIONARY_SERVICE, e);
       throw Throwables.propagate(e);
     }
     try {
-      URL url = new URL(serviceManager.getServiceURL(), "storemovies");
+      URL url = new URL(serviceManager.getServiceURL(), MovieDictionaryServiceHandler.STORE_MOVIES);
       HttpRequest request = HttpRequest.post(url).withBody(moviesData, Charsets.UTF_8).build();
       HttpResponse response = HttpRequests.execute(request);
       Assert.assertEquals(200, response.getResponseCode());
       LOG.debug("Sent movies data");
     } catch (IOException e) {
-      LOG.warn("Failed to send movies data to {}", MovieDictionaryService.class.getSimpleName(), e);
+      LOG.warn("Failed to send movies data to {}", MovieRecommenderApp.MOVIE_RECOMMENDER_DICTIONARY_SERVICE, e);
       throw Throwables.propagate(e);
     } finally {
       serviceManager.stop();
@@ -130,12 +138,12 @@ public class MovieRecommenderAppTest extends TestBase {
    * Send some ratings to the Stream
    */
   private void sendRatingsData(ApplicationManager appManager) throws IOException {
-    StreamWriter streamWriter = appManager.getStreamWriter("ratingsStream");
+    StreamWriter streamWriter = appManager.getStreamWriter(MovieRecommenderApp.MOVIE_RECOMMENDER_RATINGS_STREAM);
     streamWriter.send("0::0::3");
     streamWriter.send("0::1::4");
     streamWriter.send("1::1::4");
     streamWriter.send("1::2::4");
-    LOG.debug("Send ratings data");
+    LOG.debug("Sent ratings data");
   }
 
   /**
