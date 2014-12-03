@@ -48,7 +48,7 @@ public class MovieRecommenderAppTest extends TestBase {
 
   private static final Gson GSON = new Gson();
   private static final Logger LOG = LoggerFactory.getLogger(MovieRecommenderAppTest.class);
-  public static final int SERVICE_STATUS_CHECK_LIMIT = 5;
+  private static final int SERVICE_STATUS_CHECK_LIMIT = 5;
 
 
   @Test
@@ -66,7 +66,7 @@ public class MovieRecommenderAppTest extends TestBase {
       SparkManager sparkManager = appManager.startSpark(RecommendationBuilder.class.getSimpleName());
       sparkManager.waitForFinish(10, TimeUnit.MINUTES);
     } catch (Exception e) {
-      LOG.warn("Failed to send ratings data to {}", MovieRecommenderApp.MOVIE_RECOMMENDER_RATINGS_STREAM, e);
+      LOG.warn("Failed to send ratings data to {}", MovieRecommenderApp.RATINGS_STREAM, e);
       throw Throwables.propagate(e);
     }
 
@@ -81,8 +81,7 @@ public class MovieRecommenderAppTest extends TestBase {
    * @throws IOException
    */
   private void verifyRecommenderServiceHandler(ApplicationManager appManager) throws InterruptedException, IOException {
-    ServiceManager serviceManager = appManager.startService(MovieRecommenderApp.
-                                                              MOVIE_RECOMMENDER_RECOMMENDATION_SERVICE);
+    ServiceManager serviceManager = appManager.startService(MovieRecommenderApp.RECOMMENDATION_SERVICE);
     // Wait service startup
     serviceStatusCheck(serviceManager);
 
@@ -108,16 +107,15 @@ public class MovieRecommenderAppTest extends TestBase {
   }
 
   /**
-   * Sends movies data to {@link MovieRecommenderApp#MOVIE_RECOMMENDER_DICTIONARY_SERVICE}
+   * Sends movies data to {@link MovieRecommenderApp#DICTIONARY_SERVICE}
    */
   private void sendMovieData(ApplicationManager applicationManager) {
     String moviesData = "0::Movie0\n1::Movie1\n2::Movie2\n3::Movie3\n";
-    ServiceManager serviceManager = applicationManager.startService(MovieRecommenderApp.
-                                                                      MOVIE_RECOMMENDER_DICTIONARY_SERVICE);
+    ServiceManager serviceManager = applicationManager.startService(MovieRecommenderApp.DICTIONARY_SERVICE);
     try {
       serviceStatusCheck(serviceManager);
     } catch (InterruptedException e) {
-      LOG.error("Failed to start {} service", MovieRecommenderApp.MOVIE_RECOMMENDER_DICTIONARY_SERVICE, e);
+      LOG.error("Failed to start {} service", MovieRecommenderApp.DICTIONARY_SERVICE, e);
       throw Throwables.propagate(e);
     }
     try {
@@ -127,7 +125,7 @@ public class MovieRecommenderAppTest extends TestBase {
       Assert.assertEquals(200, response.getResponseCode());
       LOG.debug("Sent movies data");
     } catch (IOException e) {
-      LOG.warn("Failed to send movies data to {}", MovieRecommenderApp.MOVIE_RECOMMENDER_DICTIONARY_SERVICE, e);
+      LOG.warn("Failed to send movies data to {}", MovieRecommenderApp.DICTIONARY_SERVICE, e);
       throw Throwables.propagate(e);
     } finally {
       serviceManager.stop();
@@ -138,7 +136,7 @@ public class MovieRecommenderAppTest extends TestBase {
    * Send some ratings to the Stream
    */
   private void sendRatingsData(ApplicationManager appManager) throws IOException {
-    StreamWriter streamWriter = appManager.getStreamWriter(MovieRecommenderApp.MOVIE_RECOMMENDER_RATINGS_STREAM);
+    StreamWriter streamWriter = appManager.getStreamWriter(MovieRecommenderApp.RATINGS_STREAM);
     streamWriter.send("0::0::3");
     streamWriter.send("0::1::4");
     streamWriter.send("1::1::4");

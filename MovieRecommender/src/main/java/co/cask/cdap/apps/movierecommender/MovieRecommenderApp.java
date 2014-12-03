@@ -26,18 +26,18 @@ import co.cask.cdap.internal.io.UnsupportedTypeException;
  */
 public class MovieRecommenderApp extends AbstractApplication {
 
-  public static final String MOVIE_RECOMMENDER_RECOMMENDATION_SERVICE = "MovieRecommenderService";
-  public static final String MOVIE_RECOMMENDER_DICTIONARY_SERVICE = "MovieDictionaryService";
-  public static final String MOVIE_RECOMMENDER_RATINGS_STREAM = "ratingsStream";
+  public static final String RECOMMENDATION_SERVICE = "MovieRecommenderService";
+  public static final String DICTIONARY_SERVICE = "MovieDictionaryService";
+  public static final String RATINGS_STREAM = "ratingsStream";
 
   @Override
   public void configure() {
     setName("MovieRecommender");
     setDescription("Movie Recommendation App");
-    addStream(new Stream(MOVIE_RECOMMENDER_RATINGS_STREAM));
+    addStream(new Stream(RATINGS_STREAM));
     addSpark(new RecommendationBuilderSpecification());
-    addService(MOVIE_RECOMMENDER_RECOMMENDATION_SERVICE, new MovieRecommenderServiceHandler());
-    addService(MOVIE_RECOMMENDER_DICTIONARY_SERVICE, new MovieDictionaryServiceHandler());
+    addService(RECOMMENDATION_SERVICE, new MovieRecommenderServiceHandler());
+    addService(DICTIONARY_SERVICE, new MovieDictionaryServiceHandler());
 
     try {
       ObjectStores.createObjectStore(getConfigurer(), "ratings", UserScore.class);
