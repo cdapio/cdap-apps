@@ -20,29 +20,28 @@ import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.ObjectStores;
 import co.cask.cdap.internal.io.UnsupportedTypeException;
-import org.apache.spark.mllib.recommendation.ALS;
-import org.apache.spark.mllib.recommendation.Rating;
-
-import java.nio.charset.Charset;
-import java.util.regex.Pattern;
 
 /**
  * Application that provides movie recommendations to users.
  */
 public class MovieRecommenderApp extends AbstractApplication {
+
+  public static final String RECOMMENDATION_SERVICE = "MovieRecommenderService";
+  public static final String DICTIONARY_SERVICE = "MovieDictionaryService";
+  public static final String RATINGS_STREAM = "ratingsStream";
+
   @Override
   public void configure() {
     setName("MovieRecommender");
     setDescription("Movie Recommendation App");
-    addStream(new Stream("ratingsStream"));
-    addFlow(new RatingsFlow());
+    addStream(new Stream(RATINGS_STREAM));
     addSpark(new RecommendationBuilderSpecification());
-    addProcedure(new RecommendMovieProcedure());
-    addService(new MovieDictionaryService());
+    addService(RECOMMENDATION_SERVICE, new MovieRecommenderServiceHandler());
+    addService(DICTIONARY_SERVICE, new MovieDictionaryServiceHandler());
 
     try {
       ObjectStores.createObjectStore(getConfigurer(), "ratings", UserScore.class);
-      ObjectStores.createObjectStore(getConfigurer(), "recommendations", Rating.class);
+      ObjectStores.createObjectStore(getConfigurer(), "recommendations", UserScore.class);
       ObjectStores.createObjectStore(getConfigurer(), "movies", String.class);
     } catch (UnsupportedTypeException e) {
       // This exception is thrown by ObjectStore if its parameter type cannot be
@@ -52,5 +51,4 @@ public class MovieRecommenderApp extends AbstractApplication {
       throw new RuntimeException(e);
     }
   }
-
 }

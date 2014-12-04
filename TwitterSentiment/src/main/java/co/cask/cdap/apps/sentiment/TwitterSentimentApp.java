@@ -38,6 +38,6 @@ public class TwitterSentimentApp extends AbstractApplication {
     createDataset(TABLE_NAME, Table.class);
     createDataset(TIMESERIES_TABLE_NAME, TimeseriesTable.class);
     addFlow(new SentimentAnalysisFlow());
-    addProcedure(new SentimentQueryProcedure());
+    addService(new SentimentQueryService());
   }
 }

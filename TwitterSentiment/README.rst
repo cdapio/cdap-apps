@@ -20,7 +20,7 @@ The TwitterSentiment application is primarily composed of:
   Twitter, analyzes the sentiment of the text, and stores the results. 
 - Datasets - ``Table`` and ``TimeseriesTable`` provide persistence for analytics algorithms and
   store results
-- ``SentimentQueryProcedure`` - to query the datasets and serve this information to the front end
+- ``SentimentQueryService`` - to query the datasets and serve this information to the client
 - A simple single-page web UI
 
 The main part of the application is the ``SentimentAnalysisFlow`` that ingests and collects
@@ -43,8 +43,8 @@ After the tweet is analyzed, it proceeds to the ``CountSentimentFlowlet`` flowle
 timeseries table based upon the tweet’s timestamp. It also updates a table which keeps track of
 the running total of each sentiment.
 
-The stored data can be queried by sending requests to the sentiment-query procedure. This
-procedure exposes 3 endpoints: 
+The stored data can be queried by sending requests to the sentiment-query service. This
+service exposes 3 endpoints:
 
 - ``aggregates`` - yields a running total of each sentiment.
 - ``sentiments`` - yields a list of tweets for a given sentiment, from the past 300 seconds (this
@@ -65,7 +65,7 @@ Deploy the Application to a CDAP instance defined by its host (defaults to local
 
   bin/app-manager.sh --host [host] --action deploy
 
-Start Application Flows and Procedures::
+Start Application Flows and Services::
 
   bin/app-manager.sh --host [host] --action start
 

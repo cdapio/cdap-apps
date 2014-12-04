@@ -141,7 +141,7 @@ fi
 get_auth_token
 
 if [ "x$action" == "xdeploy" ]; then
-  jar_path=`ls $dir/../target/cdap-wise*.jar`
+  jar_path=`ls $dir/../target/cdap-wise-*.jar`
   deploy_action $app $jar_path $host
 elif [ "x$action" == "xrun" ]; then
   program_action $app "WiseWorkflow_BounceCountsMapReduce" "mapreduce" "start" $host
