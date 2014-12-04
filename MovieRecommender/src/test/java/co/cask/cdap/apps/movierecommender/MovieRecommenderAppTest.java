@@ -64,7 +64,7 @@ public class MovieRecommenderAppTest extends TestBase {
       sendRatingsData(appManager);
       // Start the Spark Program
       SparkManager sparkManager = appManager.startSpark(RecommendationBuilder.class.getSimpleName());
-      sparkManager.waitForFinish(10, TimeUnit.MINUTES);
+      sparkManager.waitForFinish(120, TimeUnit.SECONDS);
     } catch (Exception e) {
       LOG.warn("Failed to send ratings data to {}", MovieRecommenderApp.RATINGS_STREAM, e);
       throw Throwables.propagate(e);
