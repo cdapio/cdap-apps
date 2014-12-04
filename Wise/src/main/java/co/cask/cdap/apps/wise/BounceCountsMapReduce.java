@@ -42,12 +42,10 @@ import java.util.concurrent.TimeUnit;
 public class BounceCountsMapReduce extends AbstractMapReduce {
 
   @Override
-  public MapReduceSpecification configure() {
-    return MapReduceSpecification.Builder.with()
-      .setName("BounceCountsMapReduce")
-      .setDescription("Bounce Counts MapReduce job")
-      .useOutputDataSet("bounceCountStore")
-      .build();
+  public void configure() {
+    setName("BounceCountsMapReduce");
+    setDescription("Bounce Counts MapReduce job");
+    setOutputDataset("bounceCountStore");
   }
 
   @Override

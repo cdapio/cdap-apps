@@ -19,7 +19,7 @@ REM ##
 REM #################################################################################
 
 REM Application Manager for managing application lifecycle for Wise application
-SET APP_JAR_PREFIX=Wise
+SET APP_JAR_PREFIX=cdap-wise
 
 SET APP_NAME=Wise
 SET FLOW_NAME=WiseFlow
