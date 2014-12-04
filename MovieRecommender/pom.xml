@@ -33,15 +33,15 @@
     <guava.version>13.0.1</guava.version>
     <gson.version>2.2.4</gson.version>
     <scala.version>2.10.3</scala.version>
-    <scalanlp.version>0.9</scalanlp.version>
     <mllib.version>1.1.0</mllib.version>
     <hadoop.version>2.3.0</hadoop.version>
   </properties>
 
   <repositories>
     <repository>
-      <id>apache.snapshots</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <id>oss.sonatype</id>
+      <name>OSS Sonatype Public</name>
+      <url>http://oss.sonatype.org/content/groups/public/</url>
     </repository>
     <repository>
       <id>scala-tools.org</id>
@@ -128,11 +128,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.scalanlp</groupId>
-      <artifactId>breeze_2.10</artifactId>
-      <version>${scalanlp.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>${scala.version}</version>
@@ -142,6 +137,16 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-mllib_2.10</artifactId>
       <version>${mllib.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-streaming_2.10</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.scalanlp</groupId>
+          <artifactId>breeze_2.10</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
