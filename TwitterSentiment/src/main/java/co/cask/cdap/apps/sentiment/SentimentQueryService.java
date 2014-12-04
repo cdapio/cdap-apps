@@ -14,19 +14,21 @@
  * the License.
  */
 
-package co.cask.cdap.apps.movierecommender;
+package co.cask.cdap.apps.sentiment;
 
 import co.cask.cdap.api.service.AbstractService;
 import co.cask.cdap.api.service.Service;
 
 /**
- * A {@link Service} that provides access to movies dictionary.
+ * A {@link Service} that retrieves the aggregates timeseries sentiment data.
  */
-public class MovieDictionaryService extends AbstractService {
+public class SentimentQueryService extends AbstractService {
+  static final String SERVICE_NAME = "SentimentQuery";
+
   @Override
   protected void configure() {
-    setName("MovieDictionaryService");
-    setDescription("Service to store moviesStore information to dataset");
-    addHandler(new MovieDictionaryServiceHandler());
+    setName(SERVICE_NAME);
+    setDescription("Queries data relating to tweets' sentiments");
+    addHandler(new SentimentQueryServiceHandler());
   }
 }

@@ -22,10 +22,9 @@ REM Application Manager for managing application lifecycle for MovieRecommender
 SET APP_JAR_PREFIX=MovieRecommender
 
 SET APP_NAME=MovieRecommender
-SET FLOW_NAME=RatingsFlow
-SET PROCEDURE_NAME= RecommendMovieProcedure
 SET SPARK_NAME=RecommendationBuilder
-SET SERVICE_NAME=MovieDictionaryService
+SET SERVICE_RECOMMENDER_NAME=MovieRecommenderService
+SET SERVICE_DICTIONARY_NAME=MovieDictionaryService
 
 REM Set the base directory
 for %%i in ("%~dp0..\") do (SET APP_HOME=%%~dpi)
@@ -37,7 +36,6 @@ for /r %APP_HOME%\target %%a in (%APP_JAR_PREFIX%*) do SET JAR_PATH=%%~dpnxa
 
 if %JAR_PATH% == "" (echo "Could not find application jar with name %APP_JAR_PREFIX%"
                      GOTO :EOF)
-
 
 REM Process access token
 SET ACCESS_TOKEN=
@@ -72,21 +70,18 @@ CALL :POST %APP_NAME% spark %SPARK_NAME% start
 GOTO :EOF
 
 :START
-CALL :POST %APP_NAME% flows %FLOW_NAME% start
-CALL :POST %APP_NAME% procedures %PROCEDURE_NAME% start
-CALL :POST %APP_NAME% services %SERVICE_NAME% start
+CALL :POST %APP_NAME% services %SERVICE_RECOMMENDER_NAME% start
+CALL :POST %APP_NAME% services %SERVICE_DICTIONARY_NAME% start
 GOTO :EOF
 
 :STOP
-CALL :POST %APP_NAME% flows %FLOW_NAME% stop
-CALL :POST %APP_NAME% procedures %PROCEDURE_NAME% stop
-CALL :POST %APP_NAME% services %SERVICE_NAME% stop
+CALL :POST %APP_NAME% services %SERVICE_RECOMMENDER_NAME% stop
+CALL :POST %APP_NAME% services %SERVICE_DICTIONARY_NAME% stop
 GOTO :EOF
 
 :STATUS
-CALL :GET %APP_NAME% flows %FLOW_NAME% status
-CALL :GET %APP_NAME% procedures %PROCEDURE_NAME% status
-CALL :GET %APP_NAME% services %SERVICE_NAME% status
+CALL :GET %APP_NAME% services %SERVICE_RECOMMENDER_NAME% status
+CALL :GET %APP_NAME% services %SERVICE_DICTIONARY_NAME% status
 CALL :GET %APP_NAME% spark %SPARK_NAME% status
 GOTO :EOF
 

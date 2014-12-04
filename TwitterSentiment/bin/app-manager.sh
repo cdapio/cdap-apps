@@ -145,5 +145,5 @@ if [ "x$action" == "xdeploy" ]; then
   deploy_action $app $jar_path $host
 else
   program_action $app "TwitterSentimentAnalysis" "flow" $action $host
-  program_action $app "SentimentQuery" "procedure" $action $host
+  program_action $app "SentimentQuery" "service" $action $host
 fi

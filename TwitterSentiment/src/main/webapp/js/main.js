@@ -2,8 +2,8 @@
  * Js for main page.
  */
 var APP_NAME = "TwitterSentiment";
-var PROCEDURE_NAME = "SentimentQuery";
-var PROCEDURE_URL = 'proxy/v2/apps/' + APP_NAME + '/procedures/' + PROCEDURE_NAME + '/methods';
+var SERVICE_NAME = "SentimentQuery";
+var SERVICE_URL = 'proxy/v2/apps/' + APP_NAME + '/services/' + SERVICE_NAME + '/methods';
 var graphUpdateInterval = 1000;
 // the chart will interpolate the results over the last few updates, as defined by:
 var interpolateOver = 20;
@@ -41,9 +41,10 @@ Homepage.prototype.initGraph = function () {
 
   function update() {
     $.ajax({
-      url: PROCEDURE_URL + '/counts?sentiments=[negative,positive,neutral]&seconds=' + interpolateOver,
-      type: 'GET',
-      contentType: "application/json",
+      url: SERVICE_URL + '/counts?seconds=300',
+      type: 'POST',
+      contentType: "text",
+      data: "['positive', 'negative', 'neutral']",
       dataType: 'json',
       cache: false,
       success: function(response) {
@@ -78,7 +79,7 @@ var appendK = function (str) {
 
 var updateTable = function(sentiment) {
    $.ajax({
-     url: PROCEDURE_URL + '/sentiments?sentiment=' + sentiment,
+     url: SERVICE_URL + '/sentiments/' + sentiment + "?seconds=300",
      type: 'GET',
      contentType: "application/json",
      dataType: 'json',
@@ -98,7 +99,7 @@ var updateTable = function(sentiment) {
 Homepage.prototype.enableIntervals = function () {
   var updateFunc = function() {
    $.ajax({
-     url: PROCEDURE_URL + '/aggregates',
+     url: SERVICE_URL + '/aggregates',
      type: 'GET',
      contentType: "application/json",
      cache: false,
