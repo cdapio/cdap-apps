@@ -23,13 +23,13 @@ the License.
 
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         reloadUniqueIpsWithAnomaliesCountChart();
     });
 
     function reloadUniqueIpsWithAnomaliesCountChart() {
         drawUniqueIpsWithAnomaliesCountChart();
-        setTimeout(function() {
+        setTimeout(function () {
             reloadUniqueIpsWithAnomaliesCountChart();
         }, 5000);
     }
@@ -37,21 +37,25 @@ the License.
     function drawUniqueIpsWithAnomaliesCountChart() {
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/AnomalyCountsProcedure/methods/uniqueIpsCount",
-                        "{startTs:" + startTs + ", endTs:" + endTs + "}")
-                .done(function( data ) {
-                    var anomalies = JSON.parse(JSON.parse(data));
-                    renderUniqueIpsWithAnomaliesCountChart(anomalies);
-
-                })
-                .fail( function(xhr, textStatus, errorThrown) {
-                    $('#uniqueIpsWithAnomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");
-                })
+        $.ajax({
+            url: "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/uniqueIpsCount/"
+                    + startTs + "/" + endTs,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                renderUniqueIpsWithAnomaliesCountChart(data);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#uniqueIpsWithAnomaliesCount').html("<div class='server_error''>Failed to get data from server<div>");
+            }
+        });
     }
 
     function renderUniqueIpsWithAnomaliesCountChart(anomalies) {
         var data = [];
-        anomalies.forEach(function(point){
+        anomalies.forEach(function (point) {
             data.push([point.ts, point.value]);
         });
 

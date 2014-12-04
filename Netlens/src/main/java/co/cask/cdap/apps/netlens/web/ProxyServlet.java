@@ -17,9 +17,10 @@
 package co.cask.cdap.apps.netlens.web;
 
 import com.google.common.base.Throwables;
-import com.google.common.io.ByteStreams;
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
+import com.ning.http.client.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,44 +32,53 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Proxies POST requests to a given url (specified thru cdap.host and cdap.port system properties).
- * By default proxies to http://localhost:10000.
- *
+ * Proxies POST requests to a given url (specified thru <code>cdap.host</code> and
+ * <code>cdap.port</code> system properties); by default, proxies to <code>http://localhost:10000</code>.
+ * <p>
  * Needed for resolving cross-domain javascript complexities.
+ * </p>
  */
 public class ProxyServlet extends HttpServlet {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
+  private static final String DEFAULT_HOST = "localhost";
+  private static final String DEFAULT_PORT = "10000";
 
   private String cdapURL;
 
   @Override
   public void init() throws ServletException {
-    String host = System.getProperty("cdap.host");
-    host = host == null ? "localhost" : host;
-    String port = System.getProperty("cdap.port");
-    port = port == null ? "10000" : port;
+    String host = System.getProperty("cdap.host", DEFAULT_HOST);
+    String port = System.getProperty("cdap.port", DEFAULT_PORT);
     cdapURL = String.format("http://%s:%s", host, port);
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
     AsyncHttpClient client =
       new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(1000).build());
     try {
-      String url = cdapURL + req.getPathInfo();
-      byte[] bytes = ByteStreams.toByteArray(req.getInputStream());
-      String responseBody;
+      String url = cdapURL + req.getPathInfo() + "?" + req.getQueryString();
       try {
-        responseBody = client.preparePost(url).setBody(bytes).execute().get().getResponseBody();
+        client.prepareGet(url).execute(new AsyncCompletionHandler<Response>(){
+          @Override
+          public Response onCompleted(Response response) throws Exception {
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            resp.setStatus(response.getStatusCode());
+            try {
+              out.write(response.getResponseBody());
+            } finally {
+              out.close();
+            }
+            return response;
+          }
+        }).get();
       } catch (Exception e) {
         LOG.error("handling request failed", e);
         e.printStackTrace();
         throw Throwables.propagate(e);
       }
 
-      PrintWriter out = resp.getWriter();
-      out.write(responseBody);
-      out.close();
     } finally {
       client.close();
     }
