@@ -36,11 +36,12 @@ import javax.ws.rs.Path;
 public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
   private static final Pattern NEWLINE_DELIMITER = Pattern.compile("[\\r\\n]+");
   private static final Pattern FIELDS_DELIMITER = Pattern.compile("::");
+  public static final String STORE_MOVIES = "storemovies";
 
   @UseDataSet("movies")
   private ObjectStore<String> movies;
 
-  @Path("storemovies")
+  @Path(STORE_MOVIES)
   @POST
   public void uploadHandler(HttpServiceRequest request, HttpServiceResponder responder) {
     ByteBuffer requestContents = request.getContent();

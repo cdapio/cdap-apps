@@ -34,6 +34,7 @@ import javax.ws.rs.PathParam;
  * Handler that exposes HTTP API to retrieve recommended movies.
  */
 public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
+  public static final String RECOMMEND = "recommend";
   @UseDataSet("recommendations")
   private ObjectStore<UserScore> recommendations;
 
@@ -43,7 +44,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
   @UseDataSet("movies")
   private ObjectStore<String> movies;
 
-  @Path("/recommend/{userId}")
+  @Path("/" + RECOMMEND + "/{userId}")
   @GET
   public void recommend(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("userId") int userId) {
     byte[] userID = Bytes.toBytes(userId);

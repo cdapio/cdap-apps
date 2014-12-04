@@ -25,14 +25,19 @@ import co.cask.cdap.internal.io.UnsupportedTypeException;
  * Application that provides movie recommendations to users.
  */
 public class MovieRecommenderApp extends AbstractApplication {
+
+  public static final String RECOMMENDATION_SERVICE = "MovieRecommenderService";
+  public static final String DICTIONARY_SERVICE = "MovieDictionaryService";
+  public static final String RATINGS_STREAM = "ratingsStream";
+
   @Override
   public void configure() {
     setName("MovieRecommender");
     setDescription("Movie Recommendation App");
-    addStream(new Stream("ratingsStream"));
+    addStream(new Stream(RATINGS_STREAM));
     addSpark(new RecommendationBuilderSpecification());
-    addService(new MovieRecommenderService());
-    addService(new MovieDictionaryService());
+    addService(RECOMMENDATION_SERVICE, new MovieRecommenderServiceHandler());
+    addService(DICTIONARY_SERVICE, new MovieDictionaryServiceHandler());
 
     try {
       ObjectStores.createObjectStore(getConfigurer(), "ratings", UserScore.class);
