@@ -16,7 +16,6 @@
 
 package co.cask.cdap.apps.netlens.app;
 
-import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.flow.Flow;
 import co.cask.cdap.api.flow.FlowSpecification;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomalyDetectionFlowlet;
@@ -30,11 +29,12 @@ import co.cask.cdap.apps.netlens.app.histo.NumberCategorizationFlowlet;
  *
  */
 public class AnalyticsFlow implements Flow {
+  static final String NAME = "AnalyticsFlow";
 
   @Override
   public FlowSpecification configure() {
     return FlowSpecification.Builder.with()
-      .setName("AnalyticsFlow")
+      .setName(NAME)
       .setDescription("Performs analysis of network packets.")
       .withFlowlets()
         .add("fact-parser", new FactParser())
@@ -44,7 +44,7 @@ public class AnalyticsFlow implements Flow {
         .add("anomaly-count", new AnomalyCounterFlowlet())
         .add("traffic-count", new TrafficCounterFlowlet())
       .connect()
-        .from(new Stream("packets")).to("fact-parser")
+        .fromStream(NetlensApp.STREAM_NAME).to("fact-parser")
         // anomaly subtree
         .from("fact-parser").to("categorize-numbers")
         .from("categorize-numbers").to("anomaly-fanout")

@@ -47,7 +47,7 @@ The Netlens application contains the following components:
 * A Stream for ingesting data into the system
 * A Flow to perform real-time analytics on the incoming data
 * Datasets to provide persistence for analytics algorithms and store results
-* Procedures to serve data to a front-end
+* Services to serve data to a client
 * A thin web UI
 
 The main part of the application is ``AnalyticsFlow``, which performs network packet analysis.
@@ -81,7 +81,7 @@ Deploy the Application to a CDAP instance defined by its host (defaults to local
 
   bin/app-manager.sh --host [host] --action deploy
 
-Start the Application Flows and Procedures::
+Start the Application Flows and Services::
 
   bin/app-manager.sh --host [host] --action start
 

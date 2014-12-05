@@ -21,15 +21,18 @@ import co.cask.cdap.api.dataset.table.Row;
 import co.cask.cdap.api.dataset.table.Scanner;
 import co.cask.cdap.api.dataset.table.Table;
 import co.cask.cdap.apps.netlens.app.Constants;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 /**
  * Provides utility methods for dealing with counters in datasets
  */
 // todo: extract custom dataset or use cube;)?
 public final class CounterTableUtil {
-  public static DataPoint[] getCounts(Table table, byte[] prefix, byte[] column, long startTs, long endTs) {
+  public static List<DataPoint> getCounts(Table table, byte[] prefix, byte[] column, long startTs, long endTs) {
     int pointsCount = (int) ((endTs - startTs) / Constants.AGG_INTERVAL_SIZE);
-    DataPoint[] dataPoints = new DataPoint[pointsCount + 1];
+    List<DataPoint> dataPoints = Lists.newArrayList();
 
     byte[] startRow = Bytes.add(prefix, Bytes.toBytes(startTs));
     byte[] endRow = Bytes.add(prefix, Bytes.toBytes(endTs));
@@ -41,15 +44,7 @@ public final class CounterTableUtil {
         break;
       }
       long ts = Bytes.toLong(row.getRow(), prefix.length);
-      int index = (int) ((ts - startTs) / Constants.AGG_INTERVAL_SIZE);
-      dataPoints[index] = new DataPoint(ts, row.getLong(column).intValue());
-    }
-
-    // NOTE: inserting zeroes where value is absent
-    for (int i = 0; i < dataPoints.length; i++) {
-      if (dataPoints[i] == null) {
-        dataPoints[i] = new DataPoint(startTs + i * Constants.AGG_INTERVAL_SIZE, 0);
-      }
+      dataPoints.add(new DataPoint(ts, row.getLong(column).intValue()));
     }
     return dataPoints;
   }

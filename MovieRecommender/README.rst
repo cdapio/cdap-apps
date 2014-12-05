@@ -16,7 +16,6 @@ Implementation Details
 The MovieRecommender application is composed of the components:
 
 * ``Streams`` for ingesting ``ratings`` data into the system
-* A ``Flowlet`` in a ``Flow`` which processes the ``ratings`` data and stores them in a ``Dataset``
 * A ``Service`` to store ``movies`` in a ``Dataset``
 * A ``Service`` that recommends movies for a particular user
 * A ``Spark`` Program which builds a recommendation model using the ALS algorithm and recommends
@@ -31,7 +30,7 @@ to train the prediction model.
 
 |(RecommendationBuilder)| 
 
-First, ``RecommendationBuilder`` reads the ``ratings`` dataset and uses it to train the prediction
+First, ``RecommendationBuilder`` reads the ``ratingsStream`` and uses it to train the prediction
 model.  Then, it computes an RDD of not-rated movies using the ``movies`` dataset and the
 ``ratings`` dataset. It uses the prediction model to predict a score for each not-rated movie and
 stores the top 20 highest scored movies for each user in the ``recommendations`` dataset.

@@ -22,13 +22,13 @@ the License.
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         reloadTrafficChart();
     });
 
     function reloadTrafficChart() {
         drawTrafficChart();
-        setTimeout(function() {
+        setTimeout(function () {
             reloadTrafficChart();
         }, 5000);
     }
@@ -36,21 +36,24 @@ the License.
     function drawTrafficChart() {
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
-        $.post( "proxy/v2/apps/Netlens/procedures/CountersProcedure/methods/counts",
-                        "{startTs:" + startTs + ", endTs:" + endTs + "}")
-                .done(function( data ) {
-                    var points = JSON.parse(JSON.parse(data));
-                    renderTrafficChart(points);
-
-                })
-                .fail( function(xhr, textStatus, errorThrown) {
-                    $('#ttraffic').html("<div class='server_error''>Failed to get data from server<div>");
-                })
+        $.ajax({
+            url: "proxy/v2/apps/Netlens/services/CountersService/methods/counts/" + startTs + "/" + endTs,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                renderTrafficChart(data);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#ttraffic').html("<div class='server_error''>Failed to get data from server<div>");
+            }
+        });
     }
 
     function renderTrafficChart(points) {
         var data = [];
-        points.forEach(function(point){
+        points.forEach(function (point) {
             data.push([point.ts, point.value]);
         });
 
