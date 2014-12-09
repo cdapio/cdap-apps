@@ -18,7 +18,6 @@ package co.cask.cdap.apps.wise;
 import co.cask.cdap.api.data.stream.StreamBatchReadable;
 import co.cask.cdap.api.mapreduce.AbstractMapReduce;
 import co.cask.cdap.api.mapreduce.MapReduceContext;
-import co.cask.cdap.api.mapreduce.MapReduceSpecification;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
