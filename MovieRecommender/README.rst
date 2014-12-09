@@ -43,19 +43,30 @@ Installation & Usage
 From the project root, build ``MovieRecommender`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
   MAVEN_OPTS="-Xmx512m" mvn clean package
-  
+
+Note that the remaining commands assume that the cdap-cli.sh script is available on your PATH.
+If this is not the case, please add it::
+
+  export PATH=$PATH:<cdap-home>/bin
+
+If you haven't already started a Standalone CDAP installation, start it with the command::
+
+  cdap.sh start
+
 Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
 
-  bin/app-manager.sh --host [host] --action deploy
+  cdap-cli.sh deploy app target/MovieRecommender-<version>.jar
   
-Start the Application Flows and Services::
+Start the Application Services::
 
-  bin/app-manager.sh --host [host] --action start
+  cdap-cli.sh start service MovieRecommender.MovieDictionaryService
+  cdap-cli.sh start service MovieRecommender.MovieRecommenderService
   
-Make sure that the Flows and Services are running (note that the
+Make sure that the Services are running (note that the
 ``RecommendationBuilder`` Spark program will be started later)::
 
-  bin/app-manager.sh --host [host] --action status
+  cdap-cli.sh get service status MovieRecommender.MovieDictionaryService
+  cdap-cli.sh get service status MovieRecommender.MovieRecommenderService
   
 Ingest ``ratings`` and ``movies`` data::
 
@@ -63,31 +74,34 @@ Ingest ``ratings`` and ``movies`` data::
 
 Run the ``RecommendationBuilder`` Spark Program::
 
-  bin/app-manager.sh --host [host] --action run
+  cdap-cli.sh start spark MovieRecommender.RecommendationBuilder
 
 The Spark program may take a couple of minutes to complete. You can check if it is complete by its
-status (once done, it becomes STOPPED)::
+status (once done, it becomes ``STOPPED``)::
 
-  bin/app-manager.sh --host [host] --action status
+  cdap-cli.sh get spark status MovieRecommender.RecommendationBuilder
   
-Once the Spark program is complete, you can query for recommendations via an HTTP request using the ``curl`` command::
+Once the Spark program is complete, you can query the ``MovieRecommenderService`` for recommendations
+for recommendations for ``userId`` "1"::
 
-  curl -v \
-  -X GET 'http://localhost:10000/v2/apps/MovieRecommender/services/MovieRecommenderService/methods/recommend/1'
-
-On Windows, a copy of ``curl`` is located in the ``libexec`` directory of the example::
-
-  libexec\curl -v \
-  -X GET 'http://localhost:10000/v2/apps/MovieRecommender/services/MovieRecommenderService/methods/recommend/1'
+  cdap-cli.sh call service MovieRecommender.MovieRecommenderService GET 'recommend/1'
   
 This will return a JSON response of rated and recommended movies::
 
-  {"rated":["ratedMovie1","ratedMovie2"],"recommended":["recommendedMovie1","recommendedMovie2"]}
+  +=========================================================================================================================+
+  | status | headers                         | body size | body                                                             |
+  +=========================================================================================================================+
+  | 200    | Content-Length : 1943           | 1943      | {"rated":["Toy Story (1995)","Pocahontas (1995)","Apollo 13 (199 |
+  |        | Content-Type : application/json |           | 5)","Star Wars: Episode IV - A New Hope (1977)","Schindler\u0027 |
+  |        | Connection : keep-alive         |           | s List (1993)","Secret Garden, The (1993)","Aladdin (1992)","Sno |
+  |        |                                 |           | w White and the Seven Dwarfs (1937)","Beauty and the Beast (1991 |
+  |        |                                 |           | ...                                                              |
+  +=========================================================================================================================+
 
 To stop the application, execute::
 
-  bin/app-manager.sh --host [host] --action stop
-
+  cdap-cli.sh stop service MovieRecommender.MovieDictionaryService
+  cdap-cli.sh stop service MovieRecommender.MovieRecommenderService
 
 License
 =======
