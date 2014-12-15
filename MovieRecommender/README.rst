@@ -43,32 +43,41 @@ Installation & Usage
 From the project root, build ``MovieRecommender`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
   MAVEN_OPTS="-Xmx512m" mvn clean package
-  
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
 
-  bin/app-manager.sh --host [host] --action deploy
-  
-Start the Application Services and Procedures::
+Deploy the Application to a CDAP instance:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action start
+  $ ./bin/cdap-cli.sh deploy app <path-to-MovieRecommender-jar-file>
   
-Make sure that the Services and Procedures are running (note that the
-``RecommendationBuilder`` Spark program will be started later)::
+Start the Application Flows and Services:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action status
+  $ ./bin/cdap-cli.sh start flow MovieRecommender.RatingsFlow
+  $ ./bin/cdap-cli.sh start service MovieRecommender.MovieRecommenderService
+  $ ./bin/cdap-cli.sh start service MovieRecommender.MovieDictionaryService
+  
+Make sure that the Flows and Services are running (note that the
+``RecommendationBuilder`` Spark program will be started later):
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
+
+  $ ./bin/cdap-cli.sh get flow status MovieRecommender.RatingsFlow
+  $ ./bin/cdap-cli.sh get service status MovieRecommender.MovieRecommenderService
+  $ ./bin/cdap-cli.sh get service status MovieRecommender.MovieDictionaryService
   
 Ingest ``ratings`` and ``movies`` data::
 
   bin/ingest-data.sh --host [host]
 
-Run the ``RecommendationBuilder`` Spark Program::
+Run the ``RecommendationBuilder`` Spark Program:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action run
+  $ ./bin/cdap-cli.sh start spark MovieRecommender.RecommendationBuilder
 
 The Spark program may take a couple of minutes to complete. You can check if it is complete by its
-status (once done, it becomes STOPPED)::
+status (once done, it becomes STOPPED):
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action status
+  $ ./bin/cdap-cli.sh get spark status MovieRecommender.RecommendationBuilder
   
 Once the Spark program is complete, you can query for recommendations via an HTTP request using the ``curl`` command::
 
@@ -86,9 +95,12 @@ This will return a JSON response of rated and recommended movies::
 
 Alternately, you can use the CDAP Console Procedure page to execute the queries above.
 
-To stop the application, execute::
+To stop the application, execute:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action stop
+  $ ./bin/cdap-cli.sh stop flow MovieRecommender.RatingsFlow
+  $ ./bin/cdap-cli.sh stop service MovieRecommender.MovieRecommenderService
+  $ ./bin/cdap-cli.sh stop service MovieRecommender.MovieDictionaryService
 
 
 License

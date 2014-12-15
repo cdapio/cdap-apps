@@ -61,17 +61,22 @@ Build the Application jar::
 
   mvn clean package
 
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
+Deploy the Application to a CDAP instance:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action deploy
+  $ ./bin/cdap-cli.sh deploy app <path-to-TwitterSentiment-jar-file>
 
-Start Application Flows and Procedures::
+Start Application Flows and Services:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action start
+  $ ./bin/cdap-cli.sh start flow TwitterSentiment.TwitterSentimentAnalysis
+  $ ./bin/cdap-cli.sh start service TwitterSentiment.SentimentQuery
 
-Make sure they are running::
+Make sure they are running:
+ From the Standalone CDAP SDK directory, use the Command-line Interface::
 
-  bin/app-manager.sh --host [host] --action status
+  $ ./bin/cdap-cli.sh get flow status TwitterSentiment.TwitterSentimentAnalysis
+  $ ./bin/cdap-cli.sh get service status TwitterSentiment.SentimentQuery
 
 Ingest sample statements::
 
