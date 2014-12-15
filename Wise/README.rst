@@ -49,7 +49,7 @@ To deploy and start the application, make sure CDAP is running and then execute:
   $ ./bin/cdap-cli.sh get workflow status Wise.WiseWorkflow
   $ ./bin/cdap-cli.sh get service status Wise.WiseService
 
-On Windows, run::
+On Windows, run:
  From the Standalone CDAP SDK directory, use the Command-line Interface::
 
   > bin\cdap-cli.sh deploy app <path-to-Wise-jar-file>
