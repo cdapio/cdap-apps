@@ -18,7 +18,6 @@ package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.spark.AbstractSpark;
 import co.cask.cdap.api.spark.Spark;
-import co.cask.cdap.api.spark.SparkSpecification;
 import org.apache.spark.mllib.recommendation.MatrixFactorizationModel;
 import org.apache.spark.mllib.recommendation.Rating;
 import org.apache.spark.rdd.RDD;
@@ -29,11 +28,9 @@ import org.apache.spark.rdd.RDD;
  */
 public class RecommendationBuilderSpecification extends AbstractSpark {
   @Override
-  public SparkSpecification configure() {
-    return SparkSpecification.Builder.with()
-      .setName("RecommendationBuilder")
-      .setDescription("Spark program that computes movie recommendations.")
-      .setMainClassName(RecommendationBuilder.class.getName())
-      .build();
+  public void configure() {
+    setName("RecommendationBuilder");
+    setDescription("Spark program that computes movie recommendations.");
+    setMainClass(RecommendationBuilder.class);
   }
 }
