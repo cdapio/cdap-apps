@@ -92,7 +92,9 @@ This will return a JSON response of rated and recommended movies::
 
   {"rated":["ratedMovie1","ratedMovie1"],"recommended":["recommendedMovie1","recommendedMovie2"]}
 
-Alternately, you can use the CDAP Console Service page to execute the queries above.
+Alternately, you can use the Command Line Interface to execute this query::
+
+  $ ./bin/cdap-cli.sh call service MovieRecommender.MovieRecommenderService GET recommend/{userId}
 
 To stop the application, execute:
  From the Standalone CDAP SDK directory, use the Command Line Interface::

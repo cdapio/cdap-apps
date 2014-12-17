@@ -82,7 +82,7 @@ Deploy the Application to a CDAP instance:
 
   $ ./bin/cdap-cli.sh deploy app <path-to-Netlens-jar-file>
 
-Start the Application Flows and Services:
+Start the Application Flow and Services:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
   $ ./bin/cdap-cli.sh start flow Netlens.AnalyticsFlow
@@ -90,7 +90,7 @@ Start the Application Flows and Services:
   $ ./bin/cdap-cli.sh start service Netlens.AnomaliesService
   $ ./bin/cdap-cli.sh start service Netlens.CountersService
 
-Check they are running:
+Check that they are running:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
   $ ./bin/cdap-cli.sh get flow status Netlens.AnalyticsFlow

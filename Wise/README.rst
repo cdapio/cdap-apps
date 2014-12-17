@@ -38,7 +38,7 @@ Build the application by executing::
 
   $ mvn clean package
 
-To deploy and start the application, check CDAP is running and then execute:
+To deploy and start the application, check that CDAP is running and then execute:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
   $ ./bin/cdap-cli.sh deploy app <path-to-Wise-jar-file>
@@ -52,13 +52,13 @@ To deploy and start the application, check CDAP is running and then execute:
 On Windows, run:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  > bin\cdap-cli.sh deploy app <path-to-Wise-jar-file>
-  > bin\cdap-cli.sh start flow Wise.WiseFlow
-  > bin\cdap-cli.sh start workflow Wise.WiseWorkflow
-  > bin\cdap-cli.sh start service Wise.WiseService
-  > bin\cdap-cli.sh get flow status Wise.WiseFlow
-  > bin\cdap-cli.sh get workflow status Wise.WiseWorkflow
-  > bin\cdap-cli.sh get service status Wise.WiseService
+  > bin\cdap-cli.bat deploy app <path-to-Wise-jar-file>
+  > bin\cdap-cli.bat start flow Wise.WiseFlow
+  > bin\cdap-cli.bat start workflow Wise.WiseWorkflow
+  > bin\cdap-cli.bat start service Wise.WiseService
+  > bin\cdap-cli.bat get flow status Wise.WiseFlow
+  > bin\cdap-cli.bat get workflow status Wise.WiseWorkflow
+  > bin\cdap-cli.bat get service status Wise.WiseService
 
 Overview of Wise
 ================

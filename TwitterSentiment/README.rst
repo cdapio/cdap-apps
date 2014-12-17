@@ -66,13 +66,13 @@ Deploy the Application to a CDAP instance:
 
   $ ./bin/cdap-cli.sh deploy app <path-to-TwitterSentiment-jar-file>
 
-Start Application Flows and Services:
+Start Application Flow and Service:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
   $ ./bin/cdap-cli.sh start flow TwitterSentiment.TwitterSentimentAnalysis
   $ ./bin/cdap-cli.sh start service TwitterSentiment.SentimentQuery
 
-Check they are running:
+Check that they are running:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
   $ ./bin/cdap-cli.sh get flow status TwitterSentiment.TwitterSentimentAnalysis
