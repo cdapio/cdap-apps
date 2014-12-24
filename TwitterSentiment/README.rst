@@ -16,11 +16,11 @@ Implementation Details
 The TwitterSentiment application is primarily composed of:
 
 - A stream for ingesting data into the system
-- ``SentimentAnalysisFlow`` - collects and emits tweets based upon a sample stream from
+- ``TwitterSentimentAnalysis`` - collects and emits tweets based upon a sample stream from
   Twitter, analyzes the sentiment of the text, and stores the results. 
 - Datasets - ``Table`` and ``TimeseriesTable`` provide persistence for analytics algorithms and
   store results
-- ``SentimentQueryService`` - to query the datasets and serve this information to the client
+- ``SentimentQuery`` - to query the datasets and serve this information to the client
 - A simple single-page web UI
 
 The main part of the application is the ``SentimentAnalysisFlow`` that ingests and collects
@@ -61,17 +61,22 @@ Build the Application jar::
 
   mvn clean package
 
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
+Deploy the Application to a CDAP instance:
+ From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  bin/app-manager.sh --host [host] --action deploy
+  $ ./bin/cdap-cli.sh deploy app <path-to-TwitterSentiment-jar-file>
 
-Start Application Flows and Services::
+Start Application Flow and Service:
+ From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  bin/app-manager.sh --host [host] --action start
+  $ ./bin/cdap-cli.sh start flow TwitterSentiment.TwitterSentimentAnalysis
+  $ ./bin/cdap-cli.sh start service TwitterSentiment.SentimentQuery
 
-Make sure they are running::
+Check that they are running:
+ From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  bin/app-manager.sh --host [host] --action status
+  $ ./bin/cdap-cli.sh get flow status TwitterSentiment.TwitterSentimentAnalysis
+  $ ./bin/cdap-cli.sh get service status TwitterSentiment.SentimentQuery
 
 Ingest sample statements::
 

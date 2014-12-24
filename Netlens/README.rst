@@ -77,17 +77,26 @@ Build the Application jar::
 
   mvn clean package
 
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
+Deploy the Application to a CDAP instance:
+ From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  bin/app-manager.sh --host [host] --action deploy
+  $ ./bin/cdap-cli.sh deploy app <path-to-Netlens-jar-file>
 
-Start the Application Flows and Services::
+Start the Application Flow and Services:
+ From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  bin/app-manager.sh --host [host] --action start
+  $ ./bin/cdap-cli.sh start flow Netlens.AnalyticsFlow
+  $ ./bin/cdap-cli.sh start service Netlens.AnomaliesCountService
+  $ ./bin/cdap-cli.sh start service Netlens.AnomaliesService
+  $ ./bin/cdap-cli.sh start service Netlens.CountersService
 
-Make sure they are running::
+Check that they are running:
+ From the Standalone CDAP SDK directory, use the Command Line Interface::
 
-  bin/app-manager.sh --host [host] --action status
+  $ ./bin/cdap-cli.sh get flow status Netlens.AnalyticsFlow
+  $ ./bin/cdap-cli.sh get service status Netlens.AnomaliesCountService
+  $ ./bin/cdap-cli.sh get service status Netlens.AnomaliesService
+  $ ./bin/cdap-cli.sh get service status Netlens.CountersService
 
 Ingest sample traffic data::
 
