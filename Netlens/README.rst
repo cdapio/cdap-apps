@@ -82,6 +82,10 @@ Deploy the Application to a CDAP instance:
 
   $ ./bin/cdap-cli.sh deploy app <path-to-Netlens-jar-file>
 
+ On Windows, run::
+
+  > bin\cdap-cli.bat deploy app <path-to-Netlens-jar-file>
+
 Start the Application Flow and Services:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
@@ -90,6 +94,13 @@ Start the Application Flow and Services:
   $ ./bin/cdap-cli.sh start service Netlens.AnomaliesService
   $ ./bin/cdap-cli.sh start service Netlens.CountersService
 
+ On Windows, run::
+
+  > bin\cdap-cli.bat start flow Netlens.AnalyticsFlow
+  > bin\cdap-cli.bat start service Netlens.AnomaliesCountService
+  > bin\cdap-cli.bat start service Netlens.AnomaliesService
+  > bin\cdap-cli.bat start service Netlens.CountersService
+
 Check that they are running:
  From the Standalone CDAP SDK directory, use the Command Line Interface::
 
@@ -97,6 +108,13 @@ Check that they are running:
   $ ./bin/cdap-cli.sh get service status Netlens.AnomaliesCountService
   $ ./bin/cdap-cli.sh get service status Netlens.AnomaliesService
   $ ./bin/cdap-cli.sh get service status Netlens.CountersService
+
+ On Windows, run::
+
+  > bin\cdap-cli.bat get flow status Netlens.AnalyticsFlow
+  > bin\cdap-cli.bat get service status Netlens.AnomaliesCountService
+  > bin\cdap-cli.bat get service status Netlens.AnomaliesService
+  > bin\cdap-cli.bat get service status Netlens.CountersService
 
 Ingest sample traffic data::
 
