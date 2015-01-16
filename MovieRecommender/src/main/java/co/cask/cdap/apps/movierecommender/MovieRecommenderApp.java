@@ -17,9 +17,10 @@
 package co.cask.cdap.apps.movierecommender;
 
 import co.cask.cdap.api.app.AbstractApplication;
+import co.cask.cdap.api.data.schema.UnsupportedTypeException;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.dataset.lib.ObjectStores;
-import co.cask.cdap.internal.io.UnsupportedTypeException;
+
 
 /**
  * Application that provides movie recommendations to users.
