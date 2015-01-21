@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -63,7 +63,7 @@ public class WiseAppTest extends TestBase {
     }
 
     // Test the MapReduce job
-    MapReduceManager mrManager = appManager.startMapReduce("WiseWorkflow_BounceCountsMapReduce");
+    MapReduceManager mrManager = appManager.startMapReduce("BounceCountsMapReduce");
     mrManager.waitForFinish(3, TimeUnit.MINUTES);
 
     // Check the data outputted from the MapReduce job

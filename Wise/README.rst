@@ -465,21 +465,22 @@ Each generic parameter of the ``Mapper`` and the ``Reducer`` contains:
 
 Scheduling the MapReduce Job
 ----------------------------
-To schedule the ``BounceCountsMapReduce`` job to run every ten minute, we define it in the
-``WiseWorkflow``::
+To schedule the ``BounceCountsMapReduce`` to run every ten minutes, we need to add it in the
+``WiseWorkflow`` using its name ``BounceCountsMapReduce``::
 
-  public class WiseWorkflow implements Workflow {
+  public class WiseWorkflow extends AbstractWorkflow {
     @Override
-    public WorkflowSpecification configure() {
-      return WorkflowSpecification.Builder.with()
-        .setName("WiseWorkflow")
-        .setDescription("Wise Workflow")
-        .onlyWith(new BounceCountsMapReduce())
-        .addSchedule(new Schedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *",
-                                  Schedule.Action.START))
-        .build();
+    public void configure() {
+        setName("WiseWorkflow");
+        setDescription("Wise Workflow");
+        addMapReduce("BounceCountsMapReduce");
     }
   }
+
+The ``WiseWorkflow`` then can be scheduled in the ``WiseApp``::
+
+  scheduleWorkflow(new Schedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"), "WiseWorkflow");
+
 
 Accessing Wise Data through WiseService
 =======================================
@@ -609,8 +610,10 @@ To create the Wise application with all these components mentioned above, define
       createDataset("pageViewStore", PageViewStore.class);
       createDataset("bounceCountStore", BounceCountStore.class);
       addFlow(new WiseFlow());
+      addMapReduce(new BounceCountsMapReduce());
       addWorkflow(new WiseWorkflow());
       addService(new WiseService());
+      scheduleWorkflow(new Schedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"), "WiseWorkflow");
     }
   }
 
@@ -666,7 +669,7 @@ A complete example of the test is included in the source code of Wise.
 License
 =======
 
-Copyright © 2014 Cask Data, Inc.
+Copyright © 2014-2015 Cask Data, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
 the License. You may obtain a copy of the License at
