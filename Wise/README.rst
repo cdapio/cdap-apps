@@ -466,7 +466,7 @@ Each generic parameter of the ``Mapper`` and the ``Reducer`` contains:
 Scheduling the MapReduce Job
 ----------------------------
 To schedule the ``BounceCountsMapReduce`` to run every ten minutes, we need to add it in the
-``WiseWorkflow`` using its name ``BounceCountsMapReduce``::
+``WiseWorkflow`` using its name::
 
   public class WiseWorkflow extends AbstractWorkflow {
     @Override
