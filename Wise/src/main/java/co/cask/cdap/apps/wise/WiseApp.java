@@ -41,7 +41,7 @@ public class WiseApp extends AbstractApplication {
     addWorkflow(new WiseWorkflow());
     // Add the WiseService service
     addService(new WiseService());
-    // Schedule the Workflow that runs MapReduce program which computes the bounce counts of visited pages
+    // Schedule the Workflow to run the MapReduce program every ten minutes
     scheduleWorkflow(new Schedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"), "WiseWorkflow");
   }
 }
