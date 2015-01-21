@@ -73,10 +73,10 @@ public class TwitterSentimentAppTest extends TestBase {
         flowManager.stop();
       }
 
-
       // Start service and verify
       ServiceManager serviceManager = appManager.startService(SentimentQueryService.SERVICE_NAME);
-      serviceStatusCheck(serviceManager, true);
+      serviceManager.waitForStatus(true);
+
       URL url = new URL(serviceManager.getServiceURL(), "aggregates");
 
       try {
@@ -117,23 +117,13 @@ public class TwitterSentimentAppTest extends TestBase {
         Assert.assertEquals(1, result.get("neutral").intValue());
       } finally {
         serviceManager.stop();
+        serviceManager.waitForStatus(false);
       }
     } finally {
       TimeUnit.SECONDS.sleep(1);
       RuntimeStats.clearStats("");
       clear();
     }
-  }
-
-  private void serviceStatusCheck(ServiceManager serviceManger, boolean running) throws InterruptedException {
-    int trial = 0;
-    while (trial++ < 5) {
-      if (serviceManger.isRunning() == running) {
-        return;
-      }
-      TimeUnit.SECONDS.sleep(1);
-    }
-    throw new IllegalStateException("Service state not executed. Expected " + running);
   }
 
   private static String doRequest(URL url) throws IOException {

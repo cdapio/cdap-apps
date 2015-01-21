@@ -120,7 +120,7 @@ public class WiseAppTest extends TestBase {
   private void checkPageViewService(ApplicationManager appManager) throws Exception {
 
     ServiceManager serviceManager = appManager.startService("WiseService");
-    serviceStatusCheck(serviceManager, true);
+    serviceManager.waitForStatus(true);
 
     URL url = new URL(serviceManager.getServiceURL(), "ip/1.202.218.8/count");
     HttpRequest request = HttpRequest.get(url).build();
@@ -135,17 +135,6 @@ public class WiseAppTest extends TestBase {
     Assert.assertEquals("1", Bytes.toString(response.getResponseBody()));
 
     serviceManager.stop();
-    serviceStatusCheck(serviceManager, false);
-  }
-
-  private void serviceStatusCheck(ServiceManager serviceManger, boolean running) throws InterruptedException {
-    int trial = 0;
-    while (trial++ < 5) {
-      if (serviceManger.isRunning() == running) {
-        return;
-      }
-      TimeUnit.SECONDS.sleep(1);
-    }
-    throw new IllegalStateException("Service state not executed. Expected " + running);
+    serviceManager.waitForStatus(false);
   }
 }
