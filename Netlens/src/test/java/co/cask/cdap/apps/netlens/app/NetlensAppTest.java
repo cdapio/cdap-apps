@@ -62,9 +62,11 @@ public class NetlensAppTest extends TestBase {
       ServiceManager anomaliesCountServiceManager = appManager.startService(NetlensApp.ANOMALIES_COUNT_SERVICE_NAME);
       ServiceManager anomaliesServiceManager = appManager.startService(NetlensApp.ANOMALIES_SERVICE_NAME);
       ServiceManager countersServiceManager = appManager.startService(NetlensApp.COUNTERS_SERVICE_NAME);
-      serviceStatusCheck(anomaliesCountServiceManager, true);
-      serviceStatusCheck(anomaliesServiceManager, true);
-      serviceStatusCheck(countersServiceManager, true);
+
+      anomaliesCountServiceManager.waitForStatus(true);
+      anomaliesServiceManager.waitForStatus(true);
+      countersServiceManager.waitForStatus(true);
+
       try {
         testAnomaliesCountService(anomaliesCountServiceManager);
         testAnomaliesService(anomaliesServiceManager);
@@ -73,6 +75,10 @@ public class NetlensAppTest extends TestBase {
         anomaliesCountServiceManager.stop();
         anomaliesServiceManager.stop();
         countersServiceManager.stop();
+
+        anomaliesCountServiceManager.waitForStatus(false);
+        anomaliesServiceManager.waitForStatus(false);
+        countersServiceManager.waitForStatus(false);
       }
     } finally {
       TimeUnit.SECONDS.sleep(1);
@@ -125,17 +131,6 @@ public class NetlensAppTest extends TestBase {
       connection.disconnect();
     }
     return response;
-  }
-
-  private void serviceStatusCheck(ServiceManager serviceManger, boolean running) throws InterruptedException {
-    int trial = 0;
-    while (trial++ < 5) {
-      if (serviceManger.isRunning() == running) {
-        return;
-      }
-      TimeUnit.SECONDS.sleep(1);
-    }
-    throw new IllegalStateException("Service state not executed. Expected " + running);
   }
 
   private void sendData(StreamWriter streamWriter) throws IOException {

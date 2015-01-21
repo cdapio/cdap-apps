@@ -48,8 +48,6 @@ public class MovieRecommenderAppTest extends TestBase {
 
   private static final Gson GSON = new Gson();
   private static final Logger LOG = LoggerFactory.getLogger(MovieRecommenderAppTest.class);
-  private static final int SERVICE_STATUS_CHECK_LIMIT = 5;
-
 
   @Test
   public void testRecommendation() throws Exception {
@@ -82,8 +80,7 @@ public class MovieRecommenderAppTest extends TestBase {
    */
   private void verifyRecommenderServiceHandler(ApplicationManager appManager) throws InterruptedException, IOException {
     ServiceManager serviceManager = appManager.startService(MovieRecommenderApp.RECOMMENDATION_SERVICE);
-    // Wait service startup
-    serviceStatusCheck(serviceManager);
+    serviceManager.waitForStatus(true);
 
     // Verify that recommendation are generated
     String response = requestService(new URL(serviceManager.getServiceURL(), MovieRecommenderServiceHandler.RECOMMEND +
@@ -113,7 +110,7 @@ public class MovieRecommenderAppTest extends TestBase {
     String moviesData = "0::Movie0\n1::Movie1\n2::Movie2\n3::Movie3\n";
     ServiceManager serviceManager = applicationManager.startService(MovieRecommenderApp.DICTIONARY_SERVICE);
     try {
-      serviceStatusCheck(serviceManager);
+      serviceManager.waitForStatus(true);
     } catch (InterruptedException e) {
       LOG.error("Failed to start {} service", MovieRecommenderApp.DICTIONARY_SERVICE, e);
       throw Throwables.propagate(e);
@@ -142,19 +139,5 @@ public class MovieRecommenderAppTest extends TestBase {
     streamWriter.send("1::1::4");
     streamWriter.send("1::2::4");
     LOG.debug("Sent ratings data");
-  }
-
-  /**
-   * Check service to go in running state
-   */
-  private void serviceStatusCheck(ServiceManager serviceManger) throws InterruptedException {
-    int trial = 0;
-    while (trial++ < SERVICE_STATUS_CHECK_LIMIT) {
-      if (serviceManger.isRunning()) {
-        return;
-      }
-      TimeUnit.SECONDS.sleep(1);
-    }
-    throw new IllegalStateException("Service didn't start in " + SERVICE_STATUS_CHECK_LIMIT + " seconds.");
   }
 }
