@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,6 +17,7 @@ package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
+import co.cask.cdap.api.schedule.Schedule;
 
 /**
  * The Wise application performs analytics on Apache access logs.
@@ -34,9 +35,13 @@ public class WiseApp extends AbstractApplication {
     createDataset("bounceCountStore", BounceCountStore.class);
     // Add the WiseFlow flow
     addFlow(new WiseFlow());
+    // Add MapReduce that computes the bounce counts of visited pages
+    addMapReduce(new BounceCountsMapReduce());
     // Add the WiseWorkflow workflow
     addWorkflow(new WiseWorkflow());
     // Add the WiseService service
     addService(new WiseService());
+    // Schedule the Workflow to run the MapReduce program every ten minutes
+    scheduleWorkflow(new Schedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"), "WiseWorkflow");
   }
 }
