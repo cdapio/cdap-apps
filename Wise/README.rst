@@ -65,9 +65,9 @@ uses. Let's first have a look at a diagram showing an overview of the Wise appli
   Stream. It then sends the information to the second Flowlet, ``pageViewCount``, whose role is to store
   the information in a custom-defined Dataset, ``pageViewStore``.
 
-- ``WiseWorkflow`` executes a MapReduce job every ten minutes. The input of this job are events from the Stream
+- ``WiseWorkflow`` executes a MapReduce every ten minutes. The input of this program are events from the Stream
   which have not yet been processed by the Workflow. For each web page recorded in the
-  access logs, the MapReduce job counts the number of times people have "bounced" from it.
+  access logs, the MapReduce counts the number of times people have "bounced" from it.
   A "bounce" is counted whenever a user's activity stops for a specified amount of time.
   The last page they visited is counted as a bounce. This information is stored in the
   Dataset ``bounceCountStore``.
@@ -370,26 +370,26 @@ Here is how ``WiseFlow`` looks in the CDAP Console:
 
 Batch Processing of Logs with WiseWorkflow
 ==========================================
-Wise executes every ten minutes a MapReduce job that computes the bounce counts of the web pages
+Wise executes every ten minutes a MapReduce that computes the bounce counts of the web pages
 seen in the web server access logs.
 
-The ``BounceCountsMapReduce`` class defines the MapReduce job to run. It extends
+The ``BounceCountsMapReduce`` class defines the MapReduce to run. It extends
 ``AbstractMapReduce`` and overrides the two methods ``configure()`` and ``beforeSubmit()``.
 The ``configure()`` method is defined as::
 
   @Override
   public void configure() {
     setName("BounceCountsMapReduce");
-    setDescription("Bounce Counts MapReduce job");
+    setDescription("Bounce Counts MapReduce");
     setOutputDataset("bounceCountStore");
   }
 
-It sets the ID of the MapReduce job as``BounceCountsMapReduce`` and specifies which Datasets will be used in the job.
+It sets the ID of the MapReduce as``BounceCountsMapReduce`` and specifies which Datasets will be used in the job.
 We will talk about the ``setOutputDataset()`` method below.
 
-Plugging the Stream to the Input of the MapReduce Job
------------------------------------------------------
-Traditionally in a MapReduce job, a Job configuration is set before each run. This is done in the ``beforeSubmit()``
+Plugging the Stream to the Input of the MapReduce
+-------------------------------------------------
+Traditionally in a MapReduce, a Job configuration is set before each run. This is done in the ``beforeSubmit()``
 method of the ``BounceCountsMapReduce`` class::
 
   @Override
@@ -401,7 +401,7 @@ method of the ``BounceCountsMapReduce`` class::
     StreamBatchReadable.useStreamInput(context, "logEventStream", startTime, endTime);
   }
 
-As mentioned earlier, the input of the MapReduce job is the ``logEventStream``. This connection is made above using
+As mentioned earlier, the input of the MapReduce is the ``logEventStream``. This connection is made above using
 the ``StreamBatchReadable.useStreamInput()`` method.
 
 This MapReduce runs as part of a workflow that is scheduled every 10 minutes. Every time it runs, it reads 10 minutes
@@ -409,8 +409,8 @@ worth of events from the stream, ending at the logical start time of the job (th
 containing workflow).
 
 
-Writing to the *bounceCountStore* Dataset from the MapReduce Job
-----------------------------------------------------------------
+Writing to the *bounceCountStore* Dataset from the MapReduce
+------------------------------------------------------------
 In the ``BounceCountsMapReduce.configure()`` method seen earlier, the ``setOutputDataset`` method sets the
 ``bounceCountsStore`` Dataset as the output of the job.
 It means that the key/value pairs output by the reducer of the job will be directly written to that Dataset.
@@ -428,18 +428,18 @@ To allow that, the ``bounceCountsStore`` Dataset has to implement the ``BatchWri
   }
 
 This ``BatchWritable`` interface, defining a ``write()`` method, is intended to allow Datasets to be the output of
-MapReduce jobs. The two generic types that it takes as parameters must match the types of the key
+MapReduce programs. The two generic types that it takes as parameters must match the types of the key
 and value that the Reduce part of the job outputs. In this case, the ``bounceCountStore`` Dataset can be
-used as output of a MapReduce job where the output key is of type ``Void``, and the output value is of type
+used as output of a MapReduce where the output key is of type ``Void``, and the output value is of type
 ``PageBounce``.
 
-MapReduce Job Structure
------------------------
+MapReduce Program Structure
+---------------------------
 The Mapper of the job receives log events as input, parses them into ``LogInfo`` objects and sends them to the Reducer.
 The Reducer receives the ``LogInfo`` objects grouped by IP addresses, with two logs with the same IP address sorted
 by timestamp in ascending order.
 
-Because the input of our MapReduce job is a Stream, it forces the key and value types of our Mapper to be
+Because the input of our MapReduce is a Stream, it forces the key and value types of our Mapper to be
 ``LongWritable`` and ``Text`` respectively.
 
 Our ``Mapper`` and ``Reducer`` are standard Hadoop classes with these signatures::
@@ -463,8 +463,8 @@ Each generic parameter of the ``Mapper`` and the ``Reducer`` contains:
 - Reducer output key ``Void``: this is not used; and
 - Reducer output value ``PageBounce``: bounce counts of a web page.
 
-Scheduling the MapReduce Job
-----------------------------
+Scheduling the MapReduce
+------------------------
 To schedule the ``BounceCountsMapReduce`` to run every ten minutes, we need to add it to the
 ``WiseWorkflow`` using its name::
 
@@ -647,12 +647,12 @@ With this object, we can:
     Assert.assertEquals(200, response.getResponseCode());
     Assert.assertEquals("3", Bytes.toString(response.getResponseBody()));
 
-- Start a MapReduce job::
+- Start a MapReduce::
 
     MapReduceManager mrManager = appManager.startMapReduce("WiseWorkflow_BounceCountsMapReduce");
     mrManager.waitForFinish(3, TimeUnit.MINUTES);
 
-- Test the output of the MapReduce job::
+- Test the output of the MapReduce::
 
     DataSetManager<BounceCountStore> dsManager = appManager.getDataSet("bounceCountStore");
     BounceCountStore bounceCountStore = dsManager.get();
