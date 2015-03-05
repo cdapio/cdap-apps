@@ -65,9 +65,9 @@ uses. Let's first have a look at a diagram showing an overview of the Wise appli
   Stream. It then sends the information to the second Flowlet, ``pageViewCount``, whose role is to store
   the information in a custom-defined Dataset, ``pageViewStore``.
 
-- ``WiseWorkflow`` executes a MapReduce job every ten minutes. The input of this job are events from the Stream
+- ``WiseWorkflow`` executes a MapReduce every ten minutes. The input of this job are events from the Stream
   which have not yet been processed by the Workflow. For each web page recorded in the
-  access logs, the MapReduce job counts the number of times people have "bounced" from it.
+  access logs, the MapReduce counts the number of times people have "bounced" from it.
   A "bounce" is counted whenever a user's activity stops for a specified amount of time.
   The last page they visited is counted as a bounce. This information is stored in the
   Dataset ``bounceCountStore``.
@@ -370,7 +370,7 @@ Here is how ``WiseFlow`` looks in the CDAP Console:
 
 Batch Processing of Logs with WiseWorkflow
 ==========================================
-Wise executes every ten minutes a MapReduce job that computes the bounce counts of the web pages
+Wise executes every ten minutes a MapReduce that computes the bounce counts of the web pages
 seen in the web server access logs.
 
 The ``BounceCountsMapReduce`` class defines the MapReduce job to run. It extends
