@@ -43,7 +43,7 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
   @Override
   public void configure() {
     setName("BounceCountsMapReduce");
-    setDescription("Bounce Counts MapReduce");
+    setDescription("Bounce Counts MapReduce Program");
     setOutputDataset("bounceCountStore");
   }
 

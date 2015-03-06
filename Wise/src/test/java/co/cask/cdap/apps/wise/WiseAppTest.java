@@ -62,11 +62,11 @@ public class WiseAppTest extends TestBase {
       flowManager.stop();
     }
 
-    // Test the MapReduce
+    // Test the MapReduce program
     MapReduceManager mrManager = appManager.startMapReduce("BounceCountsMapReduce");
     mrManager.waitForFinish(3, TimeUnit.MINUTES);
 
-    // Check the data outputted from the MapReduce
+    // Check the data outputted from the MapReduce program
     DataSetManager<BounceCountStore> dsManager = appManager.getDataSet("bounceCountStore");
     BounceCountStore bounceCountStore = dsManager.get();
     Assert.assertEquals(new PageBounce("/product.html", 3, 2), bounceCountStore.get("/product.html"));
