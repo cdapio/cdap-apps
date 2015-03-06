@@ -19,7 +19,7 @@ import co.cask.cdap.api.workflow.AbstractWorkflow;
 
 /**
  * Implements a simple Workflow with one Workflow action to run the BounceCountsMapReduce
- * with a schedule that runs every 10 minutes.
+ * program with a schedule that runs every 10 minutes.
  */
 public class WiseWorkflow extends AbstractWorkflow {
 
