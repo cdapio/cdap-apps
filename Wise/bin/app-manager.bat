@@ -23,7 +23,7 @@ SET APP_JAR_PREFIX=cdap-wise
 
 SET APP_NAME=Wise
 SET FLOW_NAME=WiseFlow
-SET MAP_REDUCE_NAME=WiseWorkflow_BounceCountsMapReduce
+SET MAP_REDUCE_NAME=BounceCountsMapReduce
 SET SERVICE_NAME=WiseService
 
 REM Set the base directory
