@@ -144,11 +144,11 @@ if [ "x$action" == "xdeploy" ]; then
   jar_path=`ls $dir/../target/cdap-wise-*.jar`
   deploy_action $app $jar_path $host
 elif [ "x$action" == "xrun" ]; then
-  program_action $app "WiseWorkflow_BounceCountsMapReduce" "mapreduce" "start" $host
+  program_action $app "BounceCountsMapReduce" "mapreduce" "start" $host
 elif [ "x$action" == "xstatus" ]; then
   program_action $app "WiseFlow" "flow" $action $host
   program_action $app "WiseService" "service" $action $host
-  program_action $app "WiseWorkflow_BounceCountsMapReduce" "mapreduce" $action $host
+  program_action $app "BounceCountsMapReduce" "mapreduce" $action $host
 else
   program_action $app "WiseFlow" "flow" $action $host
   program_action $app "WiseService" "service" $action $host
