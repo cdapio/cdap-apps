@@ -16,18 +16,18 @@
 package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.common.Bytes;
-import co.cask.common.http.HttpRequest;
-import co.cask.common.http.HttpRequests;
-import co.cask.common.http.HttpResponse;
+import co.cask.cdap.api.metrics.RuntimeMetrics;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.DataSetManager;
 import co.cask.cdap.test.FlowManager;
 import co.cask.cdap.test.MapReduceManager;
-import co.cask.cdap.test.RuntimeMetrics;
 import co.cask.cdap.test.RuntimeStats;
 import co.cask.cdap.test.ServiceManager;
 import co.cask.cdap.test.StreamWriter;
 import co.cask.cdap.test.TestBase;
+import co.cask.common.http.HttpRequest;
+import co.cask.common.http.HttpRequests;
+import co.cask.common.http.HttpResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -67,7 +67,7 @@ public class WiseAppTest extends TestBase {
     mrManager.waitForFinish(3, TimeUnit.MINUTES);
 
     // Check the data outputted from the MapReduce program
-    DataSetManager<BounceCountStore> dsManager = appManager.getDataSet("bounceCountStore");
+    DataSetManager<BounceCountStore> dsManager = getDataset("bounceCountStore");
     BounceCountStore bounceCountStore = dsManager.get();
     Assert.assertEquals(new PageBounce("/product.html", 3, 2), bounceCountStore.get("/product.html"));
     Assert.assertEquals(new PageBounce("/career.html", 2, 1), bounceCountStore.get("/career.html"));
@@ -75,7 +75,7 @@ public class WiseAppTest extends TestBase {
     // Perform a SQL query on the bounceCounts dataset to retrieve the same results
     Connection exploreConnection = getQueryClient();
     ResultSet resultSet =
-      exploreConnection.prepareStatement("SELECT * FROM cdap_user_bouncecountstore ORDER BY uri").executeQuery();
+      exploreConnection.prepareStatement("SELECT * FROM dataset_bouncecountstore ORDER BY uri").executeQuery();
     Assert.assertTrue(resultSet.next());
     Assert.assertEquals("/career.html", resultSet.getString(1));
     Assert.assertEquals(2L, resultSet.getLong(2));

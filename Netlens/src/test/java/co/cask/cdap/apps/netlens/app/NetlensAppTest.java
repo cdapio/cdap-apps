@@ -1,11 +1,11 @@
 package co.cask.cdap.apps.netlens.app;
 
+import co.cask.cdap.api.metrics.RuntimeMetrics;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomaliesServiceHandler;
 import co.cask.cdap.apps.netlens.app.counter.DataPoint;
 import co.cask.cdap.apps.netlens.app.counter.TopNTableUtil;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.FlowManager;
-import co.cask.cdap.test.RuntimeMetrics;
 import co.cask.cdap.test.RuntimeStats;
 import co.cask.cdap.test.ServiceManager;
 import co.cask.cdap.test.StreamWriter;
@@ -53,7 +53,8 @@ public class NetlensAppTest extends TestBase {
         sendData(streamWriter);
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.NAME, "traffic-count");
+        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.NAME,
+                                                                     "traffic-count");
         countMetrics.waitForProcessed(1000, 60, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();
@@ -82,7 +83,6 @@ public class NetlensAppTest extends TestBase {
       }
     } finally {
       TimeUnit.SECONDS.sleep(1);
-      RuntimeStats.clearStats("");
       clear();
     }
   }
