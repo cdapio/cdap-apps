@@ -16,9 +16,9 @@
 package co.cask.cdap.apps.sentiment;
 
 import co.cask.cdap.api.common.Bytes;
+import co.cask.cdap.api.metrics.RuntimeMetrics;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.FlowManager;
-import co.cask.cdap.test.RuntimeMetrics;
 import co.cask.cdap.test.RuntimeStats;
 import co.cask.cdap.test.ServiceManager;
 import co.cask.cdap.test.StreamWriter;
@@ -67,7 +67,9 @@ public class TwitterSentimentAppTest extends TestBase {
         streamWriter.send("i am happy today that I got this working.");
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.NAME, SentimentAnalysisFlow.FLOW_NAME, CountSentimentFlowlet.NAME);
+        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(TwitterSentimentApp.NAME,
+                                                                     SentimentAnalysisFlow.FLOW_NAME,
+                                                                     CountSentimentFlowlet.NAME);
         countMetrics.waitForProcessed(4, 15, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();
@@ -121,7 +123,6 @@ public class TwitterSentimentAppTest extends TestBase {
       }
     } finally {
       TimeUnit.SECONDS.sleep(1);
-      RuntimeStats.clearStats("");
       clear();
     }
   }
