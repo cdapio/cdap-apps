@@ -45,6 +45,11 @@
       <url>https://repository.apache.org/content/repositories/snapshots</url>
     </repository>
     <repository>
+      <id>oss.sonatype</id>
+      <name>OSS Sonatype Public</name>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+    </repository>
+    <repository>
       <id>oss.sonatype.snapshots</id>
       <name>OSS Sonatype Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
