@@ -82,7 +82,7 @@ To deploy and start the application, make sure CDAP is running and then execute:
 
 On Windows, substitute ``app-manager.bat`` for ``app-manager.sh``.
 
-You can ingest sample data:
+You can ingest sample data::
 
   $ bin/inject-data.sh
 
