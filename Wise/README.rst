@@ -103,7 +103,6 @@ Dataset. For example, ``WiseService`` defines this endpoint::
 
   GET http://localhost:10000/v2/apps/Wise/services/WiseService/methods/ip/255.255.255.207/count
 
-
 You can use a ``curl`` command to make calls to the service URL. For example, to query total pageview count
 from IP ``255.255.255.207``::
 
@@ -129,7 +128,6 @@ can be accessed through the CDAP Console:
 #. Click on the **Explore** button in the top-right corner of the page. You will land on this page:
 
    .. image:: docs/img/wise_explore_page.png
-
 
 This is the *Explore* page, where you can run ad-hoc SQL queries and see information about the Datasets that expose
 a SQL interface.
