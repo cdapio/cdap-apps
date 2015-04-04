@@ -74,17 +74,18 @@ Build the application by executing::
 
   $ mvn clean package
 
-To deploy and start the application, make sure CDAP is running and then execute::
+To deploy and start the application, make sure CDAP is running and then execute (after adjusting paths, depending
+on where you downloaded the application)::
 
-  $ bin/app-manager.sh --action deploy
-  $ bin/app-manager.sh --action start
-  $ bin/app-manager.sh --action status
+  $ cdap-cli.sh deploy app Wise/target/cdap-wise-<wise-version>.jar
+  $ cdap-cli.sh start flow Wise.WiseFlow
+  $ cdap-cli.sh start service Wise.WiseService
 
-On Windows, substitute ``app-manager.bat`` for ``app-manager.sh``.
+On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
 You can ingest sample data::
 
-  $ bin/inject-data.sh
+  $ Wise/bin/inject-data.sh
 
 On Windows, run ``inject-data.bat`` instead.
 
@@ -101,17 +102,17 @@ Accessing Wise Data through WiseService
 ``WiseService`` is a Wise component that exposes specific HTTP endpoints to retrieve the content of the ``pageViewStore``
 Dataset. For example, ``WiseService`` defines this endpoint::
 
-  GET http://localhost:10000/v2/apps/Wise/services/WiseService/methods/ip/255.255.255.207/count
+  GET http://localhost:10000/v3/namespace/default/apps/Wise/services/WiseService/methods/ip/<ip-address>/count
 
-You can use a ``curl`` command to make calls to the service URL. For example, to query total pageview count
+You can use a ``curl`` command to make calls to the service URL. For example, to query the total pageview count
 from IP ``255.255.255.207``::
 
-  $ curl http://localhost:10000/v2/apps/Wise/services/WiseService/methods/ip/255.255.255.207/count
+  $ curl http://localhost:10000/v3/namespace/default/apps/Wise/services/WiseService/methods/ip/255.255.255.207/count
 
 The ``PageViewCountHandler`` has another endpoint for retrieving the pageview count of a particular page from
 a specific IP address. For example, to query the pageview count of page ``/index.html`` from IP ``255.255.255.154``::
 
-  $ curl -d /index.html http://localhost:10000/v2/apps/Wise/services/WiseService/methods/ip/255.255.255.154/count
+  $ curl -d /index.html http://localhost:10000/v3/namespace/default/apps/Wise/services/WiseService/methods/ip/255.255.255.207/count
 
 
 Exploring Wise Datasets through SQL
