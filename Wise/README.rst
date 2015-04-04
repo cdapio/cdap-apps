@@ -67,17 +67,32 @@ Here is how ``WiseFlow`` looks in the CDAP Console:
 
 Installation & Usage
 ====================
-Building and running Wise is straightforward. We'll assume that you have already downloaded,
-installed, and have started an instance of CDAP.
+Building and running Wise is straightforward. We'll assume that you have already downloaded
+and installed CDAP.
 
-Build the application by executing::
+From the project root, build ``Wise`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
-  $ mvn clean package
+  $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-To deploy and start the application, make sure CDAP is running and then execute (after adjusting paths, depending
-on where you downloaded the application)::
+Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
+If this is not the case, please add it::
 
-  $ cdap-cli.sh deploy app Wise/target/cdap-wise-<wise-version>.jar
+  $ export PATH=$PATH:<cdap-home>/bin
+
+If you haven't already started a standalone CDAP installation, start it with the command::
+
+  $ cdap.sh start
+
+On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
+
+Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
+  
+  $ cdap-cli.sh deploy app target/Wise-<version>.jar
+
+On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+
+To start the application::
+
   $ cdap-cli.sh start flow Wise.WiseFlow
   $ cdap-cli.sh start service Wise.WiseService
 
@@ -85,9 +100,9 @@ On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
 You can ingest sample data::
 
-  $ Wise/bin/inject-data.sh
+  $ bin/inject-data.sh
 
-On Windows, run ``inject-data.bat`` instead.
+On Windows, substitute ``inject-data.bat`` for ``inject-data.sh``.
 
 
 Realtime Log Analytics with WiseFlow

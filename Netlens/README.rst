@@ -73,14 +73,27 @@ Installation & Usage
 ====================
 *Pre-Requisite*: Download and install CDAP_.
 
-Build the Application jar::
+From the project root, build ``Netlens`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
-  $ mvn clean package
+  $ MAVEN_OPTS="-Xmx512m" mvn clean package
+
+Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
+If this is not the case, please add it::
+
+  $ export PATH=$PATH:<cdap-home>/bin
+
+If you haven't already started a standalone CDAP installation, start it with the command::
+
+  $ cdap.sh start
+
+On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
   
-  $ cdap-cli.sh deploy app cdap-apps-release-cdap-<cdap-version>-compatible/Netlens/target/Netlens-<version>.jar
+  $ cdap-cli.sh deploy app target/Netlens-<version>.jar
   
+On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+
 Start the Application Flows and Services::
 
   $ cdap-cli.sh start flow Netlens.AnalyticsFlow 
@@ -99,9 +112,13 @@ Ingest sample traffic data::
 
   $ bin/ingest-packets.sh [--host <hostname>]
 
+On Windows, substitute ``ingest-packets.bat`` for ``ingest-packets.sh``.
+
 Ingest sample traffic data with anomalies::
 
   $ bin/ingest-anomalies.sh [--host <hostname>]
+
+On Windows, substitute ``ingest-anomalies.bat`` for ``ingest-anomalies.sh``.
 
 Run the Web UI (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to 
 a particular CDAP instance; ``localhost:10000`` is used by default)::

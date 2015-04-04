@@ -42,48 +42,54 @@ Installation & Usage
 
 From the project root, build ``MovieRecommender`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
-  MAVEN_OPTS="-Xmx512m" mvn clean package
+  $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-Note that the remaining commands assume that the cdap-cli.sh script is available on your PATH.
+Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
 If this is not the case, please add it::
 
-  export PATH=$PATH:<cdap-home>/bin
+  $ export PATH=$PATH:<cdap-home>/bin
 
 If you haven't already started a standalone CDAP installation, start it with the command::
 
-  cdap.sh start
+  $ cdap.sh start
+
+On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
 
-  cdap-cli.sh deploy app target/MovieRecommender-<version>.jar
+  $ cdap-cli.sh deploy app target/MovieRecommender-<version>.jar
   
+On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+
 Start the Application Services::
 
-  cdap-cli.sh start service MovieRecommender.MovieDictionaryService
-  cdap-cli.sh start service MovieRecommender.MovieRecommenderService
+  $ cdap-cli.sh start service MovieRecommender.MovieDictionaryService
+  $ cdap-cli.sh start service MovieRecommender.MovieRecommenderService
   
 Make sure that the Services are running (note that the
 ``RecommendationBuilder`` Spark program will be started later)::
 
-  cdap-cli.sh get service status MovieRecommender.MovieDictionaryService
-  cdap-cli.sh get service status MovieRecommender.MovieRecommenderService
+  $ cdap-cli.sh get service status MovieRecommender.MovieDictionaryService
+  $ cdap-cli.sh get service status MovieRecommender.MovieRecommenderService
   
 Ingest ``ratings`` and ``movies`` data::
 
-  bin/ingest-data.sh --host [host]
+  $ bin/ingest-data.sh --host [host]
+
+On Windows, substitute ``ingest-data.bat`` for ``ingest-data.sh``.
 
 Run the ``RecommendationBuilder`` Spark Program::
 
-  cdap-cli.sh start spark MovieRecommender.RecommendationBuilder
+  $ cdap-cli.sh start spark MovieRecommender.RecommendationBuilder
 
 The Spark program may take a couple of minutes to complete. You can check if it is complete by its
 status (once done, it becomes STOPPED)::
 
-  cdap-cli.sh get spark status MovieRecommender.RecommendationBuilder
+  $ cdap-cli.sh get spark status MovieRecommender.RecommendationBuilder
   
 Once the Spark program is complete, you can query the ``MovieRecommenderService`` for recommendations::
 
-  cdap-cli.sh call service MovieRecommender.MovieRecommenderService GET 'recommend/1'
+  $ cdap-cli.sh call service MovieRecommender.MovieRecommenderService GET 'recommend/1'
   
 This will return a JSON response of rated and recommended movies::
 
@@ -99,8 +105,8 @@ This will return a JSON response of rated and recommended movies::
 
 To stop the application, execute::
 
-  cdap-cli.sh stop service MovieRecommender.MovieDictionaryService
-  cdap-cli.sh stop service MovieRecommender.MovieRecommenderService
+  $ cdap-cli.sh stop service MovieRecommender.MovieDictionaryService
+  $ cdap-cli.sh stop service MovieRecommender.MovieRecommenderService
 
 License
 =======
