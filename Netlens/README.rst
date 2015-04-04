@@ -11,12 +11,12 @@ detects anomalies in traffic patterns. The primary features are:
 
 * Uses real-time raw network packet data as a data source
 * Provides real-time statistics on overall traffic with a breakdown by source IP
-
   - Identifies source IPs originating the most traffic
+  
 * Detects anomalies in traffic patterns in real-time
-
-  - Uses different combinations of network packet attributes, 
-    e.g. detects an unusual increase in UDP traffic originated from particular source IP
+  - Uses different combinations of network packet attributes, such as detecting
+    an unusual increase in UDP traffic originated from particular source IP
+    
 * Allows drilling down into detected anomalies' details for inspection
 * Provides an overview of traffic stats and anomaly stats for a selected source IP
 
@@ -75,39 +75,45 @@ Installation & Usage
 
 Build the Application jar::
 
-  mvn clean package
+  $ mvn clean package
 
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
-
-  bin/app-manager.sh --host [host] --action deploy
-
+Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
+  
+  $ cdap-cli.sh deploy app cdap-apps-release-cdap-<cdap-version>-compatible/Netlens/target/Netlens-<version>.jar
+  
 Start the Application Flows and Services::
 
-  bin/app-manager.sh --host [host] --action start
+  $ cdap-cli.sh start flow Netlens.AnalyticsFlow 
+  $ cdap-cli.sh start service Netlens.AnomaliesCountService 
+  $ cdap-cli.sh start service Netlens.AnomaliesService 
+  $ cdap-cli.sh start service Netlens.CountersService 
 
 Make sure they are running::
 
-  bin/app-manager.sh --host [host] --action status
+  $ cdap-cli.sh get flow status Netlens.AnalyticsFlow 
+  $ cdap-cli.sh get service status Netlens.AnomaliesCountService 
+  $ cdap-cli.sh get service status Netlens.AnomaliesService 
+  $ cdap-cli.sh get service status Netlens.CountersService 
 
 Ingest sample traffic data::
 
-  bin/ingest-packets.sh --host [host]
+  $ bin/ingest-packets.sh [--host <hostname>]
 
 Ingest sample traffic data with anomalies::
 
-  bin/ingest-anomalies.sh --host [host]
+  $ bin/ingest-anomalies.sh [--host <hostname>]
 
-Run the Web UI (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to CDAP,
-localhost:10000 is used by default)::
+Run the Web UI (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to 
+a particular CDAP instance; ``localhost:10000`` is used by default)::
 
-  mvn -Pweb jetty:run
+  $ mvn -Pweb jetty:run
   
-The Web interface will be available at http://localhost:8080/Netlens
+The Web interface will then be available at ``http://localhost:8080/Netlens``
 
 License
 =======
 
-Copyright © 2014 Cask Data, Inc.
+Copyright © 2014-2015 Cask Data, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
 in compliance with the License. You may obtain a copy of the License at
