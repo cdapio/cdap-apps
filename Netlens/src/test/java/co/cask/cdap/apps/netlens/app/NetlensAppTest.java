@@ -53,8 +53,8 @@ public class NetlensAppTest extends TestBase {
         sendData(streamWriter);
 
         // Wait for the last Flowlet processed all tokens
-        RuntimeMetrics countMetrics = RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.NAME,
-                                                                     "traffic-count");
+        RuntimeMetrics countMetrics =
+          RuntimeStats.getFlowletMetrics(NetlensApp.NAME, AnalyticsFlow.NAME, "traffic-count");
         countMetrics.waitForProcessed(1000, 60, TimeUnit.SECONDS);
       } finally {
         flowManager.stop();

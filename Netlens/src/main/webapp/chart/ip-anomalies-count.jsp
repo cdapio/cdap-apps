@@ -39,7 +39,7 @@ the License.
         var fact = JSON.parse(decodeURIComponent('<%= request.getParameter("fact") %>'));
         var src = fact.dimensions.src;
         $.ajax({
-            url: "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/count/"
+            url: "proxy/v3/namespaces/default/apps/Netlens/services/AnomaliesCountService/methods/count/"
                     + startTs + "/" + endTs + "?groupFor=" + src,
             type: 'GET',
             contentType: "application/json",
