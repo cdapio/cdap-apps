@@ -3,7 +3,7 @@
  */
 var APP_NAME = "TwitterSentiment";
 var SERVICE_NAME = "SentimentQuery";
-var SERVICE_URL = 'proxy/v2/apps/' + APP_NAME + '/services/' + SERVICE_NAME + '/methods';
+var SERVICE_URL = 'proxy/v3/namespaces/default/apps/' + APP_NAME + '/services/' + SERVICE_NAME + '/methods';
 var graphUpdateInterval = 1000;
 // the chart will interpolate the results over the last few updates, as defined by:
 var interpolateOver = 20;
