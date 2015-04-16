@@ -57,34 +57,51 @@ Installation & Usage
 ====================
 *Pre-Requisite*: Download and install CDAP_.
 
-Build the Application jar::
+From the project root, build ``TwitterSentiment`` with `Apache Maven <http://maven.apache.org/>`_ ::
 
-  mvn clean package
+  $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
+Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
+If this is not the case, please add it::
 
-  bin/app-manager.sh --host [host] --action deploy
+  $ export PATH=$PATH:<cdap-home>/bin
+
+If you haven't already started a standalone CDAP installation, start it with the command::
+
+  $ cdap.sh start
+
+On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
+
+Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
+
+  $ cdap-cli.sh deploy app target/TwitterSentiment-<version>.jar
+
+On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
 Start Application Flows and Services::
 
-  bin/app-manager.sh --host [host] --action start
+  $ cdap-cli.sh start service MovieRecommender.MovieDictionaryService
+  $ cdap-cli.sh start service MovieRecommender.MovieRecommenderService
 
 Make sure they are running::
 
-  bin/app-manager.sh --host [host] --action status
+  $ cdap-cli.sh get service status MovieRecommender.MovieDictionaryService
+  $ cdap-cli.sh get service status MovieRecommender.MovieRecommenderService
 
 Ingest sample statements::
 
-  bin/ingest-statements.sh --host [host]
+  $ bin/ingest-statements.sh [--host <hostname>]
 
-Run Web UI::
+On Windows, substitute ``ingest-statements.bat`` for ``ingest-statements.sh``.
 
-  mvn -Pweb jetty:run [-Dcdap.host=hostname] [-Dcdap.port=port]
+Run the Web UI::
 
-(optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to CDAP,
+  $ mvn -Pweb jetty:run [-Dcdap.host=hostname] [-Dcdap.port=port]
+
+(optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to a CDAP instance;
 ``localhost:10000`` is used by default)
 
-Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSentiment/
+Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSentiment/ .
 
 Processing Real-time Twitter Data
 =================================
@@ -133,7 +150,7 @@ These arguments are supported:
 License
 =======
 
-Copyright © 2014 Cask Data, Inc.
+Copyright © 2014-2015 Cask Data, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
 in compliance with the License. You may obtain a copy of the License at
