@@ -80,13 +80,13 @@ On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
 Start Application Flows and Services::
 
-  $ cdap-cli.sh start service MovieRecommender.MovieDictionaryService
-  $ cdap-cli.sh start service MovieRecommender.MovieRecommenderService
+  $ cdap-cli.sh start flow TwitterSentiment.TwitterSentimentAnalysis
+  $ cdap-cli.sh start service TwitterSentiment.SentimentQuery
 
 Make sure they are running::
 
-  $ cdap-cli.sh get service status MovieRecommender.MovieDictionaryService
-  $ cdap-cli.sh get service status MovieRecommender.MovieRecommenderService
+  $ cdap-cli.sh get flow status TwitterSentiment.TwitterSentimentAnalysis
+  $ cdap-cli.sh get service status TwitterSentiment.SentimentQuery
 
 Ingest sample statements::
 
