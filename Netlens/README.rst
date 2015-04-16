@@ -120,8 +120,7 @@ Ingest sample traffic data with anomalies::
 
 On Windows, substitute ``ingest-anomalies.bat`` for ``ingest-anomalies.sh``.
 
-Run the Web UI (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to 
-a particular CDAP instance; ``localhost:10000`` is used by default)::
+Run the Web UI::
 
   $ mvn -Pweb jetty:run
   
