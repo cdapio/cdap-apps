@@ -9,6 +9,7 @@
 # Build files
 target/
 dependency-reduced-pom.xml
+logs/
 
 # Intellij Files & Dir #
 *.iml

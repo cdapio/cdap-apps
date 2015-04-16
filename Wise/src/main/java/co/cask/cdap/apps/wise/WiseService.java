@@ -56,7 +56,7 @@ class WiseService extends AbstractService {
      *
      * <pre>{@code
      *
-     * GET http://[host]:[port]/v2/apps/Wise/services/WiseService/methods/ip/[ip]/count
+     * GET http://[host]:[port]/v3/namespaces/default/apps/Wise/services/WiseService/methods/ip/[ip]/count
      * }</pre>
      */
     @GET
@@ -72,7 +72,7 @@ class WiseService extends AbstractService {
      *
      * <pre>{@code
      *
-     * POST http://[host]:[port]/v2/apps/Wise/services/WiseService/methods/ip/[ip]/count
+     * POST http://[host]:[port]/v3/namespaces/default/apps/Wise/services/WiseService/methods/ip/[ip]/count
      * }</pre>
      *
      * With the URI to query form in the POST body.
