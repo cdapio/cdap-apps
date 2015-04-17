@@ -36,7 +36,8 @@ the License.
     function drawTopIpList() {
         var startTs = Date.now() - 5000 * 108;
         $.ajax({
-            url: "proxy/v2/apps/Netlens/services/CountersService/methods/topN/" + startTs + "?limit=20",
+            url: "proxy/v3/namespaces/default/apps/Netlens/services/CountersService/methods/topN/"
+                    + startTs + "?limit=20",
             type: 'GET',
             contentType: "application/json",
             dataType: 'json',

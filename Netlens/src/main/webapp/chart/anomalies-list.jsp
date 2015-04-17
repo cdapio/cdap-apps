@@ -38,7 +38,8 @@ the License.
         var endTs = Date.now();
         var shorten = '<%= request.getAttribute("shorten")%>';
         $.ajax({
-            url: "proxy/v2/apps/Netlens/services/AnomaliesService/methods/timeRange/" + startTs + "/" + endTs,
+            url: "proxy/v3/namespaces/default/apps/Netlens/services/AnomaliesService/methods/timeRange/"
+                    + startTs + "/" + endTs,
             type: 'GET',
             contentType: "application/json",
             dataType: 'json',

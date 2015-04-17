@@ -36,7 +36,8 @@ the License.
     function drawTopIpWithAnomaliesList() {
         var startTs = Date.now() - 5000 * 108;
         $.ajax({
-            url: "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/topN/" + startTs + "?limit=10",
+            url: "proxy/v3/namespaces/default/apps/Netlens/services/AnomaliesCountService/methods/topN/"
+                    + startTs + "?limit=10",
             type: 'GET',
             contentType: "application/json",
             dataType: 'json',

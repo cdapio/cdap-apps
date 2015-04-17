@@ -47,7 +47,7 @@ the License.
         var startTs = fact.ts - 5000 * 10;
         var endTs = fact.ts + 5000 * 10;
         $.ajax({
-            url: "proxy/v2/apps/Netlens/services/CountersService/methods/counts/"
+            url: "proxy/v3/namespaces/default/apps/Netlens/services/CountersService/methods/counts/"
                     + startTs + "/" + endTs + "?key=" + key,
             type: 'GET',
             contentType: "application/json",

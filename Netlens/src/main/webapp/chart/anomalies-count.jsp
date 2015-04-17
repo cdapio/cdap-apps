@@ -37,7 +37,8 @@ the License.
         var startTs = Date.now() - 5000 * 120;
         var endTs = Date.now();
         $.ajax({
-            url: "proxy/v2/apps/Netlens/services/AnomaliesCountService/methods/count/" + startTs + "/" + endTs,
+            url: "proxy/v3/namespaces/default/apps/Netlens/services/AnomaliesCountService/methods/count/"
+                    + startTs + "/" + endTs,
             type: 'GET',
             contentType: "application/json",
             dataType: 'json',
