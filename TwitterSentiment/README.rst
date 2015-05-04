@@ -101,7 +101,12 @@ Run the Web UI::
 (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to a CDAP instance;
 ``localhost:10000`` is used by default)
 
-Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSentiment/ .
+Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSentiment/.
+
+Stop Application Flows and Services::
+
+  $ cdap-cli.sh stop flow TwitterSentiment.TwitterSentimentAnalysis
+  $ cdap-cli.sh stop service TwitterSentiment.SentimentQuery
 
 Processing Real-time Twitter Data
 =================================
@@ -144,7 +149,7 @@ These arguments are supported:
      - Use the value shown under "Your access token" -> "Access token" from Twitter Configuration
    * - ``oauth.accessTokenSecret``
      - Use the value shown under "Your access token" -> "Access token secret" from Twitter
-       Configuration 
+       Configuration
 
 
 License
