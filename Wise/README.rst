@@ -132,34 +132,17 @@ a specific IP address. For example, to query the pageview count of page ``/index
 
 Exploring Wise Datasets through SQL
 ===================================
-With Wise, you can explore the Datasets using SQL queries. The SQL interface on CDAP, called *Explore*,
-can be accessed through the CDAP Console:
-
-#. After deploying Wise in your Standalone CDAP instance, go to the **Store** page,
-   which is one of the five pages you can access from the left pane of CDAP Console:
-
-   .. image:: docs/img/wise_store_page.png
-
-
-#. Click on the **Explore** button in the top-right corner of the page. You will land on this page:
-
-   .. image:: docs/img/wise_explore_page.png
-
-This is the *Explore* page, where you can run ad-hoc SQL queries and see information about the Datasets that expose
-a SQL interface.
-
-You will notice that the Datasets have unusual names, such as *cdap_user_bouncecounts*. Those are the SQL table names
-of the Datasets which have a SQL interface.
+With Wise, you can explore the Datasets using SQL queries.
 
 Here are some of the SQL queries that you can run:
 
 - Retrieve the web pages from where IP addresses have bounced more than 10% of the time::
 
-    SELECT uri FROM dataset_bouncecountstore WHERE bounces > 0.1 * totalvisits
+    $ cdap-cli.sh execute "'SELECT uri FROM dataset_bouncecountstore WHERE bounces > 0.1 * totalvisits'"
 
 - Retrieve all the IP addresses which visited the page '/contact.html'::
 
-    SELECT key FROM dataset_pageviewstore WHERE array_contains(map_keys(value), '/contact.html')=TRUE
+    $ cdap-cli.sh execute "'SELECT key FROM dataset_pageviewstore WHERE array_contains(map_keys(value), '/contact.html')=TRUE'"
 
 As the SQL engine that CDAP runs internally is Hive, the SQL language used to submit queries is HiveQL.
 A description of it is in the `Hive language manual
@@ -185,4 +168,4 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and limitations under the License
+See the License for the specific language governing permissions and limitations under the License.
