@@ -7,7 +7,7 @@ Overview
 --------
 The MovieRecommender application recommends movies to users using collaborative filtering.
 
-* The ``ratings`` and ``movies`` data is taken from the `MovieLens Dataset <http://grouplens.org/datasets/movielens/>`_
+* The ``ratings`` and ``movies`` data is taken from the `MovieLens Dataset <http://grouplens.org/datasets/movielens/>`_.
 * The recommendation engine is based on the ALS (Alternating Least Square) implementation in Apache Spark MLlib library.
 
 Implementation Details
