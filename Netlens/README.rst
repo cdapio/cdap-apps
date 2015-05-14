@@ -9,16 +9,18 @@ Overview
 The Netlens application analyzes network packets to provide insights on traffic statistics, and
 detects anomalies in traffic patterns. The primary features are:
 
-* Uses real-time raw network packet data as a data source
-* Provides real-time statistics on overall traffic with a breakdown by source IP
+- Uses real-time raw network packet data as a data source
+- Provides real-time statistics on overall traffic with a breakdown by source IP
+
   - Identifies source IPs originating the most traffic
   
-* Detects anomalies in traffic patterns in real-time
+- Detects anomalies in traffic patterns in real-time
+
   - Uses different combinations of network packet attributes, such as detecting
     an unusual increase in UDP traffic originated from particular source IP
     
-* Allows drilling down into detected anomalies' details for inspection
-* Provides an overview of traffic stats and anomaly stats for a selected source IP
+- Allows drilling down into detected anomalies' details for inspection
+- Provides an overview of traffic stats and anomaly stats for a selected source IP
 
 Sample output of the application can be seen on the following screenshots.
 
