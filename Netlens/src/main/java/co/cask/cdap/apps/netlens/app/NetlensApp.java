@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class NetlensApp extends AbstractApplication {
   static final String STREAM_NAME = "packets";
+  static final String WIRE_NAME = "wire-packets";
   static final String NAME = "Netlens";
   static final String ANOMALIES_COUNT_SERVICE_NAME = "AnomaliesCountService";
   static final String ANOMALIES_SERVICE_NAME = "AnomaliesService";

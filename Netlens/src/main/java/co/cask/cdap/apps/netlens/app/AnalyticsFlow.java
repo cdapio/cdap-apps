@@ -21,6 +21,7 @@ import co.cask.cdap.api.flow.FlowSpecification;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomalyDetectionFlowlet;
 import co.cask.cdap.apps.netlens.app.anomaly.AnomalyFanOutFlowlet;
 import co.cask.cdap.apps.netlens.app.anomaly.FactParser;
+import co.cask.cdap.apps.netlens.app.anomaly.WireSharkFactParser;
 import co.cask.cdap.apps.netlens.app.counter.AnomalyCounterFlowlet;
 import co.cask.cdap.apps.netlens.app.counter.TrafficCounterFlowlet;
 import co.cask.cdap.apps.netlens.app.histo.NumberCategorizationFlowlet;
@@ -38,6 +39,7 @@ public class AnalyticsFlow implements Flow {
       .setDescription("Performs analysis of network packets.")
       .withFlowlets()
         .add("fact-parser", new FactParser())
+        .add("wire-parser", new WireSharkFactParser())
         .add("categorize-numbers", new NumberCategorizationFlowlet())
         .add("anomaly-fanout", new AnomalyFanOutFlowlet())
         .add("anomaly-detect", new AnomalyDetectionFlowlet())
@@ -45,7 +47,9 @@ public class AnalyticsFlow implements Flow {
         .add("traffic-count", new TrafficCounterFlowlet())
       .connect()
         .fromStream(NetlensApp.STREAM_NAME).to("fact-parser")
+        .fromStream(NetlensApp.WIRE_NAME).to("wire-parser")
         // anomaly subtree
+        .from("wire-parser").to("categorize-numbers")
         .from("fact-parser").to("categorize-numbers")
         .from("categorize-numbers").to("anomaly-fanout")
         .from("anomaly-fanout").to("anomaly-detect")
@@ -53,6 +57,7 @@ public class AnalyticsFlow implements Flow {
         .from("anomaly-detect").to("anomaly-count")
         // counters subtree
         .from("fact-parser").to("traffic-count")
+        .from("wire-parser").to("traffic-count")
       .build();
   }
 }
