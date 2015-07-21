@@ -7,6 +7,10 @@ import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -22,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * send data in this format, csv of fieldname:field
@@ -46,23 +51,28 @@ public class WireSharkFactParser extends AbstractFlowlet {
 
 
   private Fact parseStream(String line) throws Exception {
-    List<String> wireData = Lists.newArrayList();
-    Iterables.addAll(wireData, Splitter.on(",").split(line));
+
     Map<String, String> fact = Maps.newLinkedHashMap();
     Map<String, String> wireFact = Maps.newLinkedHashMap();
+    List<String> fieldNames = ImmutableList.of("frame.number", "frame.time_delta",
+                                               "frame.cap_len", "ip.src", "ip.dst", "tcp.srcport", "tcp.dstport",
+                                               "udp.srcport", "udp.dstport", "ipv6.src", "ipv6.dst");
 
 
-    for (String field : wireData) {
-      String[] fieldParts = field.split(":");
 
-      if (fieldParts.length < 1 ) {
-        throw new Exception(String.format("Invalid format for field %s in packet %s", field, line));
-      }
+    String[] fieldParts = line.split(",", -1);
 
-      if (fieldParts.length == 2) {
-        wireFact.put(fieldParts[0], fieldParts[1]);
-      }
+    if (fieldParts.length != 11 ) {
+      throw new Exception(String.format("Invalid format for field in packet %s", line));
     }
+    int index = 0;
+    for (String ff : fieldParts) {
+      if (!ff.isEmpty()) {
+        wireFact.put(fieldNames.get(index), ff);
+      }
+      index++;
+    }
+
 
     // IPv4 or IPv6
     if (wireFact.containsKey("ip.src") && wireFact.containsKey("ip.dst")) {
