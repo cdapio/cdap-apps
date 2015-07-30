@@ -16,6 +16,7 @@
 
 package co.cask.cdap.apps.movierecommender;
 
+import co.cask.cdap.api.Resources;
 import co.cask.cdap.api.spark.AbstractSpark;
 import co.cask.cdap.api.spark.Spark;
 import org.apache.spark.mllib.recommendation.MatrixFactorizationModel;
@@ -32,5 +33,7 @@ public class RecommendationBuilderSpecification extends AbstractSpark {
     setName("RecommendationBuilder");
     setDescription("Spark program that computes movie recommendations.");
     setMainClass(RecommendationBuilder.class);
+    setDriverResources(new Resources(1024));
+    setExecutorResources(new Resources(1024));
   }
 }
