@@ -20,7 +20,7 @@ package co.cask.cdap.apps.movierecommender;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.ServiceManager;
 import co.cask.cdap.test.SparkManager;
-import co.cask.cdap.test.StreamWriter;
+import co.cask.cdap.test.StreamManager;
 import co.cask.cdap.test.TestBase;
 import co.cask.common.http.HttpRequest;
 import co.cask.common.http.HttpRequests;
@@ -59,10 +59,10 @@ public class MovieRecommenderAppTest extends TestBase {
 
     try {
       // Inject ratings data
-      sendRatingsData(appManager);
+      sendRatingsData();
       // Start the Spark Program
-      SparkManager sparkManager = appManager.startSpark(RecommendationBuilder.class.getSimpleName());
-      sparkManager.waitForFinish(120, TimeUnit.SECONDS);
+      SparkManager sparkManager = appManager.getSparkManager(RecommendationBuilder.class.getSimpleName()).start();
+      sparkManager.waitForFinish(60, TimeUnit.SECONDS);
     } catch (Exception e) {
       LOG.warn("Failed to send ratings data to {}", MovieRecommenderApp.RATINGS_STREAM, e);
       throw Throwables.propagate(e);
@@ -79,7 +79,7 @@ public class MovieRecommenderAppTest extends TestBase {
    * @throws IOException
    */
   private void verifyRecommenderServiceHandler(ApplicationManager appManager) throws InterruptedException, IOException {
-    ServiceManager serviceManager = appManager.startService(MovieRecommenderApp.RECOMMENDATION_SERVICE);
+    ServiceManager serviceManager = appManager.getServiceManager(MovieRecommenderApp.RECOMMENDATION_SERVICE).start();
     serviceManager.waitForStatus(true);
 
     // Verify that recommendation are generated
@@ -108,7 +108,8 @@ public class MovieRecommenderAppTest extends TestBase {
    */
   private void sendMovieData(ApplicationManager applicationManager) {
     String moviesData = "0::Movie0\n1::Movie1\n2::Movie2\n3::Movie3\n";
-    ServiceManager serviceManager = applicationManager.startService(MovieRecommenderApp.DICTIONARY_SERVICE);
+    ServiceManager serviceManager = applicationManager.getServiceManager(
+      MovieRecommenderApp.DICTIONARY_SERVICE).start();
     try {
       serviceManager.waitForStatus(true);
     } catch (InterruptedException e) {
@@ -132,12 +133,12 @@ public class MovieRecommenderAppTest extends TestBase {
   /**
    * Send some ratings to the Stream
    */
-  private void sendRatingsData(ApplicationManager appManager) throws IOException {
-    StreamWriter streamWriter = appManager.getStreamWriter(MovieRecommenderApp.RATINGS_STREAM);
-    streamWriter.send("0::0::3");
-    streamWriter.send("0::1::4");
-    streamWriter.send("1::1::4");
-    streamWriter.send("1::2::4");
+  private void sendRatingsData() throws IOException {
+    StreamManager streamManager = getStreamManager(MovieRecommenderApp.RATINGS_STREAM);
+    streamManager.send("0::0::3");
+    streamManager.send("0::1::4");
+    streamManager.send("1::1::4");
+    streamManager.send("1::2::4");
     LOG.debug("Sent ratings data");
   }
 }
