@@ -50,7 +50,7 @@ class RecommendationBuilder extends ScalaSparkProgram {
                      implicitPrefs: Boolean = false)
 
   override def run(sc: SparkContext) {
-    LOG.info("Running with arguments {}", sc.getRuntimeArguments("args"))
+    LOG.info("Running with arguments {}", sc.getRuntimeArguments.get("args"))
     val params = parseArguments(sc, Params())
     LOG.info("Processing ratings data with parameters {}", params)
 
@@ -130,7 +130,9 @@ class RecommendationBuilder extends ScalaSparkProgram {
 
   /** Parse runtime arguments */
   def parseArguments(sc: SparkContext, defaultParams: Params): Params = {
-    val args: Array[String] = sc.getRuntimeArguments("args")
+    val arguments: String = sc.getRuntimeArguments.get("args")
+    val args: Array[String] = if (arguments == null) Array() else arguments.split("\\s")
+
 
     val numIterations = getInt(args, 0).getOrElse(defaultParams.numIterations)
     val lambda = getDouble(args, 1).getOrElse(defaultParams.lambda)
