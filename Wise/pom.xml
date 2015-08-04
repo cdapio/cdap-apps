@@ -17,7 +17,7 @@
     <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <co.cask.cdap.version>3.2.0-SNAPSHOT</co.cask.cdap.version>
-  </properties>
+ </properties>
 
   <repositories>
     <repository>
