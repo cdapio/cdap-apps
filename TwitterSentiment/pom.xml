@@ -23,7 +23,7 @@
   <artifactId>TwitterSentiment</artifactId>
   <groupId>co.cask.cdap.apps</groupId>
   <name>Twitter Sentiment</name>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.6.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
@@ -31,7 +31,7 @@
     <sentiment-archive>sentiment-process.zip</sentiment-archive>
     <guava.version>13.0.1</guava.version>
     <slf4j.version>1.7.5</slf4j.version>
-    <cdap.version>3.1.0-SNAPSHOT</cdap.version>
+    <cdap.version>3.2.0-SNAPSHOT</cdap.version>
     <twitter4j.version>[4.0,)</twitter4j.version>
     <javax-servlet.version>2.5</javax-servlet.version>
     <ant-compress.version>1.2</ant-compress.version>
