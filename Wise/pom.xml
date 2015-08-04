@@ -6,7 +6,7 @@
 
   <groupId>co.cask.cdap.apps</groupId>
   <artifactId>cdap-wise</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Web Insights Engine Application</name>
 
@@ -16,7 +16,7 @@
     <hadoop.version>[2.0.2-alpha, 2.3.0]</hadoop.version>
     <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <co.cask.cdap.version>3.1.0</co.cask.cdap.version>
+    <cdap.version>3.2.0-SNAPSHOT</cdap.version>
   </properties>
 
   <repositories>
@@ -35,13 +35,13 @@
     <dependency>
       <groupId>co.cask.cdap</groupId>
       <artifactId>cdap-api</artifactId>
-      <version>${co.cask.cdap.version}</version>
+      <version>${cdap.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>co.cask.cdap</groupId>
       <artifactId>cdap-unit-test</artifactId>
-      <version>${co.cask.cdap.version}</version>
+      <version>${cdap.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
