@@ -29,7 +29,7 @@
     <app.main.class>co.cask.cdap.apps.netlens.app.NetlensApp</app.main.class>
     <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>3.2.0-SNAPSHOT</cdap.version>
+    <cdap.version>3.3.0-SNAPSHOT</cdap.version>
     <slf4j.version>1.6.4</slf4j.version>
     <gson.version>2.2.4</gson.version>
     <servlet.version>2.5</servlet.version>
