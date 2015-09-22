@@ -74,7 +74,8 @@ On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
 
-  $ cdap-cli.sh deploy app target/TwitterSentiment-<version>.jar
+  $ cdap-cli.sh load artifact target/TwitterSentiment-<version>.jar
+  $ cdap-cli.sh create app TwitterSentiment TwitterSentiment <version> user
 
 On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
