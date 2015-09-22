@@ -57,7 +57,8 @@ On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to localhost)::
 
-  $ cdap-cli.sh deploy app target/MovieRecommender-<version>.jar
+  $ cdap-cli.sh load artifact target/MovieRecommender-<version>.jar
+  $ cdap-cli.sh create app MovieRecommender MovieRecommender <version> user
   
 On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
