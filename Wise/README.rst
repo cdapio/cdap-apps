@@ -87,8 +87,8 @@ On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
   
-  $ cdap-cli.sh load artifact target/Wise-<version>.jar
-  $ cdap-cli.sh create app Wise Wise <version> user
+  $ cdap-cli.sh load artifact target/cdap-wise-<version>.jar
+  $ cdap-cli.sh create app Wise cdap-wise <version> user
 
 On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
 
