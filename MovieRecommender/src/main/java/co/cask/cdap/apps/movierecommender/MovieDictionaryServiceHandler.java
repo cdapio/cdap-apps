@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -60,16 +60,16 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
   }
 
   private boolean parseAndStoreMovies(String moviesData) {
-    boolean validRequest = false;
     String[] lines = NEWLINE_DELIMITER.split(moviesData.trim());
 
     for (String movie : lines) {
       String[] movieInfo = FIELDS_DELIMITER.split(movie.trim());
       if (!movieInfo[0].isEmpty() && !movieInfo[1].isEmpty()) {
-        validRequest = true;
         movies.write(Bytes.toBytes(Integer.parseInt(movieInfo[0])), movieInfo[1]);
+      } else {
+        return false;
       }
     }
-    return validRequest;
+    return true;
   }
 }

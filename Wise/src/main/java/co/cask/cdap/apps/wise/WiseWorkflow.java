@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.workflow.AbstractWorkflow;
@@ -25,8 +26,8 @@ public class WiseWorkflow extends AbstractWorkflow {
 
   @Override
   public void configure() {
-      setName("WiseWorkflow");
-      setDescription("Wise Workflow");
-      addMapReduce("BounceCountsMapReduce");
+    setName("WiseWorkflow");
+    setDescription("Wise Workflow");
+    addMapReduce("BounceCountsMapReduce");
   }
 }
