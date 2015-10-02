@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -44,11 +44,12 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
   public void configure() {
     setName("BounceCountsMapReduce");
     setDescription("Bounce Counts MapReduce Program");
-    setOutputDataset("bounceCountStore");
   }
 
   @Override
   public void beforeSubmit(MapReduceContext context) throws Exception {
+    context.addOutput("bounceCountStore");
+
     // Retrieve Hadoop Job
     Job job = context.getHadoopJob();
 
@@ -144,7 +145,7 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
         long visitsCount = uriCount.getValue();
         Long bounceCount = uriBounces.get(uri);
         if (bounceCount == null) {
-          bounceCount = new Long(0);
+          bounceCount = 0L;
         }
         context.write(null, new PageBounce(uri, visitsCount, bounceCount));
       }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,32 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package co.cask.cdap.apps.sentiment;
 
-import co.cask.cdap.api.flow.Flow;
-import co.cask.cdap.api.flow.FlowSpecification;
+import co.cask.cdap.api.flow.AbstractFlow;
 
 /**
  * Flow for sentiment analysis.
  */
-public class SentimentAnalysisFlow implements Flow {
+public class SentimentAnalysisFlow extends AbstractFlow {
   static final String FLOW_NAME = "TwitterSentimentAnalysis";
-  @Override
-  public FlowSpecification configure() {
-    return FlowSpecification.Builder.with()
-      .setName(FLOW_NAME)
-      .setDescription("Analysis of text to generate sentiments")
-      .withFlowlets()
-        .add(new TweetCollector())
-        .add(new TweetParserFlowlet())
-        .add(new PythonAnalyzer())
-        .add(new CountSentimentFlowlet())
-      .connect()
-        .fromStream(TwitterSentimentApp.STREAM_NAME).to(new TweetParserFlowlet())
-        .from(new TweetParserFlowlet()).to(new PythonAnalyzer())
-        .from(new TweetCollector()).to(new PythonAnalyzer())
-        .from(new PythonAnalyzer()).to(new CountSentimentFlowlet())
-      .build();
-  }
 
+  @Override
+  protected void configureFlow() {
+    setName(FLOW_NAME);
+    setDescription("Analysis of text to generate sentiments");
+    addFlowlet(new TweetCollector());
+    addFlowlet(new TweetParserFlowlet());
+    addFlowlet(new PythonAnalyzer());
+    addFlowlet(new CountSentimentFlowlet());
+    connectStream(TwitterSentimentApp.STREAM_NAME, new TweetParserFlowlet());
+    connect(new TweetParserFlowlet(), new PythonAnalyzer());
+    connect(new TweetCollector(), new PythonAnalyzer());
+    connect(new PythonAnalyzer(), new CountSentimentFlowlet());
+  }
 }

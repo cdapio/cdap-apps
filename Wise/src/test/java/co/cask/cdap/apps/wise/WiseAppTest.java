@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.common.Bytes;
@@ -21,9 +22,8 @@ import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.DataSetManager;
 import co.cask.cdap.test.FlowManager;
 import co.cask.cdap.test.MapReduceManager;
-import co.cask.cdap.test.RuntimeStats;
 import co.cask.cdap.test.ServiceManager;
-import co.cask.cdap.test.StreamWriter;
+import co.cask.cdap.test.StreamManager;
 import co.cask.cdap.test.TestBase;
 import co.cask.common.http.HttpRequest;
 import co.cask.common.http.HttpRequests;
@@ -47,23 +47,19 @@ public class WiseAppTest extends TestBase {
     ApplicationManager appManager = deployApplication(WiseApp.class);
 
     // Start a Flow
-    FlowManager flowManager = appManager.startFlow("WiseFlow");
+    FlowManager flowManager = appManager.getFlowManager("WiseFlow").start();
 
-    try {
-      sendData(appManager);
+    sendData();
 
-      // Wait for the last Flowlet to process 5 events
-      RuntimeMetrics metrics = RuntimeStats.getFlowletMetrics("Wise", "WiseFlow", "pageViewCount");
-      metrics.waitForProcessed(5, 5, TimeUnit.SECONDS);
+    // Wait for the last Flowlet to process 5 events
+    RuntimeMetrics metrics = flowManager.getFlowletMetrics("pageViewCount");
+    metrics.waitForProcessed(5, 5, TimeUnit.SECONDS);
 
-      // Verify the processed data
-      checkPageViewService(appManager);
-    } finally {
-      flowManager.stop();
-    }
+    // Verify the processed data
+    checkPageViewService(appManager);
 
     // Test the MapReduce program
-    MapReduceManager mrManager = appManager.startMapReduce("BounceCountsMapReduce");
+    MapReduceManager mrManager = appManager.getMapReduceManager("BounceCountsMapReduce").start();
     mrManager.waitForFinish(3, TimeUnit.MINUTES);
 
     // Check the data outputted from the MapReduce program
@@ -89,13 +85,11 @@ public class WiseAppTest extends TestBase {
   /**
    * Send a few events to the Stream.
    *
-   * @param appManager an ApplicationManger instance.
    * @throws java.io.IOException
    */
-  private void sendData(ApplicationManager appManager)
-    throws IOException {
-    // Define a StreamWriter to send Apache log events in String format to the App
-    StreamWriter streamWriter = appManager.getStreamWriter("logEventStream");
+  private void sendData() throws IOException {
+    // Define a StreamManager to send Apache log events in String format to the App
+    StreamManager streamWriter = getStreamManager("logEventStream");
 
     streamWriter.send("1.202.218.8 - - [12/Apr/2012:02:03:43 -0400] " +
                         "\"GET /product.html HTTP/1.0\" 404 208 \"http://www.example.org\" \"Mozilla/5.0\"");
@@ -118,8 +112,7 @@ public class WiseAppTest extends TestBase {
    * @throws Exception
    */
   private void checkPageViewService(ApplicationManager appManager) throws Exception {
-
-    ServiceManager serviceManager = appManager.startService("WiseService");
+    ServiceManager serviceManager = appManager.getServiceManager("WiseService").start();
     serviceManager.waitForStatus(true);
 
     URL url = new URL(serviceManager.getServiceURL(), "ip/1.202.218.8/count");
@@ -133,8 +126,5 @@ public class WiseAppTest extends TestBase {
     response = HttpRequests.execute(request);
     Assert.assertEquals(200, response.getResponseCode());
     Assert.assertEquals("1", Bytes.toString(response.getResponseBody()));
-
-    serviceManager.stop();
-    serviceManager.waitForStatus(false);
   }
 }

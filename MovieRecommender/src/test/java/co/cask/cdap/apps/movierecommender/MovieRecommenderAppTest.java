@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,7 +16,6 @@
 
 package co.cask.cdap.apps.movierecommender;
 
-
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.ServiceManager;
 import co.cask.cdap.test.SparkManager;
@@ -26,8 +25,6 @@ import co.cask.common.http.HttpRequest;
 import co.cask.common.http.HttpRequests;
 import co.cask.common.http.HttpResponse;
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
-import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
@@ -57,16 +54,11 @@ public class MovieRecommenderAppTest extends TestBase {
     // Send movies data through service
     sendMovieData(appManager);
 
-    try {
-      // Inject ratings data
-      sendRatingsData();
-      // Start the Spark Program
-      SparkManager sparkManager = appManager.getSparkManager(RecommendationBuilder.class.getSimpleName()).start();
-      sparkManager.waitForFinish(60, TimeUnit.SECONDS);
-    } catch (Exception e) {
-      LOG.warn("Failed to send ratings data to {}", MovieRecommenderApp.RATINGS_STREAM, e);
-      throw Throwables.propagate(e);
-    }
+    // Inject ratings data
+    sendRatingsData();
+    // Start the Spark Program
+    SparkManager sparkManager = appManager.getSparkManager(RecommendationBuilder.class.getSimpleName()).start();
+    sparkManager.waitForFinish(60, TimeUnit.SECONDS);
 
     verifyRecommenderServiceHandler(appManager);
   }
@@ -83,51 +75,36 @@ public class MovieRecommenderAppTest extends TestBase {
     serviceManager.waitForStatus(true);
 
     // Verify that recommendation are generated
-    String response = requestService(new URL(serviceManager.getServiceURL(), MovieRecommenderServiceHandler.RECOMMEND +
-      "/1"));
+    String response =
+      doGet(new URL(serviceManager.getServiceURL(), MovieRecommenderServiceHandler.RECOMMEND + "/1"));
 
-    Map<String, String[]> responseMap = GSON.fromJson(response, new TypeToken<Map<String, String[]>>() {
-    }.getType());
+    Map<String, String[]> responseMap =
+      GSON.fromJson(response, new TypeToken<Map<String, String[]>>() { }.getType());
 
     Assert.assertTrue(responseMap.containsKey("rated") && responseMap.get("rated").length > 0);
     Assert.assertTrue(responseMap.containsKey("recommended") && responseMap.get("recommended").length > 0);
   }
 
-  private String requestService(URL url) throws IOException {
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    Assert.assertEquals(HttpURLConnection.HTTP_OK, conn.getResponseCode());
-    try {
-      return new String(ByteStreams.toByteArray(conn.getInputStream()), Charsets.UTF_8);
-    } finally {
-      conn.disconnect();
-    }
+  private String doGet(URL url) throws IOException {
+    HttpResponse response = HttpRequests.execute(HttpRequest.get(url).build());
+    Assert.assertEquals(HttpURLConnection.HTTP_OK, response.getResponseCode());
+    return response.getResponseBodyAsString();
   }
 
   /**
    * Sends movies data to {@link MovieRecommenderApp#DICTIONARY_SERVICE}
    */
-  private void sendMovieData(ApplicationManager applicationManager) {
+  private void sendMovieData(ApplicationManager applicationManager) throws Exception {
     String moviesData = "0::Movie0\n1::Movie1\n2::Movie2\n3::Movie3\n";
-    ServiceManager serviceManager = applicationManager.getServiceManager(
-      MovieRecommenderApp.DICTIONARY_SERVICE).start();
-    try {
-      serviceManager.waitForStatus(true);
-    } catch (InterruptedException e) {
-      LOG.error("Failed to start {} service", MovieRecommenderApp.DICTIONARY_SERVICE, e);
-      throw Throwables.propagate(e);
-    }
-    try {
-      URL url = new URL(serviceManager.getServiceURL(), MovieDictionaryServiceHandler.STORE_MOVIES);
-      HttpRequest request = HttpRequest.post(url).withBody(moviesData, Charsets.UTF_8).build();
-      HttpResponse response = HttpRequests.execute(request);
-      Assert.assertEquals(200, response.getResponseCode());
-      LOG.debug("Sent movies data");
-    } catch (IOException e) {
-      LOG.warn("Failed to send movies data to {}", MovieRecommenderApp.DICTIONARY_SERVICE, e);
-      throw Throwables.propagate(e);
-    } finally {
-      serviceManager.stop();
-    }
+    ServiceManager serviceManager =
+      applicationManager.getServiceManager(MovieRecommenderApp.DICTIONARY_SERVICE).start();
+    serviceManager.waitForStatus(true);
+
+    URL url = new URL(serviceManager.getServiceURL(), MovieDictionaryServiceHandler.STORE_MOVIES);
+    HttpRequest request = HttpRequest.post(url).withBody(moviesData, Charsets.UTF_8).build();
+    HttpResponse response = HttpRequests.execute(request);
+    Assert.assertEquals(200, response.getResponseCode());
+    LOG.debug("Sent movies data");
   }
 
   /**
