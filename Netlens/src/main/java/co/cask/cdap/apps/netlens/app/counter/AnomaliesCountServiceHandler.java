@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,7 +26,6 @@ import co.cask.cdap.api.service.http.HttpServiceResponder;
 import co.cask.cdap.apps.netlens.app.Constants;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -43,8 +42,6 @@ import javax.ws.rs.QueryParam;
  * Anomalies count service handler
  */
 public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
-
-  private static final Gson GSON = new Gson();
 
   @UseDataSet("anomalyCounters")
   private TimeseriesTable anomalyCounters;
@@ -116,9 +113,7 @@ public class AnomaliesCountServiceHandler extends AbstractHttpServiceHandler {
 
     // preparing output
     List<DataPoint> dataPoints = Lists.newArrayList();
-    Iterator<Map.Entry<Long, Integer>> it = data.entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry<Long, Integer> item = it.next();
+    for (Map.Entry<Long, Integer> item : data.entrySet()) {
       dataPoints.add(new DataPoint(item.getKey(), item.getValue()));
     }
     return dataPoints;

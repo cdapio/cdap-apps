@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,7 +25,6 @@ import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
 import co.cask.cdap.apps.netlens.app.Constants;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -41,7 +40,6 @@ import javax.ws.rs.QueryParam;
  * Counters service handler
  */
 public class CountersServiceHandler extends AbstractHttpServiceHandler {
-  private static final Gson GSON = new Gson();
 
   @UseDataSet("counters")
   private TimeseriesTable counters;
@@ -76,8 +74,8 @@ public class CountersServiceHandler extends AbstractHttpServiceHandler {
   }
 
   private void getTrafficCounts(long startTs, long endTs, HttpServiceResponder responder) throws IOException {
-    List<DataPoint> counts = CounterTableUtil.getCounts(trafficCounters,
-                                                        Bytes.EMPTY_BYTE_ARRAY, TrafficCounterFlowlet.TOTAL_COUNTER_COLUMN,
+    List<DataPoint> counts = CounterTableUtil.getCounts(trafficCounters, Bytes.EMPTY_BYTE_ARRAY,
+                                                        TrafficCounterFlowlet.TOTAL_COUNTER_COLUMN,
                                                         startTs, endTs);
     responder.sendJson(counts);
   }
