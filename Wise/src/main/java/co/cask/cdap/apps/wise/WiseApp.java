@@ -13,11 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.app.AbstractApplication;
 import co.cask.cdap.api.data.stream.Stream;
 import co.cask.cdap.api.schedule.Schedule;
+import co.cask.cdap.api.schedule.Schedules;
+import co.cask.cdap.internal.schedule.TimeSchedule;
 
 /**
  * The Wise application performs analytics on Apache access logs.
@@ -42,6 +45,7 @@ public class WiseApp extends AbstractApplication {
     // Add the WiseService service
     addService(new WiseService());
     // Schedule the Workflow to run the MapReduce program every ten minutes
-    scheduleWorkflow(new Schedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"), "WiseWorkflow");
+    scheduleWorkflow(Schedules.createTimeSchedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"),
+                     "WiseWorkflow");
   }
 }

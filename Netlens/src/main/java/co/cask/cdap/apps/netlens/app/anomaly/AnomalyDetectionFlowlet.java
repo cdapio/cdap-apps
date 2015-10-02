@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2015 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,6 +26,7 @@ import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.FlowletException;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.apps.netlens.app.Constants;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 
@@ -113,6 +114,7 @@ public class AnomalyDetectionFlowlet extends AbstractFlowlet {
     return counters;
   }
 
+  @VisibleForTesting
   static boolean isLastPointAnomaly(int[] counts, double meanThreshold, double sensitivity) {
     // Simple algo: Xn+1 is anomaly if (mean(X1..Xn) - Xn+1) > deviation(X1..Xn) * sensitivity
     double mean = mean(counts, 0, counts.length);
