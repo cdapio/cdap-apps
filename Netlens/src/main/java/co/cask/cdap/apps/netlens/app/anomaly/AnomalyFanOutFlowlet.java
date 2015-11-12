@@ -22,7 +22,6 @@ import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.api.flow.flowlet.FlowletException;
-import co.cask.cdap.api.flow.flowlet.FlowletSpecification;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -54,13 +53,11 @@ public class AnomalyFanOutFlowlet extends AbstractFlowlet {
   private Set<String> acceptedDimensions;
 
   @Override
-  public FlowletSpecification configure() {
-    return FlowletSpecification.Builder.with()
-      .setName("fanout")
-      .setDescription("Fanout flowlet")
-      .withArguments(ImmutableMap.of(ACCEPTED_DIMENSIONS,
-                                     new Gson().toJson(ImmutableSet.of("src", "rt", "app", "dst", "atz", "ahost"))))
-      .build();
+  public void configure() {
+    setName("fanout");
+    setDescription("Fanout flowlet");
+    setProperties(ImmutableMap.of(ACCEPTED_DIMENSIONS,
+                                  new Gson().toJson(ImmutableSet.of("src", "rt", "app", "dst", "atz", "ahost"))));
   }
 
   @Override

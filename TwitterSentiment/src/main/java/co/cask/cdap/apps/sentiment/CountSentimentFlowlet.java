@@ -23,7 +23,6 @@ import co.cask.cdap.api.dataset.lib.TimeseriesTable;
 import co.cask.cdap.api.dataset.table.Increment;
 import co.cask.cdap.api.dataset.table.Table;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
-import co.cask.cdap.api.flow.flowlet.FlowletSpecification;
 import co.cask.cdap.api.metrics.Metrics;
 import com.google.common.base.Charsets;
 
@@ -55,10 +54,8 @@ public class CountSentimentFlowlet extends AbstractFlowlet {
   }
 
   @Override
-  public FlowletSpecification configure() {
-    return FlowletSpecification.Builder.with()
-      .setName(NAME)
-      .setDescription("Updates the sentiment counts")
-      .build();
+  public void configure() {
+    setName(NAME);
+    setDescription("Updates the sentiment counts");
   }
 }
