@@ -31,7 +31,7 @@ public class AnalyticsFlow extends AbstractFlow {
   static final String NAME = "AnalyticsFlow";
 
   @Override
-  protected void configureFlow() {
+  protected void configure() {
     setName(NAME);
     setDescription("Performs analysis of network packets.");
 

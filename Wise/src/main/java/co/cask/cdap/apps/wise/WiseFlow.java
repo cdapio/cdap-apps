@@ -19,8 +19,7 @@ import co.cask.cdap.api.annotation.Batch;
 import co.cask.cdap.api.annotation.HashPartition;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.annotation.UseDataSet;
-import co.cask.cdap.api.flow.Flow;
-import co.cask.cdap.api.flow.FlowSpecification;
+import co.cask.cdap.api.flow.AbstractFlow;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.api.flow.flowlet.StreamEvent;
@@ -35,19 +34,16 @@ import java.text.ParseException;
  * Flow of the Wise application. It transforms access logs to extract their information and store
  * them into the {@code pageViewCDS} Dataset.
  */
-public class WiseFlow implements Flow {
+public class WiseFlow extends AbstractFlow {
+
   @Override
-  public FlowSpecification configure() {
-    return FlowSpecification.Builder.with()
-      .setName("WiseFlow")
-      .setDescription("Wise Flow")
-      .withFlowlets()
-        .add("parser", new LogEventParserFlowlet())
-        .add("pageViewCount", new PageViewCounterFlowlet())
-      .connect()
-        .fromStream("logEventStream").to("parser")
-        .from("parser").to("pageViewCount")
-      .build();
+  public void configure() {
+    setName("WiseFlow");
+    setDescription("Wise Flow");
+    addFlowlet("parser", new LogEventParserFlowlet());
+    addFlowlet("pageViewCount", new PageViewCounterFlowlet());
+    connectStream("logEventStream", "parser");
+    connect("parser", "pageViewCount");
   }
 
   /**

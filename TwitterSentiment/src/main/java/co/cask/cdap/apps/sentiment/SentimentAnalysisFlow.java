@@ -25,7 +25,7 @@ public class SentimentAnalysisFlow extends AbstractFlow {
   static final String FLOW_NAME = "TwitterSentimentAnalysis";
 
   @Override
-  protected void configureFlow() {
+  protected void configure() {
     setName(FLOW_NAME);
     setDescription("Analysis of text to generate sentiments");
     addFlowlet(new TweetCollector());
