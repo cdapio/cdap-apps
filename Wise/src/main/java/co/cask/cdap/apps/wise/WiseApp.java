@@ -45,7 +45,9 @@ public class WiseApp extends AbstractApplication {
     // Add the WiseService service
     addService(new WiseService());
     // Schedule the Workflow to run the MapReduce program every ten minutes
-    scheduleWorkflow(Schedules.createTimeSchedule("TenMinuteSchedule", "Run every 10 minutes", "0/10 * * * *"),
+    scheduleWorkflow(Schedules.builder("TenMinuteSchedule")
+                       .setDescription("Run every 10 minutes")
+                       .createTimeSchedule("0/10 * * * *"),
                      "WiseWorkflow");
   }
 }
