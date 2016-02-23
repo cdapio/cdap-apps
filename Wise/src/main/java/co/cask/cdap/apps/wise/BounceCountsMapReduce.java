@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014-2015 Cask Data, Inc.
+ * Copyright © 2014-2016 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -166,11 +166,11 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
    * Partition {@link LogInfo} using the IP address only so that a reducer gets all URI visited
    * by a particular IP. This is needed to detect which page a user last visited.
    */
-  public static class NaturalKeyPartitioner extends Partitioner<LogInfo, Text> {
+  public static class NaturalKeyPartitioner extends Partitioner<LogInfo, IntWritable> {
     @Override
-    public int getPartition(LogInfo logInfo, Text value, int numPartitions) {
+    public int getPartition(LogInfo logInfo, IntWritable value, int numPartitions) {
       int hash = logInfo.getIp().hashCode();
-      int partition = hash % numPartitions;
+      int partition = Math.abs(hash % numPartitions);
       return partition;
     }
   }
