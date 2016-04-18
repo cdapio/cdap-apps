@@ -28,12 +28,11 @@
     <app.main.class>co.cask.cdap.apps.movierecommender.MovieRecommenderApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cdap.version>3.4.0-SNAPSHOT</cdap.version>
-    <spark.core.version>1.4.0</spark.core.version>
+    <spark.version>1.6.1</spark.version>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>13.0.1</guava.version>
     <gson.version>2.2.4</gson.version>
     <scala.version>2.10.3</scala.version>
-    <mllib.version>1.4.0</mllib.version>
     <hadoop.version>2.3.0</hadoop.version>
   </properties>
 
@@ -60,9 +59,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>co.cask.cdap</groupId>
+      <artifactId>cdap-api-spark</artifactId>
+      <version>${cdap.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_2.10</artifactId>
-      <version>${spark.core.version}</version>
+      <version>${spark.version}</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -136,7 +140,7 @@
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-mllib_2.10</artifactId>
-      <version>${mllib.version}</version>
+      <version>${spark.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.spark</groupId>
@@ -245,7 +249,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.14.1</version>
         <configuration>
-          <argLine>-Xmx2048m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xmx2048m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true</argLine>
         </configuration>
       </plugin>
       <plugin>
