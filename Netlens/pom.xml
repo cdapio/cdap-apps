@@ -85,6 +85,12 @@
       <version>${async.http.client.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
     <!-- Histo math Dependency -->
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -115,11 +121,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
           <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
-          <version>${guava.version}</version>
         </dependency>
       </dependencies>
     </profile>

@@ -26,11 +26,10 @@
 package co.cask.cdap.apps.movierecommender
 
 import co.cask.cdap.api.common.Bytes
-import co.cask.cdap.api.spark.{ScalaSparkProgram, SparkContext}
-import org.apache.hadoop.io.Text
-import org.apache.spark.SparkContext._
+import co.cask.cdap.api.spark.{SparkExecutionContext, SparkMain}
+import org.apache.spark.SparkContext
 import org.apache.spark.mllib.recommendation.{ALS, Rating}
-import org.apache.spark.rdd.NewHadoopRDD
+import org.apache.spark.rdd.RDD
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.control.Exception._
@@ -38,27 +37,29 @@ import scala.util.control.Exception._
 /**
  * Spark Program which makes recommendation for movies to users
  */
-class RecommendationBuilder extends ScalaSparkProgram {
-  private final val LOG: Logger = LoggerFactory.getLogger(classOf[RecommendationBuilder])
+class RecommendationBuilder extends SparkMain {
+  import RecommendationBuilder._
 
+  // SPARK-1006, SPARK-958, http://bugs.java.com/view_bug.do?bug_id=4152790. When running in local mode, num iterations
+  // cannot be more than 10 or it causes a StackOverflow error.
   case class Params(
-                     numIterations: Int = 20,
+                     numIterations: Int = 10,
                      lambda: Double = 1.0,
                      rank: Int = 10,
                      numUserBlocks: Int = -1,
                      numProductBlocks: Int = -1,
                      implicitPrefs: Boolean = false)
 
-  override def run(sc: SparkContext) {
-    LOG.info("Running with arguments {}", sc.getRuntimeArguments.get("args"))
-    val params = parseArguments(sc, Params())
+  override def run(implicit sec: SparkExecutionContext) {
+    val sc = new SparkContext
+    LOG.info("Running with arguments {}", sec.getRuntimeArguments.get("args"))
+    val params = parseArguments(sec, Params())
     LOG.info("Processing ratings data with parameters {}", params)
 
-    val ratingsDataset: NewHadoopRDD[Array[Byte], Text] = sc.readFromStream("ratingsStream", classOf[Text])
-    val userScores = ratingsDataset.values
+    val userScores: RDD[String] = sc.fromStream("ratingsStream")
 
     val usRDD = userScores.map { e =>
-      val userScore = e.toString.split("::")
+      val userScore = e.split("::")
       new UserScore(userScore(0).toInt, userScore(1).toInt, userScore(2).toInt)
     }.cache()
     val scores = usRDD.collect()
@@ -77,15 +78,13 @@ class RecommendationBuilder extends ScalaSparkProgram {
       }
     }.cache()
 
-    val originalContext: org.apache.spark.SparkContext = sc.getOriginalSparkContext.
-      asInstanceOf[org.apache.spark.SparkContext]
-    val parallelizedScores = originalContext.parallelize(scores)
+    val parallelizedScores = sc.parallelize(scores)
 
-    val scoresRDD = parallelizedScores.keyBy(x => Bytes.add(Bytes.toBytes(x.getUserID), Bytes.toBytes(x.getMovieID)))
-    sc.writeToDataset(scoresRDD, "ratings", classOf[Array[Byte]], classOf[UserScore])
+    val scoresRDD = parallelizedScores
+      .keyBy(x => Bytes.add(Bytes.toBytes(x.getUserID), Bytes.toBytes(x.getMovieID)))
+      .saveAsDataset("ratings")
 
-    val moviesDataset: NewHadoopRDD[Array[Byte], String] = sc.readFromDataset("movies", classOf[Array[Byte]],
-      classOf[String])
+    val moviesDataset: RDD[(Array[Byte], String)] = sc.fromDataset("movies")
 
     val numRatings = ratingData.count()
     val numUsers = ratingData.map(_.user).distinct().count()
@@ -115,22 +114,20 @@ class RecommendationBuilder extends ScalaSparkProgram {
     val notRatedMovies = userRatedMovies.map(x => (x._1, movies.keys.filter(!x._2.contains(_)).toSeq)).collect()
 
     for (curUser <- notRatedMovies) {
-      var nr = originalContext.parallelize(curUser._2)
-      var recom = originalContext.parallelize(model.predict(nr.map((curUser._1, _)))
+      val nr = sc.parallelize(curUser._2)
+      sc.parallelize(model.predict(nr.map((curUser._1, _)))
         .collect().sortBy(-_.rating).take(20))
-
-      var recomRDD = recom.keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product))).
-        map(x => (x._1, new UserScore(x._2.user, x._2.product, x._2.rating.toInt)))
-
-      sc.writeToDataset(recomRDD, "recommendations", classOf[Array[Byte]], classOf[UserScore])
+        .keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product)))
+        .map(x => (x._1, new UserScore(x._2.user, x._2.product, x._2.rating.toInt)))
+        .saveAsDataset("recommendations")
     }
 
     LOG.debug("Stored predictions in dataset. Done!")
   }
 
   /** Parse runtime arguments */
-  def parseArguments(sc: SparkContext, defaultParams: Params): Params = {
-    val arguments: String = sc.getRuntimeArguments.get("args")
+  def parseArguments(sec: SparkExecutionContext, defaultParams: Params): Params = {
+    val arguments: String = sec.getRuntimeArguments.get("args")
     val args: Array[String] = if (arguments == null) Array() else arguments.split("\\s")
 
 
@@ -149,4 +146,8 @@ class RecommendationBuilder extends ScalaSparkProgram {
   def getDouble(args: Array[String], idx: Int): Option[Double] = catching(classOf[Exception]).opt(args(idx).toDouble)
 
   def getBoolean(args: Array[String], idx: Int): Option[Boolean] = catching(classOf[Exception]).opt(args(idx).toBoolean)
+}
+
+object RecommendationBuilder {
+  val LOG: Logger = LoggerFactory.getLogger(classOf[RecommendationBuilder])
 }
