@@ -47,7 +47,9 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
   }
 
   @Override
-  public void beforeSubmit(MapReduceContext context) throws Exception {
+  public void initialize() throws Exception {
+    MapReduceContext context = getContext();    
+  
     context.addOutput("bounceCountStore");
 
     // Retrieve Hadoop Job
