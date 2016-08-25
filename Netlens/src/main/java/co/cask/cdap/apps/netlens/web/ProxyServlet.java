@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Cask Data, Inc.
+ * Copyright © 2014-2016 Cask Data, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Proxies POST requests to a given url (specified thru <code>cdap.host</code> and
- * <code>cdap.port</code> system properties); by default, proxies to <code>http://localhost:10000</code>.
+ * <code>cdap.port</code> system properties); by default, proxies to <code>http://localhost:11015</code>.
  * <p>
  * Needed for resolving cross-domain javascript complexities.
  * </p>
@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ProxyServlet extends HttpServlet {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
   private static final String DEFAULT_HOST = "localhost";
-  private static final String DEFAULT_PORT = "10000";
+  private static final String DEFAULT_PORT = "11015";
 
   private String cdapURL;
 
