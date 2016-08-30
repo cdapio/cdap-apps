@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>co.cask.cdap.apps</groupId>
   <artifactId>Netlens</artifactId>
-  <version>0.7.0</version>
+  <version>0.8.0</version>
   <packaging>jar</packaging>
   <name>Netlens Application</name>
 
