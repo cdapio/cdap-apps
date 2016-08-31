@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# Copyright © 2014 Cask Data, Inc.
+# Copyright © 2014-2016 Cask Data, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -57,7 +57,7 @@ IFS=$'\n'
 lines=`cat "$bin"/../resources/statements.data`
 for line in $lines
 do
-  status=`curl -qSfsw "%{http_code}\\n" -H "Authorization: Bearer $auth_token" -X POST -d "$line" http://$gateway:10000/v3/namespaces/default/streams/$stream`
+  status=`curl -qSfsw "%{http_code}\\n" -H "Authorization: Bearer $auth_token" -X POST -d "$line" http://$gateway:11015/v3/namespaces/default/streams/$stream`
   if [ $status -ne 200 ]; then
     echo "Failed to send data."
     if [ $status == 401 ]; then

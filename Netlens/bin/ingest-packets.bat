@@ -2,7 +2,7 @@
 
 REM #################################################################################
 REM ##
-REM ## Copyright © 2014 Cask Data, Inc.
+REM ## Copyright © 2014-2016 Cask Data, Inc.
 REM ##
 REM ## Licensed under the Apache License, Version 2.0 (the "License"); you may not
 REM ## use this file except in compliance with the License. You may obtain a copy of
@@ -39,7 +39,7 @@ echo Sending events to %STREAM%...
 FOR /F "delims=" %%i IN (%APP_HOME%\resources\packets.data) DO (
  SET data=%%i
  SET data=!data:"=\"!
- curl -H "Authorization: Bearer %ACCESS_TOKEN%" -sL -X POST --data "!data!" http://localhost:10000/v3/namespaces/default/streams/%STREAM%
+ curl -H "Authorization: Bearer %ACCESS_TOKEN%" -sL -X POST --data "!data!" http://localhost:11015/v3/namespaces/default/streams/%STREAM%
 )
 ENDLOCAL
 

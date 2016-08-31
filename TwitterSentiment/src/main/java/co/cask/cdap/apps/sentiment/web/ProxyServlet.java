@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Proxies POST requests to a given url (specified thru cdap.host and cdap.port system properties).
- * By default proxies to http://localhost:10000.
+ * By default proxies to http://localhost:11015.
  * Needed for resolving cross-domain javascript complexities.
  */
 public class ProxyServlet extends HttpServlet {
@@ -31,7 +31,7 @@ public class ProxyServlet extends HttpServlet {
     String host = System.getProperty("cdap.host");
     host = host == null ? "localhost" : host;
     String port = System.getProperty("cdap.port");
-    port = port == null ? "10000" : port;
+    port = port == null ? "11015" : port;
     cdapURL = String.format("http://%s:%s", host, port);
   }
 

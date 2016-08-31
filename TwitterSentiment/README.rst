@@ -100,7 +100,7 @@ Run the Web UI::
   $ mvn -Pweb jetty:run [-Dcdap.host=hostname] [-Dcdap.port=port]
 
 (optionally use ``-Dcdap.host=hostname`` and ``-Dcdap.port=port`` to point to a CDAP instance;
-``localhost:10000`` is used by default)
+``localhost:11015`` is used by default)
 
 Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSentiment/.
 
