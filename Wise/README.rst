@@ -74,30 +74,30 @@ From the project root, build ``Wise`` with `Apache Maven <http://maven.apache.or
 
   $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
+Note that the remaining commands assume that the ``cdap cli`` script is available on your PATH.
 If this is not the case, please add it::
 
   $ export PATH=$PATH:<cdap-home>/bin
 
 If you haven't already started a standalone CDAP installation, start it with the command::
 
-  $ cdap.sh start
+  $ cdap sdk start
 
-On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
+On Windows, substitute ``cdap.bat sdk`` for ``cdap sdk``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
   
-  $ cdap-cli.sh load artifact target/cdap-wise-<version>.jar
-  $ cdap-cli.sh create app Wise cdap-wise <version> user
+  $ cdap cli load artifact target/cdap-wise-<version>.jar
+  $ cdap cli create app Wise cdap-wise <version> user
 
-On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+On Windows, substitute ``cdap.bat cli`` for ``cdap cli``.
 
 To start the application::
 
-  $ cdap-cli.sh start flow Wise.WiseFlow
-  $ cdap-cli.sh start service Wise.WiseService
+  $ cdap cli start flow Wise.WiseFlow
+  $ cdap cli start service Wise.WiseService
 
-On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+On Windows, substitute ``cdap.bat cli`` for ``cdap cli``.
 
 You can ingest sample data::
 
@@ -139,11 +139,11 @@ Here are some of the SQL queries that you can run:
 
 - Retrieve the web pages from where IP addresses have bounced more than 10% of the time::
 
-    $ cdap-cli.sh execute "'SELECT uri FROM dataset_bouncecountstore WHERE bounces > 0.1 * totalvisits'"
+    $ cdap cli execute "'SELECT uri FROM dataset_bouncecountstore WHERE bounces > 0.1 * totalvisits'"
 
 - Retrieve all the IP addresses which visited the page '/contact.html'::
 
-    $ cdap-cli.sh execute "'SELECT key FROM dataset_pageviewstore WHERE array_contains(map_keys(value), '/contact.html')=TRUE'"
+    $ cdap cli execute "'SELECT key FROM dataset_pageviewstore WHERE array_contains(map_keys(value), '/contact.html')=TRUE'"
 
 As the SQL engine that CDAP runs internally is Hive, the SQL language used to submit queries is HiveQL.
 A description of it is in the `Hive language manual

@@ -79,37 +79,37 @@ From the project root, build ``Netlens`` with `Apache Maven <http://maven.apache
 
   $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
+Note that the remaining commands assume that the ``cdap cli`` script is available on your PATH.
 If this is not the case, please add it::
 
   $ export PATH=$PATH:<cdap-home>/bin
 
 If you haven't already started a standalone CDAP installation, start it with the command::
 
-  $ cdap.sh start
+  $ cdap sdk start
 
-On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
+On Windows, substitute ``cdap.bat sdk`` for ``cdap sdk``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
   
-  $ cdap-cli.sh load artifact target/Netlens-<version>.jar
-  $ cdap-cli.sh create app Netlens Netlens <version> user
+  $ cdap cli load artifact target/Netlens-<version>.jar
+  $ cdap cli create app Netlens Netlens <version> user
   
-On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+On Windows, substitute ``cdap.bat cli`` for ``cdap cli``.
 
 Start the Application Flows and Services::
 
-  $ cdap-cli.sh start flow Netlens.AnalyticsFlow 
-  $ cdap-cli.sh start service Netlens.AnomaliesCountService 
-  $ cdap-cli.sh start service Netlens.AnomaliesService 
-  $ cdap-cli.sh start service Netlens.CountersService 
+  $ cdap cli start flow Netlens.AnalyticsFlow 
+  $ cdap cli start service Netlens.AnomaliesCountService 
+  $ cdap cli start service Netlens.AnomaliesService 
+  $ cdap cli start service Netlens.CountersService 
 
 Make sure they are running::
 
-  $ cdap-cli.sh get flow status Netlens.AnalyticsFlow 
-  $ cdap-cli.sh get service status Netlens.AnomaliesCountService 
-  $ cdap-cli.sh get service status Netlens.AnomaliesService 
-  $ cdap-cli.sh get service status Netlens.CountersService 
+  $ cdap cli get flow status Netlens.AnalyticsFlow 
+  $ cdap cli get service status Netlens.AnomaliesCountService 
+  $ cdap cli get service status Netlens.AnomaliesService 
+  $ cdap cli get service status Netlens.CountersService 
 
 Ingest sample traffic data::
 
