@@ -15,7 +15,7 @@
  */
 package co.cask.cdap.apps.wise;
 
-import co.cask.cdap.api.data.stream.StreamBatchReadable;
+import co.cask.cdap.api.data.batch.Input;
 import co.cask.cdap.api.mapreduce.AbstractMapReduce;
 import co.cask.cdap.api.mapreduce.MapReduceContext;
 import com.google.common.collect.Maps;
@@ -78,7 +78,7 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
     // Use the logEventStream as the input of the mapper. We only read the data that has
     // not been read by previous runs
     // This statement forces our Mapper to have as input LongWritable/Text
-    StreamBatchReadable.useStreamInput(context, "logEventStream", startTime, endTime);
+    context.addInput(Input.ofStream("logEventStream", startTime, endTime));
   }
 
   /**
