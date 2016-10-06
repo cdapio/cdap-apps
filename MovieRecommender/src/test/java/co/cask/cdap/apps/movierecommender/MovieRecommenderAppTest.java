@@ -57,7 +57,7 @@ public class MovieRecommenderAppTest extends TestBase {
     ApplicationManager appManager = deployApplication(MovieRecommenderApp.class);
 
     // Send movies data through service
-    sendMovieData(appManager);
+    //sendMovieData(appManager);
 
     // Inject ratings data
     sendRatingsData();

@@ -26,10 +26,10 @@ import java.util.List;
 public class Recommendation implements Serializable {
   private static final long serialVersionUID = -1258787639695193629L;
 
-  private List<String> rated = new ArrayList<String>();
-  private List<String> recommended = new ArrayList<String>();
+  private List<MovieRating> rated = new ArrayList();
+  private List<String> recommended = new ArrayList();
 
-  public List<String> getRated() {
+  public List<MovieRating> getRated() {
     return rated;
   }
 
@@ -37,11 +37,29 @@ public class Recommendation implements Serializable {
     return recommended;
   }
 
-  public void addRated(String movie) {
-    rated.add(movie);
+  public void addRated(String movie, double rating) {
+    rated.add(new MovieRating(movie, rating));
   }
 
   public void addRecommended(String movie) {
     recommended.add(movie);
+  }
+
+  private static class MovieRating {
+    private String movie;
+    private double rating;
+
+    public String getMovie() {
+      return movie;
+    }
+
+    public double getRating() {
+      return rating;
+    }
+
+    public MovieRating(String movie, double rating) {
+      this.movie = movie;
+      this.rating = rating;
+    }
   }
 }

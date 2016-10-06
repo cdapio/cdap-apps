@@ -23,12 +23,16 @@ import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 
 import java.net.HttpURLConnection;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
  * Handler that exposes HTTP API to update movie dictionary
@@ -36,7 +40,8 @@ import javax.ws.rs.Path;
 public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
   private static final Pattern NEWLINE_DELIMITER = Pattern.compile("[\\r\\n]+");
   private static final Pattern FIELDS_DELIMITER = Pattern.compile("::");
-  public static final String STORE_MOVIES = "storemovies";
+  public static final String STORE_MOVIES = "/v1/movies";
+  private static final String GET_MOVIE = "/v1/movies/{movie-id}";
 
   @UseDataSet("movies")
   private ObjectStore<String> movies;
@@ -56,6 +61,19 @@ public class MovieDictionaryServiceHandler extends AbstractHttpServiceHandler {
       responder.sendStatus(HttpURLConnection.HTTP_OK);
     } else {
       responder.sendError(HttpURLConnection.HTTP_BAD_REQUEST, "Malformed movies information.");
+    }
+  }
+
+  @Path(GET_MOVIE)
+  @GET
+  public void getMovie(HttpServiceRequest request,
+                       HttpServiceResponder responder,
+                       @PathParam("movie-id") int movieId) {
+    String movie = movies.read(Bytes.toBytes(movieId));
+    if (Strings.isNullOrEmpty(movie)) {
+      responder.sendError(HttpURLConnection.HTTP_NOT_FOUND, String.format("No movie with id %s found.", movieId));
+    } else {
+      responder.sendString(HttpURLConnection.HTTP_OK, movie, Charset.defaultCharset());
     }
   }
 

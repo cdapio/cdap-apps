@@ -27,9 +27,9 @@ public class UserScore implements Serializable {
 
   private final int userID;
   private final int movieID;
-  private final int rating;
+  private final double rating;
 
-  public UserScore(int userID, int movieID, int rating) {
+  public UserScore(int userID, int movieID, double rating) {
     this.userID = userID;
     this.movieID = movieID;
     this.rating = rating;
@@ -43,7 +43,7 @@ public class UserScore implements Serializable {
     return movieID;
   }
 
-  public int getRating() {
+  public double getRating() {
     return rating;
   }
 }

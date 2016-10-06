@@ -43,7 +43,7 @@ class RecommendationBuilder extends SparkMain {
   // SPARK-1006, SPARK-958, http://bugs.java.com/view_bug.do?bug_id=4152790. When running in local mode, num iterations
   // cannot be more than 10 or it causes a StackOverflow error.
   case class Params(
-                     numIterations: Int = 10,
+                     numIterations: Int = 5,
                      lambda: Double = 1.0,
                      rank: Int = 10,
                      numUserBlocks: Int = -1,
@@ -59,28 +59,25 @@ class RecommendationBuilder extends SparkMain {
     val userScores: RDD[String] = sc.fromStream("ratingsStream")
 
     val usRDD = userScores.map { e =>
-      val userScore = e.split("::")
-      new UserScore(userScore(0).toInt, userScore(1).toInt, userScore(2).toInt)
+      val userScore = e.trim().split("::")
+      new UserScore(userScore(0).trim().toInt, userScore(1).trim().toInt, userScore(2).trim().toDouble)
     }.cache()
-    val scores = usRDD.collect()
 
     val ratingData = userScores.map { curUserScore =>
-      val userScore = curUserScore.toString.split("::")
+      val userScore = curUserScore.toString.trim().split("::")
       if (params.implicitPrefs) {
         /*
         * MovieLens ratings are on a scale of 1-5:
         * To map ratings to confidence scores, we subtract 2.5
         * 5 -> 2.5
         */
-        Rating(userScore(0).toInt, userScore(1).toInt, userScore(2).toDouble - 2.5)
+        Rating(userScore(0).trim().toInt, userScore(1).trim().toInt, userScore(2).trim().toDouble - 2.5)
       } else {
-        Rating(userScore(0).toInt, userScore(1).toInt, userScore(2).toDouble)
+        Rating(userScore(0).trim().toInt, userScore(1).trim().toInt, userScore(2).trim().toDouble)
       }
     }.cache()
 
-    val parallelizedScores = sc.parallelize(scores)
-
-    val scoresRDD = parallelizedScores
+    val scoresRDD = usRDD
       .keyBy(x => Bytes.add(Bytes.toBytes(x.getUserID), Bytes.toBytes(x.getMovieID)))
       .saveAsDataset("ratings")
 
@@ -118,7 +115,7 @@ class RecommendationBuilder extends SparkMain {
       sc.parallelize(model.predict(nr.map((curUser._1, _)))
         .collect().sortBy(-_.rating).take(20))
         .keyBy(x => Bytes.add(Bytes.toBytes(x.user), Bytes.toBytes(x.product)))
-        .map(x => (x._1, new UserScore(x._2.user, x._2.product, x._2.rating.toInt)))
+        .map(x => (x._1, new UserScore(x._2.user, x._2.product, x._2.rating.toDouble)))
         .saveAsDataset("recommendations")
     }
 

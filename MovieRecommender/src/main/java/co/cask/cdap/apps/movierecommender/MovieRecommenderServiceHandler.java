@@ -26,9 +26,12 @@ import co.cask.cdap.api.service.http.HttpServiceRequest;
 import co.cask.cdap.api.service.http.HttpServiceResponder;
 
 import java.net.HttpURLConnection;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+
 
 /**
  * Handler that exposes HTTP API to retrieve recommended movies.
@@ -46,7 +49,9 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
 
   @Path("/" + RECOMMEND + "/{userId}")
   @GET
-  public void recommend(HttpServiceRequest request, HttpServiceResponder responder, @PathParam("userId") int userId) {
+  public void recommend(HttpServiceRequest request, HttpServiceResponder responder,
+                        @PathParam("userId") int userId,
+                        @QueryParam("limit") @DefaultValue("3") int limit) {
     byte[] userID = Bytes.toBytes(userId);
 
     CloseableIterator<KeyValue<byte[], UserScore>> userRatings =
@@ -67,7 +72,7 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
           return;
         }
 
-        responder.sendJson(getRecommendation(movies, userRatings, userPredictions));
+        responder.sendJson(getRecommendation(movies, userRatings, userPredictions, limit));
       } finally {
         userPredictions.close();
       }
@@ -88,15 +93,19 @@ public class MovieRecommenderServiceHandler extends AbstractHttpServiceHandler {
    */
   private Recommendation getRecommendation(ObjectStore<String> store,
                                            CloseableIterator<KeyValue<byte[], UserScore>> userRatings,
-                                           CloseableIterator<KeyValue<byte[], UserScore>> userPredictions) {
+                                           CloseableIterator<KeyValue<byte[], UserScore>> userPredictions,
+                                           int limit) {
     Recommendation recommendations = new Recommendation();
 
     while (userRatings.hasNext()) {
-      recommendations.addRated(store.read(Bytes.toBytes(userRatings.next().getValue().getMovieID())));
+      KeyValue<byte[], UserScore> rating = userRatings.next();
+      recommendations.addRated(store.read(Bytes.toBytes(rating.getValue().getMovieID())),
+                               rating.getValue().getRating());
     }
-
-    while (userPredictions.hasNext()) {
+    int count = 0;
+    while (userPredictions.hasNext() && count < limit) {
       recommendations.addRecommended(store.read(Bytes.toBytes(userPredictions.next().getValue().getMovieID())));
+      count++;
     }
 
     return recommendations;

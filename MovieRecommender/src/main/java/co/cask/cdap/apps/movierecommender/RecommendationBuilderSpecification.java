@@ -19,9 +19,12 @@ package co.cask.cdap.apps.movierecommender;
 import co.cask.cdap.api.Resources;
 import co.cask.cdap.api.spark.AbstractSpark;
 import co.cask.cdap.api.spark.Spark;
+import com.google.common.collect.Maps;
 import org.apache.spark.mllib.recommendation.MatrixFactorizationModel;
 import org.apache.spark.mllib.recommendation.Rating;
 import org.apache.spark.rdd.RDD;
+
+import java.util.Map;
 
 /**
  * A {@link Spark} program that creates a {@link MatrixFactorizationModel} from {@link UserScore} and recommend movies
@@ -33,7 +36,11 @@ public class RecommendationBuilderSpecification extends AbstractSpark {
     setName("RecommendationBuilder");
     setDescription("Spark program that computes movie recommendations.");
     setMainClass(RecommendationBuilder.class);
-    setDriverResources(new Resources(1024));
-    setExecutorResources(new Resources(1024));
+    setDriverResources(new Resources(4096, 4));
+    setExecutorResources(new Resources(4096, 4));
+    Map<String, String> props = Maps.newHashMap();
+    props.put("spark.akka.frameSize", "128");
+    props.put("spark.driver.maxResultSize", "2g");
+    setProperties(props);
   }
 }
