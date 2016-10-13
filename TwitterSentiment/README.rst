@@ -61,33 +61,33 @@ From the project root, build ``TwitterSentiment`` with `Apache Maven <http://mav
 
   $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-Note that the remaining commands assume that the ``cdap-cli.sh`` script is available on your PATH.
+Note that the remaining commands assume that the ``cdap`` script is available on your PATH.
 If this is not the case, please add it::
 
   $ export PATH=$PATH:<cdap-home>/bin
 
 If you haven't already started a standalone CDAP installation, start it with the command::
 
-  $ cdap.sh start
+  $ cdap sdk start
 
-On Windows, substitute ``cdap.bat`` for ``cdap.sh``.
+On Windows, substitute ``cdap.bat sdk`` for ``cdap sdk``.
 
 Deploy the Application to a CDAP instance defined by its host (defaults to ``localhost``)::
 
-  $ cdap-cli.sh load artifact target/TwitterSentiment-<version>.jar
-  $ cdap-cli.sh create app TwitterSentiment TwitterSentiment <version> user
+  $ cdap cli load artifact target/TwitterSentiment-<version>.jar
+  $ cdap cli create app TwitterSentiment TwitterSentiment <version> user
 
-On Windows, substitute ``cdap-cli.bat`` for ``cdap-cli.sh``.
+On Windows, substitute ``cdap.bat cli`` for ``cdap cli``.
 
 Start Application Flows and Services::
 
-  $ cdap-cli.sh start flow TwitterSentiment.TwitterSentimentAnalysis
-  $ cdap-cli.sh start service TwitterSentiment.SentimentQuery
+  $ cdap cli start flow TwitterSentiment.TwitterSentimentAnalysis
+  $ cdap cli start service TwitterSentiment.SentimentQuery
 
 Make sure they are running::
 
-  $ cdap-cli.sh get flow status TwitterSentiment.TwitterSentimentAnalysis
-  $ cdap-cli.sh get service status TwitterSentiment.SentimentQuery
+  $ cdap cli get flow status TwitterSentiment.TwitterSentimentAnalysis
+  $ cdap cli get service status TwitterSentiment.SentimentQuery
 
 Ingest sample statements::
 
@@ -106,8 +106,8 @@ Once the Web UI is running, it can be viewed at http://localhost:8080/TwitterSen
 
 Stop Application Flows and Services::
 
-  $ cdap-cli.sh stop flow TwitterSentiment.TwitterSentimentAnalysis
-  $ cdap-cli.sh stop service TwitterSentiment.SentimentQuery
+  $ cdap cli stop flow TwitterSentiment.TwitterSentimentAnalysis
+  $ cdap cli stop service TwitterSentiment.SentimentQuery
 
 Processing Real-time Twitter Data
 =================================
@@ -156,7 +156,7 @@ These arguments are supported:
 License
 =======
 
-Copyright © 2014-2015 Cask Data, Inc.
+Copyright © 2014-2016 Cask Data, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
 in compliance with the License. You may obtain a copy of the License at
