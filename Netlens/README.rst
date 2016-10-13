@@ -79,7 +79,7 @@ From the project root, build ``Netlens`` with `Apache Maven <http://maven.apache
 
   $ MAVEN_OPTS="-Xmx512m" mvn clean package
 
-Note that the remaining commands assume that the ``cdap cli`` script is available on your PATH.
+Note that the remaining commands assume that the ``cdap`` script is available on your PATH.
 If this is not the case, please add it::
 
   $ export PATH=$PATH:<cdap-home>/bin
