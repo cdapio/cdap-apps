@@ -16,6 +16,7 @@
 package co.cask.cdap.apps.wise;
 
 import co.cask.cdap.api.data.batch.Input;
+import co.cask.cdap.api.data.batch.Output;
 import co.cask.cdap.api.mapreduce.AbstractMapReduce;
 import co.cask.cdap.api.mapreduce.MapReduceContext;
 import com.google.common.collect.Maps;
@@ -50,7 +51,7 @@ public class BounceCountsMapReduce extends AbstractMapReduce {
   public void initialize() throws Exception {
     MapReduceContext context = getContext();    
   
-    context.addOutput("bounceCountStore");
+    context.addOutput(Output.ofDataset("bounceCountStore"));
 
     // Retrieve Hadoop Job
     Job job = context.getHadoopJob();
