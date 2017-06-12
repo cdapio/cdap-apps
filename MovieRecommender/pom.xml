@@ -20,14 +20,14 @@
 
   <groupId>co.cask.cdap.apps</groupId>
   <artifactId>MovieRecommender</artifactId>
-  <version>0.8.0</version>
+  <version>0.9.0</version>
   <packaging>jar</packaging>
   <name>Movie Recommender Application</name>
 
   <properties>
     <app.main.class>co.cask.cdap.apps.movierecommender.MovieRecommenderApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>4.1.0</cdap.version>
+    <cdap.version>4.2.0</cdap.version>
     <spark.version>1.6.1</spark.version>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>13.0.1</guava.version>
