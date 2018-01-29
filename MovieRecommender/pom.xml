@@ -19,20 +19,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>co.cask.cdap.apps</groupId>
-  <artifactId>MovieRecommender</artifactId>
+  <artifactId>PartitionExploreCorrectorApp</artifactId>
   <version>0.8.0</version>
   <packaging>jar</packaging>
-  <name>Movie Recommender Application</name>
+  <name>PartitionExploreCorrector</name>
 
   <properties>
-    <app.main.class>co.cask.cdap.apps.movierecommender.MovieRecommenderApp</app.main.class>
+    <app.main.class>co.cask.cdap.apps.PartitionExploreCorrectorApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cdap.version>4.3.0-SNAPSHOT</cdap.version>
     <spark.version>1.6.1</spark.version>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>13.0.1</guava.version>
     <gson.version>2.2.4</gson.version>
-    <scala.version>2.10.3</scala.version>
     <hadoop.version>2.3.0</hadoop.version>
   </properties>
 
@@ -42,43 +41,10 @@
       <name>OSS Sonatype Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
-    <repository>
-      <id>scala-tools.org</id>
-      <name>Scala-tools Maven2 Repository</name>
-      <url>http://scala-tools.org/repo-releases</url>
-    </repository>
   </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>scala-tools.org</id>
-      <name>Scala-tools Maven2 Repository</name>
-      <url>http://scala-tools.org/repo-releases</url>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
-    <dependency>
-      <groupId>co.cask.cdap</groupId>
-      <artifactId>cdap-api-spark</artifactId>
-      <version>${cdap.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_2.10</artifactId>
-      <version>${spark.version}</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-server</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
@@ -118,49 +84,18 @@
       <version>${cdap.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>co.cask.cdap</groupId>
-      <artifactId>cdap-unit-test</artifactId>
-      <version>${cdap.version}</version>
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-mllib_2.10</artifactId>
-      <version>${spark.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.spark</groupId>
-          <artifactId>spark-streaming_2.10</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.scalanlp</groupId>
-          <artifactId>breeze_2.10</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
 
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.scala-tools</groupId>
-          <artifactId>maven-scala-plugin</artifactId>
-          <version>2.15.2</version>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -222,27 +157,6 @@
     </pluginManagement>
 
     <plugins>
-      <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>scala-compile-first</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>add-source</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>scala-test-compile</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
